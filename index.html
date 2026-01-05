@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام الزهراني الذكي ٢٠٢٥</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body { font-family: 'Cairo', 'Inter', sans-serif; background: #f8fafc; margin: 0; }
+        .arabic { font-family: 'Cairo', sans-serif; }
+        .tv-glow { text-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .animate-marquee { display: inline-block; animation: marquee 30s linear infinite; }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // استيراد مكتبة Gemini بشكل يدوي للعمل داخل المتصفح
+        const LOGO_URL = "https://i.ibb.co/1GHY3whz/bsxB90Z.png";
+        
+        const DEPARTMENTS = [
+            { id: 'vehicles', nameAr: "قسم المركبات", prefix: "V", roomAr: "مكتب المركبات", roomEn: "Vehicles Office" },
+            { id: 'finance', nameAr: "قسم المالية - المدير المالي", prefix: "F", roomAr: "مكتب المدير المالي", roomEn: "Finance Office" },
+            { id: 'supervisors', nameAr: "قسم المشرفين", prefix: "S", roomAr: "مكتب المشرفين", roomEn: "Supervisors Office" },
+            { id: 'ninja_sup', nameAr: "مشرف نينجا", prefix: "NS", roomAr: "مكتب مشرف نينجا", roomEn: "Ninja Supervisor Office" },
+            { id: 'kmart_ninja', nameAr: "مشرف كيمارت ودبابات نينجا", prefix: "K", roomAr: "مكتب كيمارت ودبابات", roomEn: "K-Mart Office" },
+            { id: 'hr', nameAr: "مدير الموارد البشرية", prefix: "HR", roomAr: "مكتب الموارد البشرية", roomEn: "HR Office" },
+            { id: 'petroleum', nameAr: "قسم البترول", prefix: "P", roomAr: "مكتب البترول", roomEn: "Petroleum Office" },
+            { id: 'naqel_mgr', nameAr: "مدير مشروع ناقل", prefix: "ON", roomAr: "مكتب مشروع ناقل", roomEn: "Naqel Office" },
+            { id: 'ninja_mgr', nameAr: "مدير مشروع نينجا", prefix: "PN", roomAr: "مكتب مشروع نينجا", roomEn: "Ninja Project Office" }
+        ];
+
+        const { useState, useEffect, useMemo } = React;
+
+        // وظيفة النداء الصوتي عبر API مباشرة
+        async function playAnnouncement(ticketId, roomAr, roomEn) {
+            try {
+                // ملاحظة: سيتم استخدام API_KEY من البيئة أو يمكنك وضعه هنا مؤقتاً للتجربة
+                const apiKey = "AIzaSyAtvZC_Ztg8lVbOUaMl8f268RBnskq3qM0"; 
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                
+                const prompt = `أعلن بوضوح: التذكرة رقم ${ticketId.split('').join(' ')}، يرجى التوجه إلى ${roomAr}. Ticket number ${ticketId}, please proceed to ${roomEn}.`;
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                multiSpeakerVoiceConfig: {
+                                    speakerVoiceConfigs: [
+                                        { speaker: 'Ar', voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
+                                        { speaker: 'En', voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } }
+                                    ]
+                                }
+                            }
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                const base64Audio = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                
+                if (base64Audio) {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+                    const arrayBuffer = Uint8Array.from(atob(base64Audio), c => c.charCodeAt(0)).buffer;
+                    const dataInt16 = new Int16Array(arrayBuffer);
+                    const buffer = audioCtx.createBuffer(1, dataInt16.length, 24000);
+                    buffer.getChannelData(0).set(Array.from(dataInt16).map(v => v / 32768));
+                    const source = audioCtx.createBufferSource();
+                    source.buffer = buffer;
+                    source.connect(audioCtx.destination);
+                    source.start();
+                }
+            } catch (e) { console.error("Audio Error:", e); }
+        }
+
+        const App = () => {
+            const [view, setView] = useState('kiosk');
+            const [queue, setQueue] = useState(() => JSON.parse(localStorage.getItem('zahrani_queue') || '[]'));
+            const [lastNums, setLastNums] = useState(() => JSON.parse(localStorage.getItem('zahrani_nums') || '{}'));
+            const [activeDept, setActiveDept] = useState(null);
+            const [successTicket, setSuccessTicket] = useState(null);
+
+            useEffect(() => {
+                localStorage.setItem('zahrani_queue', JSON.stringify(queue));
+                localStorage.setItem('zahrani_nums', JSON.stringify(lastNums));
+            }, [queue, lastNums]);
+
+            const issueTicket = (deptId) => {
+                const dept = DEPARTMENTS.find(d => d.id === deptId);
+                const nextNum = (lastNums[deptId] || 0) + 1;
+                const ticket = {
+                    id: Math.random().toString(36).substr(2, 9),
+                    displayId: `${dept.prefix}-${nextNum.toString().padStart(3, '0')}`,
+                    deptId,
+                    status: 'waiting',
+                    time: Date.now()
+                };
+                setQueue([...queue, ticket]);
+                setLastNums({...lastNums, [deptId]: nextNum});
+                setSuccessTicket(ticket);
+                setTimeout(() => setSuccessTicket(null), 5000);
+            };
+
+            const callTicket = (ticket) => {
+                const dept = DEPARTMENTS.find(d => d.id === ticket.deptId);
+                setQueue(queue.map(t => t.id === ticket.id ? {...t, status: 'called', time: Date.now()} : t));
+                playAnnouncement(ticket.displayId, dept.roomAr, dept.roomEn);
+            };
+
+            const called = useMemo(() => queue.filter(t => t.status === 'called').sort((a,b) => b.time - a.time), [queue]);
+
+            return (
+                <div className="min-h-screen flex flex-col">
+                    {view !== 'display' && (
+                        <header className="bg-white border-b-4 border-emerald-600 p-4 flex justify-between items-center shadow-md">
+                            <div className="flex items-center gap-3">
+                                <img src={LOGO_URL} alt="Logo" className="h-12" />
+                                <h1 className="text-xl font-bold text-emerald-900 arabic">شركة الزهراني ٢٠٢٥</h1>
+                            </div>
+                            <div className="flex gap-2 bg-slate-100 p-1 rounded-lg">
+                                {['kiosk', 'display', 'admin'].map(v => (
+                                    <button key={v} onClick={() => setView(v)} className={`px-4 py-1.5 rounded-md text-xs font-bold ${view === v ? 'bg-emerald-600 text-white' : 'text-slate-500'}`}>
+                                        {v === 'kiosk' ? 'التذاكر' : v === 'display' ? 'الشاشة' : 'الموظف'}
+                                    </button>
+                                ))}
+                            </div>
+                        </header>
+                    )}
+
+                    <main className="flex-1">
+                        {view === 'kiosk' && (
+                            <div className="max-w-4xl mx-auto p-6 space-y-8 text-center">
+                                <h2 className="text-4xl font-black arabic text-slate-800 py-6">مرحباً بكم في شركة الزهراني</h2>
+                                {successTicket && (
+                                    <div className="bg-emerald-600 text-white p-8 rounded-3xl shadow-2xl animate-bounce">
+                                        <p className="text-xl font-bold arabic">تم استخراج تذكرتك!</p>
+                                        <div className="text-8xl font-black">{successTicket.displayId}</div>
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {DEPARTMENTS.map(d => (
+                                        <button key={d.id} onClick={() => issueTicket(d.id)} className="bg-white p-6 rounded-2xl border-2 hover:border-emerald-500 shadow-sm flex flex-col items-center gap-2">
+                                            <div className="w-12 h-12 bg-emerald-50 text-emerald-700 rounded-lg flex items-center justify-center font-bold text-2xl">{d.prefix}</div>
+                                            <span className="font-bold arabic">{d.nameAr}</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'display' && (
+                            <div className="h-screen w-screen bg-slate-900 text-white flex flex-col overflow-hidden">
+                                <div className="bg-emerald-800 p-6 flex justify-between items-center border-b-8 border-emerald-600">
+                                    <img src={LOGO_URL} alt="Logo" className="h-20 bg-white p-2 rounded-xl" />
+                                    <h1 className="text-5xl font-black arabic">شركة الزهراني ٢٠٢٥</h1>
+                                    <div className="text-5xl font-mono">{new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                                </div>
+                                <div className="flex-1 flex">
+                                    <div className="flex-1 flex flex-col items-center justify-center bg-slate-950 relative">
+                                        <div className="absolute top-10 right-10 text-emerald-500 text-3xl font-bold arabic animate-pulse">النداء الحالي</div>
+                                        {called[0] ? (
+                                            <div className="text-center">
+                                                <div className="text-[30rem] font-black leading-none tv-glow">{called[0].displayId}</div>
+                                                <div className="text-7xl font-bold text-emerald-400 arabic">{DEPARTMENTS.find(d => d.id === called[0].deptId)?.roomAr}</div>
+                                            </div>
+                                        ) : <div className="text-4xl text-slate-700 arabic">بانتظار الخدمة...</div>}
+                                    </div>
+                                    <div className="w-1/3 bg-slate-900 p-8 flex flex-col gap-4">
+                                        <h3 className="text-3xl font-bold border-b-2 border-emerald-500 pb-2 arabic">السجل</h3>
+                                        {called.slice(1, 6).map(t => (
+                                            <div key={t.id} className="bg-slate-800 p-6 rounded-xl flex justify-between items-center border-r-8 border-emerald-500">
+                                                <span className="text-6xl font-black">{t.displayId}</span>
+                                                <span className="text-xl arabic text-emerald-400">{DEPARTMENTS.find(d => d.id === t.deptId)?.prefix}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="bg-emerald-700 py-3 overflow-hidden whitespace-nowrap border-t-4 border-emerald-500">
+                                    <div className="animate-marquee text-3xl font-bold arabic">شركة الزهراني ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم على الشاشة .. نتمنى لكم يوماً سعيداً</div>
+                                </div>
+                            </div>
+                        )}
+
+                        {view === 'admin' && (
+                            <div className="max-w-4xl mx-auto p-6 space-y-6">
+                                {!activeDept ? (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {DEPARTMENTS.map(d => (
+                                            <button key={d.id} onClick={() => setActiveDept(d.id)} className="bg-white p-6 rounded-xl border-2 hover:border-emerald-500 font-bold arabic">دخول: {d.nameAr}</button>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="space-y-6">
+                                        <div className="bg-emerald-900 text-white p-6 rounded-2xl flex justify-between items-center">
+                                            <h2 className="text-2xl font-bold arabic">{DEPARTMENTS.find(d => d.id === activeDept).nameAr}</h2>
+                                            <button onClick={() => setActiveDept(null)} className="text-sm opacity-70">خروج</button>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="space-y-4">
+                                                <h3 className="font-bold arabic">الانتظار</h3>
+                                                {queue.filter(t => t.deptId === activeDept && t.status === 'waiting').map(t => (
+                                                    <div key={t.id} className="bg-white p-4 rounded-xl shadow flex justify-between items-center border-r-4 border-emerald-500">
+                                                        <span className="text-2xl font-black">{t.displayId}</span>
+                                                        <button onClick={() => callTicket(t)} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold">نداء</button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className="space-y-4">
+                                                <h3 className="font-bold arabic">المنادى عليهم</h3>
+                                                {queue.filter(t => t.deptId === activeDept && t.status === 'called').map(t => (
+                                                    <div key={t.id} className="bg-slate-800 text-white p-6 rounded-xl flex flex-col gap-4">
+                                                        <span className="text-5xl font-black text-center">{t.displayId}</span>
+                                                        <div className="flex gap-2">
+                                                            <button onClick={() => callTicket(t)} className="flex-1 bg-white/10 py-2 rounded font-bold">إعادة نداء</button>
+                                                            <button onClick={() => setQueue(queue.map(i => i.id === t.id ? {...i, status: 'done'} : i))} className="flex-1 bg-emerald-500 py-2 rounded font-bold">إنهاء</button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </main>
+
+                    {view !== 'display' && (
+                        <footer className="p-6 text-center text-slate-400 text-xs border-t">
+                            <p className="arabic">© ٢٠٢٥ شركة الزهراني - جميع الحقوق محفوظة</p>
+                        </footer>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
