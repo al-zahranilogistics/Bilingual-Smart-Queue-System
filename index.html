@@ -153,6 +153,18 @@
             color: white;
         }
         
+        /* Mobile Booking */
+        .mobile-booking {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .qr-code {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -171,6 +183,21 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
+        
+        /* Loading Animation */
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -188,7 +215,10 @@
                 en: "Smart Queue Management System"
             },
             adminCode: "0906212",
-            maxTicketNumber: 20000
+            mobileBookingCode: "VIP2025", // كود الحجز عبر الجوال
+            maxTicketNumber: 20000,
+            syncInterval: 2000, // تحديث كل 2 ثانية للمزامنة
+            whatsappNumber: "+966123456789" // رقم واتساب للتواصل
         };
         
         // Professional Icons for Departments
@@ -332,7 +362,21 @@
                 techSupport: "رقم الدعم الفني",
                 visitorKiosk: "كشك الزوار",
                 adminPanel: "لوحة التحكم",
-                displayScreen: "شاشة العرض"
+                displayScreen: "شاشة العرض",
+                mobileBooking: "حجز عبر الجوال",
+                mobileBookingDesc: "احجز تذكرتك من جوالك باستخدام الكود الخاص",
+                enterVipCode: "أدخل كود الحجز VIP",
+                bookNow: "احجز الآن",
+                scanQr: "امسح QR للحجز",
+                or: "أو",
+                whatsappBooking: "احجز عبر واتساب",
+                bookingSuccess: "تم الحجز بنجاح",
+                bookingError: "كود الحجز غير صحيح",
+                bookingInstruction: "أدخل كود VIP للحصول على تذكرة خاصة",
+                currentView: "العرض الحالي",
+                visitorView: "واجهة الزوار",
+                displayView: "شاشة العرض",
+                adminView: "لوحة التحكم"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Company",
@@ -370,25 +414,70 @@
                 techSupport: "Technical Support",
                 visitorKiosk: "Visitor Kiosk",
                 adminPanel: "Control Panel",
-                displayScreen: "Display Screen"
+                displayScreen: "Display Screen",
+                mobileBooking: "Mobile Booking",
+                mobileBookingDesc: "Book your ticket from your phone using special code",
+                enterVipCode: "Enter VIP booking code",
+                bookNow: "Book Now",
+                scanQr: "Scan QR to book",
+                or: "OR",
+                whatsappBooking: "Book via WhatsApp",
+                bookingSuccess: "Booking Successful",
+                bookingError: "Invalid booking code",
+                bookingInstruction: "Enter VIP code to get special ticket",
+                currentView: "Current View",
+                visitorView: "Visitor Interface",
+                displayView: "Display Screen",
+                adminView: "Control Panel"
             }
         };
 
-        const { useState, useEffect, useMemo } = React;
+        const { useState, useEffect, useMemo, useRef } = React;
+
+        // Centralized Data Management
+        class QueueManager {
+            static getQueue() {
+                return JSON.parse(localStorage.getItem('zahrani_queue') || '[]');
+            }
+            
+            static getLastNumbers() {
+                return JSON.parse(localStorage.getItem('zahrani_nums') || '{}');
+            }
+            
+            static saveQueue(queue) {
+                localStorage.setItem('zahrani_queue', JSON.stringify(queue));
+                // Notify all windows of data change
+                if (typeof BroadcastChannel !== 'undefined') {
+                    const channel = new BroadcastChannel('queue_updates');
+                    channel.postMessage({ type: 'queue_updated', timestamp: Date.now() });
+                }
+            }
+            
+            static saveLastNumbers(lastNumbers) {
+                localStorage.setItem('zahrani_nums', JSON.stringify(lastNumbers));
+                if (typeof BroadcastChannel !== 'undefined') {
+                    const channel = new BroadcastChannel('queue_updates');
+                    channel.postMessage({ type: 'numbers_updated', timestamp: Date.now() });
+                }
+            }
+            
+            static generateTicketNumber(deptId, lastNumber) {
+                const nextNum = (lastNumber || 0) + 1;
+                const actualNum = nextNum > CONFIG.maxTicketNumber ? 1 : nextNum;
+                return `${actualNum}`;
+            }
+        }
 
         // Generate unique ticket number (1-20000, no separators)
         function generateTicketNumber(deptPrefix, lastNumber) {
             const nextNum = (lastNumber || 0) + 1;
-            // Reset to 1 if exceeds max
             const actualNum = nextNum > CONFIG.maxTicketNumber ? 1 : nextNum;
-            // Return as plain number without separators
             return `${actualNum}`;
         }
 
         // Speech announcement function
         function speakAnnouncement(ticketNumber, roomAr, roomEn) {
             if ('speechSynthesis' in window) {
-                // Arabic announcement
                 const arabicText = `التذكرة رقم ${ticketNumber}، يرجى التوجه إلى ${roomAr}`;
                 const englishText = `Ticket number ${ticketNumber}, please proceed to ${roomEn}`;
                 
@@ -400,7 +489,6 @@
                 utteranceEn.lang = 'en-US';
                 utteranceEn.rate = 0.9;
                 
-                // Speak Arabic first, then English
                 speechSynthesis.speak(utteranceAr);
                 
                 utteranceAr.onend = () => {
@@ -414,14 +502,8 @@
         // Main Application Component
         function App() {
             const [view, setView] = useState('kiosk');
-            const [queue, setQueue] = useState(() => {
-                const saved = localStorage.getItem('zahrani_queue');
-                return saved ? JSON.parse(saved) : [];
-            });
-            const [lastNumbers, setLastNumbers] = useState(() => {
-                const saved = localStorage.getItem('zahrani_nums');
-                return saved ? JSON.parse(saved) : {};
-            });
+            const [queue, setQueue] = useState(() => QueueManager.getQueue());
+            const [lastNumbers, setLastNumbers] = useState(() => QueueManager.getLastNumbers());
             const [activeDept, setActiveDept] = useState(null);
             const [successTicket, setSuccessTicket] = useState(null);
             const [adminCode, setAdminCode] = useState('');
@@ -429,12 +511,41 @@
             const [adminError, setAdminError] = useState('');
             const [language, setLanguage] = useState('ar');
             const [currentTime, setCurrentTime] = useState(new Date());
+            const [vipCode, setVipCode] = useState('');
+            const [showMobileBooking, setShowMobileBooking] = useState(false);
+            const [bookingError, setBookingError] = useState('');
+            const [syncing, setSyncing] = useState(false);
 
-            // Save to localStorage
+            // Real-time synchronization
             useEffect(() => {
-                localStorage.setItem('zahrani_queue', JSON.stringify(queue));
-                localStorage.setItem('zahrani_nums', JSON.stringify(lastNumbers));
-            }, [queue, lastNumbers]);
+                // Listen for data changes from other tabs/windows
+                if (typeof BroadcastChannel !== 'undefined') {
+                    const channel = new BroadcastChannel('queue_updates');
+                    
+                    const handleMessage = (event) => {
+                        if (event.data.type === 'queue_updated') {
+                            setQueue(QueueManager.getQueue());
+                        } else if (event.data.type === 'numbers_updated') {
+                            setLastNumbers(QueueManager.getLastNumbers());
+                        }
+                    };
+                    
+                    channel.addEventListener('message', handleMessage);
+                    
+                    return () => {
+                        channel.removeEventListener('message', handleMessage);
+                        channel.close();
+                    };
+                }
+                
+                // Fallback: Poll for changes
+                const syncInterval = setInterval(() => {
+                    setQueue(QueueManager.getQueue());
+                    setLastNumbers(QueueManager.getLastNumbers());
+                }, CONFIG.syncInterval);
+                
+                return () => clearInterval(syncInterval);
+            }, []);
 
             // Update time
             useEffect(() => {
@@ -448,7 +559,7 @@
             const isRTL = language === 'ar';
 
             // Generate ticket
-            const issueTicket = (deptId) => {
+            const issueTicket = (deptId, isVip = false) => {
                 const dept = DEPARTMENTS.find(d => d.id === deptId);
                 const ticketNumber = generateTicketNumber(dept.prefix, lastNumbers[deptId]);
                 
@@ -459,14 +570,46 @@
                     deptPrefix: dept.prefix,
                     status: 'waiting',
                     timestamp: Date.now(),
-                    displayText: `${dept.prefix}${ticketNumber}`
+                    displayText: `${dept.prefix}${ticketNumber}`,
+                    isVip: isVip
                 };
                 
-                setQueue([...queue, ticket]);
-                setLastNumbers({...lastNumbers, [deptId]: parseInt(ticketNumber)});
+                const newQueue = [...queue, ticket];
+                const newLastNumbers = {...lastNumbers, [deptId]: parseInt(ticketNumber)};
+                
+                setQueue(newQueue);
+                setLastNumbers(newLastNumbers);
+                
+                QueueManager.saveQueue(newQueue);
+                QueueManager.saveLastNumbers(newLastNumbers);
+                
                 setSuccessTicket(ticket);
                 
                 setTimeout(() => setSuccessTicket(null), 4000);
+                
+                if (isVip) {
+                    setShowMobileBooking(false);
+                    setVipCode('');
+                }
+            };
+
+            // VIP Booking
+            const handleVipBooking = () => {
+                if (vipCode === CONFIG.mobileBookingCode) {
+                    // Show department selection for VIP
+                    setShowMobileBooking(true);
+                    setBookingError('');
+                } else {
+                    setBookingError(t.bookingError);
+                    setTimeout(() => setBookingError(''), 3000);
+                }
+            };
+
+            // WhatsApp Booking
+            const handleWhatsAppBooking = () => {
+                const message = `مرحباً، أريد حجز تذكرة VIP في شركة الزهراني. كود الحجز: ${CONFIG.mobileBookingCode}`;
+                const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
+                window.open(url, '_blank');
             };
 
             // Call ticket
@@ -475,7 +618,10 @@
                 const updatedQueue = queue.map(t => 
                     t.id === ticket.id ? {...t, status: 'called', timestamp: Date.now()} : t
                 );
+                
                 setQueue(updatedQueue);
+                QueueManager.saveQueue(updatedQueue);
+                
                 speakAnnouncement(ticket.number, dept.roomAr, dept.roomEn);
             };
 
@@ -514,6 +660,18 @@
                     day: 'numeric'
                 });
             };
+
+            // Handle view based on URL
+            useEffect(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const requestedView = urlParams.get('view');
+                
+                if (requestedView === 'display') {
+                    setView('display');
+                } else if (requestedView === 'admin') {
+                    setShowAdminLogin(true);
+                }
+            }, []);
 
             // Render based on view
             return (
@@ -569,22 +727,73 @@
                         </div>
                     )}
 
+                    {/* VIP Booking Modal */}
+                    {showMobileBooking && (
+                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                            <div className="card max-w-md w-full bg-gradient-to-br from-purple-50 to-pink-50">
+                                <div className="text-center space-y-6">
+                                    <div>
+                                        <i className="fas fa-crown text-4xl text-purple-500 mb-4"></i>
+                                        <h2 className="text-2xl font-bold text-gray-800">{t.mobileBooking}</h2>
+                                        <p className="text-gray-600 mt-2">{t.selectDept}</p>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {DEPARTMENTS.map(dept => (
+                                            <button
+                                                key={dept.id}
+                                                onClick={() => issueTicket(dept.id, true)}
+                                                className="card hover:border-purple-300 text-left"
+                                            >
+                                                <div className="flex flex-col items-center text-center">
+                                                    <div 
+                                                        className="icon-wrapper"
+                                                        style={{ backgroundColor: dept.color }}
+                                                    >
+                                                        <i className={dept.icon}></i>
+                                                    </div>
+                                                    <h3 className="text-lg font-bold text-gray-800 mb-2">
+                                                        {language === 'ar' ? dept.nameAr : dept.nameEn}
+                                                    </h3>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                    
+                                    <button
+                                        onClick={() => setShowMobileBooking(false)}
+                                        className="text-gray-500 hover:text-gray-700"
+                                    >
+                                        {isRTL ? 'إلغاء' : 'Cancel'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Success Ticket Modal */}
                     {successTicket && (
                         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-                            <div className="card max-w-md w-full bg-gradient-to-br from-blue-50 to-white">
+                            <div className={`card max-w-md w-full ${successTicket.isVip ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-gradient-to-br from-blue-50 to-white'}`}>
                                 <div className="text-center space-y-6">
-                                    <i className="fas fa-ticket-alt text-5xl text-blue-500"></i>
+                                    {successTicket.isVip ? (
+                                        <i className="fas fa-crown text-5xl text-yellow-300"></i>
+                                    ) : (
+                                        <i className="fas fa-ticket-alt text-5xl text-blue-500"></i>
+                                    )}
                                     <div>
-                                        <h3 className="text-2xl font-bold text-gray-800">{t.ticketGenerated}</h3>
-                                        <div className="text-6xl font-black text-blue-600 mt-4 tracking-wider">
+                                        <h3 className="text-2xl font-bold text-white">{t.ticketGenerated}</h3>
+                                        {successTicket.isVip && (
+                                            <div className="text-yellow-200 font-bold mb-2">✨ تذكرة VIP خاصة ✨</div>
+                                        )}
+                                        <div className="text-6xl font-black text-white mt-4 tracking-wider">
                                             {successTicket.displayText}
                                         </div>
-                                        <p className="text-gray-600 mt-4">{t.waitForCall}</p>
+                                        <p className="text-white mt-4">{t.waitForCall}</p>
                                     </div>
                                     <button
                                         onClick={() => setSuccessTicket(null)}
-                                        className="btn-primary"
+                                        className="bg-white text-purple-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100"
                                     >
                                         {isRTL ? 'تم' : 'OK'}
                                     </button>
@@ -593,7 +802,7 @@
                         </div>
                     )}
 
-                    {/* Header for Kiosk and Admin */}
+                    {/* Header for all views except display */}
                     {view !== 'display' && (
                         <header className="bg-white shadow-md">
                             <div className="max-w-7xl mx-auto px-4 py-4">
@@ -613,6 +822,22 @@
                                         </div>
                                     </div>
                                     
+                                    {/* View Indicator */}
+                                    <div className="text-center">
+                                        <div className="text-sm text-gray-500 mb-1">{t.currentView}</div>
+                                        <div className="flex gap-2">
+                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${view === 'kiosk' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}>
+                                                {t.visitorView}
+                                            </span>
+                                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                {t.displayView}
+                                            </span>
+                                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                {t.adminView}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
                                     {/* Navigation */}
                                     <div className="flex flex-wrap items-center gap-2">
                                         {/* Language Toggle */}
@@ -626,22 +851,39 @@
                                             <i className="fas fa-globe text-gray-500"></i>
                                         </button>
                                         
-                                        {/* View Buttons */}
+                                        {/* Mobile Booking Button */}
                                         <button
-                                            onClick={() => setView('kiosk')}
+                                            onClick={() => {
+                                                const code = prompt(isRTL ? 'أدخل كود الحجز VIP:' : 'Enter VIP booking code:');
+                                                if (code === CONFIG.mobileBookingCode) {
+                                                    setShowMobileBooking(true);
+                                                } else if (code) {
+                                                    alert(isRTL ? 'كود الحجز غير صحيح' : 'Invalid booking code');
+                                                }
+                                            }}
+                                            className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition"
+                                        >
+                                            <i className="fas fa-mobile-alt mr-2"></i>
+                                            {t.mobileBooking}
+                                        </button>
+                                        
+                                        {/* View Buttons */}
+                                        <a
+                                            href="?view=kiosk"
                                             className={`px-4 py-2 rounded-lg font-medium transition ${view === 'kiosk' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                                         >
                                             <i className="fas fa-user mr-2"></i>
                                             {t.visitorKiosk}
-                                        </button>
+                                        </a>
                                         
-                                        <button
-                                            onClick={() => window.open(window.location.href + '?view=display', '_blank', 'width=1920,height=1080')}
+                                        <a
+                                            href="?view=display"
+                                            target="_blank"
                                             className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
                                         >
                                             <i className="fas fa-tv mr-2"></i>
                                             {t.openDisplay}
-                                        </button>
+                                        </a>
                                         
                                         <button
                                             onClick={() => setShowAdminLogin(true)}
@@ -660,7 +902,59 @@
                     <main className="flex-1">
                         {/* Visitor Kiosk */}
                         {view === 'kiosk' && (
-                            <div className="max-w-6xl mx-auto px-4 py-8">
+                            <div className="max-w-7xl mx-auto px-4 py-8">
+                                {/* Mobile Booking Section */}
+                                <div className="mobile-booking text-white rounded-2xl p-6 mb-8">
+                                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                                        <div className="flex-1">
+                                            <h2 className="text-2xl font-bold mb-3">{t.mobileBooking}</h2>
+                                            <p className="mb-4">{t.mobileBookingDesc}</p>
+                                            
+                                            <div className="flex flex-col sm:flex-row gap-3 max-w-md">
+                                                <input
+                                                    type="text"
+                                                    value={vipCode}
+                                                    onChange={(e) => setVipCode(e.target.value)}
+                                                    placeholder={t.enterVipCode}
+                                                    className="flex-1 p-3 rounded-lg text-gray-800"
+                                                    onKeyPress={(e) => e.key === 'Enter' && handleVipBooking()}
+                                                />
+                                                <button
+                                                    onClick={handleVipBooking}
+                                                    className="bg-yellow-500 text-gray-900 px-6 py-3 rounded-lg font-bold hover:bg-yellow-400"
+                                                >
+                                                    {t.bookNow}
+                                                </button>
+                                            </div>
+                                            
+                                            {bookingError && (
+                                                <div className="text-red-300 mt-2 animate-slide-in">
+                                                    {bookingError}
+                                                </div>
+                                            )}
+                                        </div>
+                                        
+                                        <div className="text-center">
+                                            <div className="qr-code mb-3">
+                                                <div className="text-center text-gray-800 mb-2 font-bold">VIP</div>
+                                                <div className="text-4xl">📱</div>
+                                            </div>
+                                            <div className="text-sm">{t.scanQr}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="text-center mt-6 pt-4 border-t border-white/30">
+                                        <p className="mb-3">{t.or}</p>
+                                        <button
+                                            onClick={handleWhatsAppBooking}
+                                            className="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 inline-flex items-center gap-2"
+                                        >
+                                            <i className="fab fa-whatsapp"></i>
+                                            {t.whatsappBooking}
+                                        </button>
+                                    </div>
+                                </div>
+                                
                                 <div className="text-center mb-10">
                                     <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
                                         {t.welcome}
@@ -715,6 +1009,14 @@
                                         <li>{t.instruction5}</li>
                                     </ol>
                                 </div>
+                                
+                                {/* Sync Status */}
+                                <div className="mt-6 text-center">
+                                    <div className="inline-flex items-center gap-2 text-gray-600">
+                                        <i className="fas fa-sync-alt text-blue-500"></i>
+                                        <span>{isRTL ? 'مزامنة تلقائية نشطة' : 'Auto-sync active'}</span>
+                                    </div>
+                                </div>
                             </div>
                         )}
 
@@ -763,6 +1065,9 @@
                                                         <div className="relative">
                                                             <div className="text-[20vw] md:text-[25vw] font-black text-white ticket-glow">
                                                                 {calledTickets[0].displayText}
+                                                                {calledTickets[0].isVip && (
+                                                                    <span className="text-yellow-300 text-[5vw] ml-4">✨</span>
+                                                                )}
                                                             </div>
                                                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[10vw] opacity-20">
                                                                 <i className={DEPARTMENTS.find(d => d.id === calledTickets[0].deptId)?.icon}></i>
@@ -801,12 +1106,15 @@
                                                 {calledTickets.slice(1, 6).map(ticket => (
                                                     <div 
                                                         key={ticket.id}
-                                                        className="bg-black/40 p-4 rounded-xl border-r-4"
-                                                        style={{ borderColor: DEPARTMENTS.find(d => d.id === ticket.deptId)?.color }}
+                                                        className={`bg-black/40 p-4 rounded-xl border-r-4 ${ticket.isVip ? 'border-yellow-400' : ''}`}
+                                                        style={{ borderColor: ticket.isVip ? '#fbbf24' : DEPARTMENTS.find(d => d.id === ticket.deptId)?.color }}
                                                     >
                                                         <div className="flex justify-between items-center">
                                                             <div className="text-3xl font-bold text-white">
                                                                 {ticket.displayText}
+                                                                {ticket.isVip && (
+                                                                    <span className="text-yellow-300 ml-2">✨</span>
+                                                                )}
                                                             </div>
                                                             <i className={DEPARTMENTS.find(d => d.id === ticket.deptId)?.icon + " text-xl"}></i>
                                                         </div>
@@ -826,7 +1134,7 @@
                                             <span className="mx-8">•</span>
                                             <span className="mx-8">{t.systemMessage}</span>
                                             <span className="mx-8">•</span>
-                                            <span className="mx-8">{t.holdTicket}</span>
+                                            <span className="mx-8">كود الحجز VIP: {CONFIG.mobileBookingCode}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -850,6 +1158,9 @@
                                             {DEPARTMENTS.map(dept => {
                                                 const waitingCount = queue.filter(t => 
                                                     t.deptId === dept.id && t.status === 'waiting'
+                                                ).length;
+                                                const vipCount = queue.filter(t => 
+                                                    t.deptId === dept.id && t.status === 'waiting' && t.isVip
                                                 ).length;
                                                 
                                                 return (
@@ -879,6 +1190,14 @@
                                                                             {waitingCount}
                                                                         </span>
                                                                     </div>
+                                                                    {vipCount > 0 && (
+                                                                        <div className="flex justify-between items-center mt-1">
+                                                                            <span className="text-yellow-600 text-sm">VIP:</span>
+                                                                            <span className="text-lg font-bold text-yellow-600">
+                                                                                {vipCount}
+                                                                            </span>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -888,18 +1207,19 @@
                                         </div>
                                         
                                         <div className="flex justify-center gap-4">
-                                            <button
-                                                onClick={() => setView('kiosk')}
+                                            <a
+                                                href="?view=kiosk"
                                                 className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
                                             >
                                                 {t.returnToKiosk}
-                                            </button>
-                                            <button
-                                                onClick={() => window.open(window.location.href + '?view=display', '_blank', 'width=1920,height=1080')}
+                                            </a>
+                                            <a
+                                                href="?view=display"
+                                                target="_blank"
                                                 className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
                                             >
                                                 {t.openDisplay}
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 ) : (
@@ -946,10 +1266,17 @@
                                                     {queue
                                                         .filter(t => t.deptId === activeDept && t.status === 'waiting')
                                                         .map(ticket => (
-                                                            <div key={ticket.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                                                            <div key={ticket.id} className={`flex justify-between items-center p-3 rounded-lg border ${ticket.isVip ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50'}`}>
                                                                 <div>
-                                                                    <div className="text-2xl font-bold text-gray-800">
-                                                                        {ticket.displayText}
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="text-2xl font-bold text-gray-800">
+                                                                            {ticket.displayText}
+                                                                        </div>
+                                                                        {ticket.isVip && (
+                                                                            <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                                                                                VIP
+                                                                            </span>
+                                                                        )}
                                                                     </div>
                                                                     <div className="text-sm text-gray-500">
                                                                         {formatTime(new Date(ticket.timestamp))}
@@ -976,10 +1303,17 @@
                                                     {queue
                                                         .filter(t => t.deptId === activeDept && t.status === 'called')
                                                         .map(ticket => (
-                                                            <div key={ticket.id} className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+                                                            <div key={ticket.id} className={`p-4 rounded-lg border ${ticket.isVip ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200' : 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200'}`}>
                                                                 <div className="text-center mb-4">
-                                                                    <div className="text-3xl font-bold text-gray-800">
-                                                                        {ticket.displayText}
+                                                                    <div className="flex items-center justify-center gap-2">
+                                                                        <div className="text-3xl font-bold text-gray-800">
+                                                                            {ticket.displayText}
+                                                                        </div>
+                                                                        {ticket.isVip && (
+                                                                            <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                                                                                VIP
+                                                                            </span>
+                                                                        )}
                                                                     </div>
                                                                     <div className="text-sm text-gray-500">
                                                                         {formatTime(new Date(ticket.timestamp))}
@@ -995,9 +1329,11 @@
                                                                     </button>
                                                                     <button
                                                                         onClick={() => {
-                                                                            setQueue(queue.map(t => 
+                                                                            const updatedQueue = queue.map(t => 
                                                                                 t.id === ticket.id ? {...t, status: 'done'} : t
-                                                                            ));
+                                                                            );
+                                                                            setQueue(updatedQueue);
+                                                                            QueueManager.saveQueue(updatedQueue);
                                                                         }}
                                                                         className="btn-danger flex-1"
                                                                     >
@@ -1012,6 +1348,30 @@
                                         </div>
                                     </div>
                                 )}
+                                
+                                {/* System Info */}
+                                <div className="card mt-6 bg-gray-50">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                                        <div>
+                                            <div className="text-2xl font-bold text-blue-600">
+                                                {queue.filter(t => t.status === 'waiting').length}
+                                            </div>
+                                            <div className="text-gray-600">{t.waitingList}</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-2xl font-bold text-green-600">
+                                                {queue.filter(t => t.status === 'called').length}
+                                            </div>
+                                            <div className="text-gray-600">{t.calledTickets}</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-2xl font-bold text-purple-600">
+                                                {queue.filter(t => t.isVip).length}
+                                            </div>
+                                            <div className="text-gray-600">تذاكر VIP</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </main>
@@ -1036,14 +1396,14 @@
                                         </div>
                                     </div>
                                     
-                                    <div className="flex gap-4">
-                                        <a href="./?view=kiosk" className="text-gray-300 hover:text-white">
+                                    <div className="flex flex-wrap gap-4">
+                                        <a href="?view=kiosk" className="text-gray-300 hover:text-white">
                                             {t.visitorKiosk}
                                         </a>
-                                        <a href="./?view=display" target="_blank" className="text-gray-300 hover:text-white">
+                                        <a href="?view=display" target="_blank" className="text-gray-300 hover:text-white">
                                             {t.displayScreen}
                                         </a>
-                                        <a href="./?view=admin" className="text-gray-300 hover:text-white">
+                                        <a href="?view=admin" className="text-gray-300 hover:text-white">
                                             {t.adminPanel}
                                         </a>
                                     </div>
@@ -1057,20 +1417,6 @@
 
         // Initialize the app
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-        
-        // Check URL parameters for view
-        const urlParams = new URLSearchParams(window.location.search);
-        const requestedView = urlParams.get('view');
-        
-        if (requestedView) {
-            setTimeout(() => {
-                const rootElement = document.getElementById('root');
-                const appInstance = rootElement._reactRootContainer?._internalRoot?.current?.child?.stateNode;
-                if (appInstance) {
-                    appInstance.setState({ view: requestedView });
-                }
-            }, 100);
-        }
     </script>
 </body>
 </html>
