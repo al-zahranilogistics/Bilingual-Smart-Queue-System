@@ -153,16 +153,9 @@
             color: white;
         }
         
-        /* Mobile Booking */
-        .mobile-booking {
+        /* Online Appointment */
+        .online-appointment {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .qr-code {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            display: inline-block;
         }
         
         /* Custom Scrollbar */
@@ -198,6 +191,54 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Calendar Styles */
+        .calendar-day {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-day:hover {
+            background: #f3f4f6;
+        }
+        
+        .calendar-day.selected {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .time-slot {
+            padding: 10px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .time-slot:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+        
+        .time-slot.selected {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .time-slot.booked {
+            background: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+            border-color: #e5e7eb;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -215,10 +256,13 @@
                 en: "Smart Queue Management System"
             },
             adminCode: "0906212",
-            mobileBookingCode: "VIP2025", // كود الحجز عبر الجوال
             maxTicketNumber: 20000,
-            syncInterval: 2000, // تحديث كل 2 ثانية للمزامنة
-            whatsappNumber: "+966123456789" // رقم واتساب للتواصل
+            syncInterval: 1000, // تحديث كل ثانية للمزامنة
+            appointmentDuration: 30, // مدة الموعد بالدقائق
+            workingHours: {
+                start: 8,
+                end: 16
+            }
         };
         
         // Professional Icons for Departments
@@ -363,20 +407,38 @@
                 visitorKiosk: "كشك الزوار",
                 adminPanel: "لوحة التحكم",
                 displayScreen: "شاشة العرض",
-                mobileBooking: "حجز عبر الجوال",
-                mobileBookingDesc: "احجز تذكرتك من جوالك باستخدام الكود الخاص",
-                enterVipCode: "أدخل كود الحجز VIP",
+                onlineAppointment: "حجز موعد أونلاين",
+                bookAppointment: "حجز موعد",
+                selectDate: "اختر التاريخ",
+                selectTime: "اختر الوقت",
+                name: "الاسم",
+                phone: "رقم الهاتف",
                 bookNow: "احجز الآن",
-                scanQr: "امسح QR للحجز",
-                or: "أو",
-                whatsappBooking: "احجز عبر واتساب",
-                bookingSuccess: "تم الحجز بنجاح",
-                bookingError: "كود الحجز غير صحيح",
-                bookingInstruction: "أدخل كود VIP للحصول على تذكرة خاصة",
+                appointmentBooked: "تم حجز الموعد بنجاح",
+                appointmentInfo: "معلومات الحجز",
+                appointmentDate: "تاريخ الموعد",
+                appointmentTime: "وقت الموعد",
+                appointmentNumber: "رقم الموعد",
+                close: "إغلاق",
+                cancel: "إلغاء",
+                today: "اليوم",
+                tomorrow: "غداً",
+                noAppointments: "لا توجد مواعيد",
+                appointments: "المواعيد",
+                walkIn: "حجز مباشر",
+                online: "أونلاين",
+                syncStatus: "حالة المزامنة",
+                synced: "مزامن",
+                syncing: "جارٍ المزامنة...",
+                syncError: "خطأ في المزامنة",
                 currentView: "العرض الحالي",
                 visitorView: "واجهة الزوار",
                 displayView: "شاشة العرض",
-                adminView: "لوحة التحكم"
+                adminView: "لوحة التحكم",
+                appointmentsList: "قائمة المواعيد",
+                nextAppointments: "المواعيد القادمة",
+                totalAppointments: "إجمالي المواعيد",
+                todayAppointments: "مواعيد اليوم"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Company",
@@ -415,64 +477,187 @@
                 visitorKiosk: "Visitor Kiosk",
                 adminPanel: "Control Panel",
                 displayScreen: "Display Screen",
-                mobileBooking: "Mobile Booking",
-                mobileBookingDesc: "Book your ticket from your phone using special code",
-                enterVipCode: "Enter VIP booking code",
+                onlineAppointment: "Online Appointment",
+                bookAppointment: "Book Appointment",
+                selectDate: "Select Date",
+                selectTime: "Select Time",
+                name: "Name",
+                phone: "Phone Number",
                 bookNow: "Book Now",
-                scanQr: "Scan QR to book",
-                or: "OR",
-                whatsappBooking: "Book via WhatsApp",
-                bookingSuccess: "Booking Successful",
-                bookingError: "Invalid booking code",
-                bookingInstruction: "Enter VIP code to get special ticket",
+                appointmentBooked: "Appointment Booked Successfully",
+                appointmentInfo: "Appointment Information",
+                appointmentDate: "Appointment Date",
+                appointmentTime: "Appointment Time",
+                appointmentNumber: "Appointment Number",
+                close: "Close",
+                cancel: "Cancel",
+                today: "Today",
+                tomorrow: "Tomorrow",
+                noAppointments: "No Appointments",
+                appointments: "Appointments",
+                walkIn: "Walk-in",
+                online: "Online",
+                syncStatus: "Sync Status",
+                synced: "Synced",
+                syncing: "Syncing...",
+                syncError: "Sync Error",
                 currentView: "Current View",
                 visitorView: "Visitor Interface",
                 displayView: "Display Screen",
-                adminView: "Control Panel"
+                adminView: "Control Panel",
+                appointmentsList: "Appointments List",
+                nextAppointments: "Upcoming Appointments",
+                totalAppointments: "Total Appointments",
+                todayAppointments: "Today's Appointments"
             }
         };
 
         const { useState, useEffect, useMemo, useRef } = React;
 
-        // Centralized Data Management
+        // Centralized Data Management with Real-time Sync
         class QueueManager {
-            static getQueue() {
-                return JSON.parse(localStorage.getItem('zahrani_queue') || '[]');
-            }
+            static STORAGE_KEY = 'zahrani_system_data';
+            static BROADCAST_CHANNEL = 'zahrani_queue_channel';
+            static SYNC_INTERVAL = CONFIG.syncInterval;
             
-            static getLastNumbers() {
-                return JSON.parse(localStorage.getItem('zahrani_nums') || '{}');
-            }
-            
-            static saveQueue(queue) {
-                localStorage.setItem('zahrani_queue', JSON.stringify(queue));
-                // Notify all windows of data change
-                if (typeof BroadcastChannel !== 'undefined') {
-                    const channel = new BroadcastChannel('queue_updates');
-                    channel.postMessage({ type: 'queue_updated', timestamp: Date.now() });
+            static getData() {
+                try {
+                    const data = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '{}');
+                    return {
+                        queue: data.queue || [],
+                        lastNumbers: data.lastNumbers || {},
+                        appointments: data.appointments || [],
+                        lastSync: data.lastSync || 0,
+                        ...data
+                    };
+                } catch (error) {
+                    console.error('Error loading data:', error);
+                    return { queue: [], lastNumbers: {}, appointments: [], lastSync: 0 };
                 }
             }
             
-            static saveLastNumbers(lastNumbers) {
-                localStorage.setItem('zahrani_nums', JSON.stringify(lastNumbers));
-                if (typeof BroadcastChannel !== 'undefined') {
-                    const channel = new BroadcastChannel('queue_updates');
-                    channel.postMessage({ type: 'numbers_updated', timestamp: Date.now() });
+            static saveData(data) {
+                try {
+                    const now = Date.now();
+                    const fullData = {
+                        ...data,
+                        lastSync: now,
+                        version: '1.0'
+                    };
+                    
+                    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(fullData));
+                    
+                    // Broadcast changes to other tabs/windows
+                    if (typeof BroadcastChannel !== 'undefined') {
+                        const channel = new BroadcastChannel(this.BROADCAST_CHANNEL);
+                        channel.postMessage({
+                            type: 'data_updated',
+                            data: fullData,
+                            timestamp: now
+                        });
+                        channel.close();
+                    }
+                    
+                    return true;
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                    return false;
                 }
             }
             
-            static generateTicketNumber(deptId, lastNumber) {
-                const nextNum = (lastNumber || 0) + 1;
+            static addTicket(ticket) {
+                const data = this.getData();
+                data.queue.push(ticket);
+                data.lastNumbers[ticket.deptId] = parseInt(ticket.number);
+                return this.saveData(data);
+            }
+            
+            static updateTicket(ticketId, updates) {
+                const data = this.getData();
+                const ticketIndex = data.queue.findIndex(t => t.id === ticketId);
+                if (ticketIndex !== -1) {
+                    data.queue[ticketIndex] = { ...data.queue[ticketIndex], ...updates };
+                    return this.saveData(data);
+                }
+                return false;
+            }
+            
+            static addAppointment(appointment) {
+                const data = this.getData();
+                data.appointments.push(appointment);
+                return this.saveData(data);
+            }
+            
+            static generateTicketNumber(deptId) {
+                const data = this.getData();
+                const lastNumber = data.lastNumbers[deptId] || 0;
+                const nextNum = lastNumber + 1;
                 const actualNum = nextNum > CONFIG.maxTicketNumber ? 1 : nextNum;
                 return `${actualNum}`;
             }
+            
+            static generateAppointmentNumber() {
+                const data = this.getData();
+                const lastAppointmentNumber = data.lastAppointmentNumber || 0;
+                return `APP-${String(lastAppointmentNumber + 1).padStart(4, '0')}`;
+            }
+            
+            static subscribe(callback) {
+                if (typeof BroadcastChannel !== 'undefined') {
+                    const channel = new BroadcastChannel(this.BROADCAST_CHANNEL);
+                    
+                    const messageHandler = (event) => {
+                        if (event.data.type === 'data_updated') {
+                            callback(event.data.data);
+                        }
+                    };
+                    
+                    channel.addEventListener('message', messageHandler);
+                    
+                    return () => {
+                        channel.removeEventListener('message', messageHandler);
+                        channel.close();
+                    };
+                }
+                return () => {};
+            }
         }
 
-        // Generate unique ticket number (1-20000, no separators)
-        function generateTicketNumber(deptPrefix, lastNumber) {
-            const nextNum = (lastNumber || 0) + 1;
-            const actualNum = nextNum > CONFIG.maxTicketNumber ? 1 : nextNum;
-            return `${actualNum}`;
+        // Generate time slots
+        function generateTimeSlots() {
+            const slots = [];
+            const startHour = CONFIG.workingHours.start;
+            const endHour = CONFIG.workingHours.end;
+            const interval = CONFIG.appointmentDuration;
+            
+            for (let hour = startHour; hour < endHour; hour++) {
+                for (let minute = 0; minute < 60; minute += interval) {
+                    const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    slots.push(time);
+                }
+            }
+            return slots;
+        }
+
+        // Generate next 7 days
+        function generateNextDays() {
+            const days = [];
+            const today = new Date();
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                
+                days.push({
+                    date: date.toISOString().split('T')[0],
+                    day: date.getDate(),
+                    month: date.toLocaleString('ar-SA', { month: 'long' }),
+                    weekday: date.toLocaleString('ar-SA', { weekday: 'long' }),
+                    isToday: i === 0
+                });
+            }
+            
+            return days;
         }
 
         // Speech announcement function
@@ -502,8 +687,7 @@
         // Main Application Component
         function App() {
             const [view, setView] = useState('kiosk');
-            const [queue, setQueue] = useState(() => QueueManager.getQueue());
-            const [lastNumbers, setLastNumbers] = useState(() => QueueManager.getLastNumbers());
+            const [systemData, setSystemData] = useState(() => QueueManager.getData());
             const [activeDept, setActiveDept] = useState(null);
             const [successTicket, setSuccessTicket] = useState(null);
             const [adminCode, setAdminCode] = useState('');
@@ -511,41 +695,43 @@
             const [adminError, setAdminError] = useState('');
             const [language, setLanguage] = useState('ar');
             const [currentTime, setCurrentTime] = useState(new Date());
-            const [vipCode, setVipCode] = useState('');
-            const [showMobileBooking, setShowMobileBooking] = useState(false);
-            const [bookingError, setBookingError] = useState('');
-            const [syncing, setSyncing] = useState(false);
+            const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+            const [selectedDate, setSelectedDate] = useState('');
+            const [selectedTime, setSelectedTime] = useState('');
+            const [appointmentName, setAppointmentName] = useState('');
+            const [appointmentPhone, setAppointmentPhone] = useState('');
+            const [appointmentDept, setAppointmentDept] = useState('');
+            const [bookedAppointment, setBookedAppointment] = useState(null);
+            const [syncStatus, setSyncStatus] = useState('synced');
+            const [lastSyncTime, setLastSyncTime] = useState(Date.now());
+
+            // Get data from system
+            const { queue, lastNumbers, appointments } = systemData;
 
             // Real-time synchronization
             useEffect(() => {
-                // Listen for data changes from other tabs/windows
-                if (typeof BroadcastChannel !== 'undefined') {
-                    const channel = new BroadcastChannel('queue_updates');
-                    
-                    const handleMessage = (event) => {
-                        if (event.data.type === 'queue_updated') {
-                            setQueue(QueueManager.getQueue());
-                        } else if (event.data.type === 'numbers_updated') {
-                            setLastNumbers(QueueManager.getLastNumbers());
-                        }
-                    };
-                    
-                    channel.addEventListener('message', handleMessage);
-                    
-                    return () => {
-                        channel.removeEventListener('message', handleMessage);
-                        channel.close();
-                    };
-                }
+                // Subscribe to data changes
+                const unsubscribe = QueueManager.subscribe((newData) => {
+                    setSystemData(newData);
+                    setSyncStatus('synced');
+                    setLastSyncTime(Date.now());
+                });
                 
-                // Fallback: Poll for changes
+                // Auto-sync interval
                 const syncInterval = setInterval(() => {
-                    setQueue(QueueManager.getQueue());
-                    setLastNumbers(QueueManager.getLastNumbers());
-                }, CONFIG.syncInterval);
+                    const currentData = QueueManager.getData();
+                    if (currentData.lastSync > lastSyncTime) {
+                        setSystemData(currentData);
+                        setSyncStatus('synced');
+                        setLastSyncTime(currentData.lastSync);
+                    }
+                }, QueueManager.SYNC_INTERVAL);
                 
-                return () => clearInterval(syncInterval);
-            }, []);
+                return () => {
+                    unsubscribe();
+                    clearInterval(syncInterval);
+                };
+            }, [lastSyncTime]);
 
             // Update time
             useEffect(() => {
@@ -558,10 +744,10 @@
             const t = LANGUAGES[language];
             const isRTL = language === 'ar';
 
-            // Generate ticket
-            const issueTicket = (deptId, isVip = false) => {
+            // Generate ticket (walk-in)
+            const issueTicket = (deptId) => {
                 const dept = DEPARTMENTS.find(d => d.id === deptId);
-                const ticketNumber = generateTicketNumber(dept.prefix, lastNumbers[deptId]);
+                const ticketNumber = QueueManager.generateTicketNumber(deptId);
                 
                 const ticket = {
                     id: Date.now() + Math.random(),
@@ -571,58 +757,76 @@
                     status: 'waiting',
                     timestamp: Date.now(),
                     displayText: `${dept.prefix}${ticketNumber}`,
-                    isVip: isVip
+                    type: 'walk-in',
+                    customerName: '',
+                    customerPhone: ''
                 };
                 
-                const newQueue = [...queue, ticket];
-                const newLastNumbers = {...lastNumbers, [deptId]: parseInt(ticketNumber)};
-                
-                setQueue(newQueue);
-                setLastNumbers(newLastNumbers);
-                
-                QueueManager.saveQueue(newQueue);
-                QueueManager.saveLastNumbers(newLastNumbers);
-                
-                setSuccessTicket(ticket);
-                
-                setTimeout(() => setSuccessTicket(null), 4000);
-                
-                if (isVip) {
-                    setShowMobileBooking(false);
-                    setVipCode('');
+                if (QueueManager.addTicket(ticket)) {
+                    setSuccessTicket(ticket);
+                    setTimeout(() => setSuccessTicket(null), 4000);
                 }
             };
 
-            // VIP Booking
-            const handleVipBooking = () => {
-                if (vipCode === CONFIG.mobileBookingCode) {
-                    // Show department selection for VIP
-                    setShowMobileBooking(true);
-                    setBookingError('');
-                } else {
-                    setBookingError(t.bookingError);
-                    setTimeout(() => setBookingError(''), 3000);
+            // Book appointment
+            const bookAppointment = () => {
+                if (!selectedDate || !selectedTime || !appointmentName || !appointmentPhone || !appointmentDept) {
+                    alert(isRTL ? 'يرجى ملء جميع الحقول' : 'Please fill all fields');
+                    return;
                 }
-            };
-
-            // WhatsApp Booking
-            const handleWhatsAppBooking = () => {
-                const message = `مرحباً، أريد حجز تذكرة VIP في شركة الزهراني. كود الحجز: ${CONFIG.mobileBookingCode}`;
-                const url = `https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(message)}`;
-                window.open(url, '_blank');
+                
+                const dept = DEPARTMENTS.find(d => d.id === appointmentDept);
+                const appointmentNumber = QueueManager.generateAppointmentNumber();
+                
+                const appointment = {
+                    id: Date.now() + Math.random(),
+                    number: appointmentNumber,
+                    deptId: appointmentDept,
+                    deptPrefix: dept.prefix,
+                    status: 'scheduled',
+                    date: selectedDate,
+                    time: selectedTime,
+                    timestamp: Date.now(),
+                    displayText: `${dept.prefix}${appointmentNumber}`,
+                    type: 'appointment',
+                    customerName: appointmentName,
+                    customerPhone: appointmentPhone,
+                    notes: 'موعد مسبق'
+                };
+                
+                const ticket = {
+                    ...appointment,
+                    id: Date.now() + Math.random() + 1,
+                    status: 'waiting',
+                    displayText: `${dept.prefix}${QueueManager.generateTicketNumber(appointmentDept)}`
+                };
+                
+                // Save appointment
+                if (QueueManager.addAppointment(appointment)) {
+                    // Also add as waiting ticket
+                    QueueManager.addTicket(ticket);
+                    
+                    setBookedAppointment(appointment);
+                    setShowAppointmentModal(false);
+                    
+                    // Reset form
+                    setSelectedDate('');
+                    setSelectedTime('');
+                    setAppointmentName('');
+                    setAppointmentPhone('');
+                    setAppointmentDept('');
+                }
             };
 
             // Call ticket
             const callTicket = (ticket) => {
                 const dept = DEPARTMENTS.find(d => d.id === ticket.deptId);
-                const updatedQueue = queue.map(t => 
-                    t.id === ticket.id ? {...t, status: 'called', timestamp: Date.now()} : t
-                );
-                
-                setQueue(updatedQueue);
-                QueueManager.saveQueue(updatedQueue);
-                
-                speakAnnouncement(ticket.number, dept.roomAr, dept.roomEn);
+                if (QueueManager.updateTicket(ticket.id, { 
+                    status: 'called', 
+                    timestamp: Date.now() 
+                })) {
+                    speakAnnouncement(ticket.number, dept.roomAr, dept.roomEn);
+                }
             };
 
             // Admin login
@@ -643,6 +847,12 @@
                      .sort((a, b) => b.timestamp - a.timestamp),
                 [queue]
             );
+
+            // Get today's appointments
+            const todayAppointments = useMemo(() => {
+                const today = new Date().toISOString().split('T')[0];
+                return appointments.filter(a => a.date === today && a.status === 'scheduled');
+            }, [appointments]);
 
             // Format time
             const formatTime = (date) => {
@@ -672,6 +882,10 @@
                     setShowAdminLogin(true);
                 }
             }, []);
+
+            // Generate days and time slots
+            const days = generateNextDays();
+            const timeSlots = generateTimeSlots();
 
             // Render based on view
             return (
@@ -727,44 +941,155 @@
                         </div>
                     )}
 
-                    {/* VIP Booking Modal */}
-                    {showMobileBooking && (
-                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-                            <div className="card max-w-md w-full bg-gradient-to-br from-purple-50 to-pink-50">
-                                <div className="text-center space-y-6">
-                                    <div>
-                                        <i className="fas fa-crown text-4xl text-purple-500 mb-4"></i>
-                                        <h2 className="text-2xl font-bold text-gray-800">{t.mobileBooking}</h2>
+                    {/* Appointment Booking Modal */}
+                    {showAppointmentModal && (
+                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                            <div className="card max-w-2xl w-full my-4">
+                                <div className="space-y-6">
+                                    <div className="text-center">
+                                        <i className="fas fa-calendar-check text-4xl text-blue-500 mb-4"></i>
+                                        <h2 className="text-2xl font-bold text-gray-800">{t.onlineAppointment}</h2>
                                         <p className="text-gray-600 mt-2">{t.selectDept}</p>
                                     </div>
                                     
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {DEPARTMENTS.map(dept => (
-                                            <button
-                                                key={dept.id}
-                                                onClick={() => issueTicket(dept.id, true)}
-                                                className="card hover:border-purple-300 text-left"
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {/* Department Selection */}
+                                        <div>
+                                            <label className="block text-gray-700 mb-2">{t.selectDept}</label>
+                                            <select
+                                                value={appointmentDept}
+                                                onChange={(e) => setAppointmentDept(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg"
                                             >
-                                                <div className="flex flex-col items-center text-center">
-                                                    <div 
-                                                        className="icon-wrapper"
-                                                        style={{ backgroundColor: dept.color }}
-                                                    >
-                                                        <i className={dept.icon}></i>
-                                                    </div>
-                                                    <h3 className="text-lg font-bold text-gray-800 mb-2">
+                                                <option value="">{isRTL ? 'اختر القسم' : 'Select Department'}</option>
+                                                {DEPARTMENTS.map(dept => (
+                                                    <option key={dept.id} value={dept.id}>
                                                         {language === 'ar' ? dept.nameAr : dept.nameEn}
-                                                    </h3>
-                                                </div>
-                                            </button>
-                                        ))}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        
+                                        {/* Date Selection */}
+                                        <div>
+                                            <label className="block text-gray-700 mb-2">{t.selectDate}</label>
+                                            <div className="grid grid-cols-7 gap-2">
+                                                {days.map(day => (
+                                                    <div
+                                                        key={day.date}
+                                                        className={`calendar-day ${selectedDate === day.date ? 'selected' : ''}`}
+                                                        onClick={() => setSelectedDate(day.date)}
+                                                    >
+                                                        <div className="text-center">
+                                                            <div className="text-xs text-gray-500">{day.weekday.substring(0, 2)}</div>
+                                                            <div className="font-bold">{day.day}</div>
+                                                            {day.isToday && <div className="text-xs text-blue-500">{t.today}</div>}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
                                     
+                                    {/* Time Slots */}
+                                    {selectedDate && (
+                                        <div>
+                                            <label className="block text-gray-700 mb-2">{t.selectTime}</label>
+                                            <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+                                                {timeSlots.map(time => {
+                                                    const isBooked = appointments.some(a => 
+                                                        a.date === selectedDate && 
+                                                        a.time === time && 
+                                                        a.status === 'scheduled'
+                                                    );
+                                                    return (
+                                                        <div
+                                                            key={time}
+                                                            className={`time-slot ${selectedTime === time ? 'selected' : ''} ${isBooked ? 'booked' : ''}`}
+                                                            onClick={() => !isBooked && setSelectedTime(time)}
+                                                        >
+                                                            {time}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Customer Information */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-gray-700 mb-2">{t.name}</label>
+                                            <input
+                                                type="text"
+                                                value={appointmentName}
+                                                onChange={(e) => setAppointmentName(e.target.value)}
+                                                placeholder={isRTL ? "أدخل اسمك" : "Enter your name"}
+                                                className="w-full p-3 border border-gray-300 rounded-lg"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-gray-700 mb-2">{t.phone}</label>
+                                            <input
+                                                type="tel"
+                                                value={appointmentPhone}
+                                                onChange={(e) => setAppointmentPhone(e.target.value)}
+                                                placeholder={isRTL ? "أدخل رقم الهاتف" : "Enter phone number"}
+                                                className="w-full p-3 border border-gray-300 rounded-lg"
+                                            />
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Buttons */}
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={bookAppointment}
+                                            className="btn-primary flex-1"
+                                            disabled={!selectedDate || !selectedTime || !appointmentName || !appointmentPhone || !appointmentDept}
+                                        >
+                                            <i className="fas fa-check mr-2"></i>
+                                            {t.bookNow}
+                                        </button>
+                                        <button
+                                            onClick={() => setShowAppointmentModal(false)}
+                                            className="bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-bold hover:bg-gray-300"
+                                        >
+                                            {t.cancel}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Appointment Confirmation Modal */}
+                    {bookedAppointment && (
+                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                            <div className="card max-w-md w-full bg-gradient-to-br from-green-50 to-white">
+                                <div className="text-center space-y-6">
+                                    <i className="fas fa-check-circle text-5xl text-green-500"></i>
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-gray-800">{t.appointmentBooked}</h3>
+                                        <div className="mt-4 space-y-2">
+                                            <div className="text-xl font-bold text-gray-700">
+                                                {t.appointmentNumber}: {bookedAppointment.number}
+                                            </div>
+                                            <div className="text-gray-600">
+                                                {t.appointmentDate}: {bookedAppointment.date}
+                                            </div>
+                                            <div className="text-gray-600">
+                                                {t.appointmentTime}: {bookedAppointment.time}
+                                            </div>
+                                            <div className="text-gray-600">
+                                                {t.name}: {bookedAppointment.customerName}
+                                            </div>
+                                        </div>
+                                    </div>
                                     <button
-                                        onClick={() => setShowMobileBooking(false)}
-                                        className="text-gray-500 hover:text-gray-700"
+                                        onClick={() => setBookedAppointment(null)}
+                                        className="btn-primary"
                                     >
-                                        {isRTL ? 'إلغاء' : 'Cancel'}
+                                        {t.close}
                                     </button>
                                 </div>
                             </div>
@@ -774,26 +1099,19 @@
                     {/* Success Ticket Modal */}
                     {successTicket && (
                         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-                            <div className={`card max-w-md w-full ${successTicket.isVip ? 'bg-gradient-to-br from-purple-500 to-pink-500' : 'bg-gradient-to-br from-blue-50 to-white'}`}>
+                            <div className="card max-w-md w-full bg-gradient-to-br from-blue-50 to-white">
                                 <div className="text-center space-y-6">
-                                    {successTicket.isVip ? (
-                                        <i className="fas fa-crown text-5xl text-yellow-300"></i>
-                                    ) : (
-                                        <i className="fas fa-ticket-alt text-5xl text-blue-500"></i>
-                                    )}
+                                    <i className="fas fa-ticket-alt text-5xl text-blue-500"></i>
                                     <div>
-                                        <h3 className="text-2xl font-bold text-white">{t.ticketGenerated}</h3>
-                                        {successTicket.isVip && (
-                                            <div className="text-yellow-200 font-bold mb-2">✨ تذكرة VIP خاصة ✨</div>
-                                        )}
-                                        <div className="text-6xl font-black text-white mt-4 tracking-wider">
+                                        <h3 className="text-2xl font-bold text-gray-800">{t.ticketGenerated}</h3>
+                                        <div className="text-6xl font-black text-blue-600 mt-4 tracking-wider">
                                             {successTicket.displayText}
                                         </div>
-                                        <p className="text-white mt-4">{t.waitForCall}</p>
+                                        <p className="text-gray-600 mt-4">{t.waitForCall}</p>
                                     </div>
                                     <button
                                         onClick={() => setSuccessTicket(null)}
-                                        className="bg-white text-purple-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100"
+                                        className="btn-primary"
                                     >
                                         {isRTL ? 'تم' : 'OK'}
                                     </button>
@@ -822,19 +1140,16 @@
                                         </div>
                                     </div>
                                     
-                                    {/* View Indicator */}
+                                    {/* Sync Status */}
                                     <div className="text-center">
-                                        <div className="text-sm text-gray-500 mb-1">{t.currentView}</div>
-                                        <div className="flex gap-2">
-                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${view === 'kiosk' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600'}`}>
-                                                {t.visitorView}
+                                        <div className="flex items-center gap-2 justify-center mb-1">
+                                            <div className={`w-3 h-3 rounded-full ${syncStatus === 'synced' ? 'bg-green-500' : 'bg-yellow-500 animate-pulse'}`}></div>
+                                            <span className="text-sm text-gray-600">
+                                                {syncStatus === 'synced' ? t.synced : t.syncing}
                                             </span>
-                                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                {t.displayView}
-                                            </span>
-                                            <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                                {t.adminView}
-                                            </span>
+                                        </div>
+                                        <div className="text-xs text-gray-500">
+                                            {queue.filter(t => t.status === 'waiting').length} {t.waiting}
                                         </div>
                                     </div>
                                     
@@ -851,20 +1166,13 @@
                                             <i className="fas fa-globe text-gray-500"></i>
                                         </button>
                                         
-                                        {/* Mobile Booking Button */}
+                                        {/* Online Appointment Button */}
                                         <button
-                                            onClick={() => {
-                                                const code = prompt(isRTL ? 'أدخل كود الحجز VIP:' : 'Enter VIP booking code:');
-                                                if (code === CONFIG.mobileBookingCode) {
-                                                    setShowMobileBooking(true);
-                                                } else if (code) {
-                                                    alert(isRTL ? 'كود الحجز غير صحيح' : 'Invalid booking code');
-                                                }
-                                            }}
+                                            onClick={() => setShowAppointmentModal(true)}
                                             className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition"
                                         >
-                                            <i className="fas fa-mobile-alt mr-2"></i>
-                                            {t.mobileBooking}
+                                            <i className="fas fa-calendar-alt mr-2"></i>
+                                            {t.onlineAppointment}
                                         </button>
                                         
                                         {/* View Buttons */}
@@ -903,55 +1211,33 @@
                         {/* Visitor Kiosk */}
                         {view === 'kiosk' && (
                             <div className="max-w-7xl mx-auto px-4 py-8">
-                                {/* Mobile Booking Section */}
-                                <div className="mobile-booking text-white rounded-2xl p-6 mb-8">
+                                {/* Online Appointment Section */}
+                                <div className="online-appointment text-white rounded-2xl p-6 mb-8">
                                     <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                                         <div className="flex-1">
-                                            <h2 className="text-2xl font-bold mb-3">{t.mobileBooking}</h2>
-                                            <p className="mb-4">{t.mobileBookingDesc}</p>
+                                            <h2 className="text-2xl font-bold mb-3">{t.onlineAppointment}</h2>
+                                            <p className="mb-4">
+                                                {isRTL 
+                                                    ? 'احجز موعدك مسبقاً وتجنب الانتظار في الطابور' 
+                                                    : 'Book your appointment in advance and avoid waiting in line'
+                                                }
+                                            </p>
                                             
-                                            <div className="flex flex-col sm:flex-row gap-3 max-w-md">
-                                                <input
-                                                    type="text"
-                                                    value={vipCode}
-                                                    onChange={(e) => setVipCode(e.target.value)}
-                                                    placeholder={t.enterVipCode}
-                                                    className="flex-1 p-3 rounded-lg text-gray-800"
-                                                    onKeyPress={(e) => e.key === 'Enter' && handleVipBooking()}
-                                                />
-                                                <button
-                                                    onClick={handleVipBooking}
-                                                    className="bg-yellow-500 text-gray-900 px-6 py-3 rounded-lg font-bold hover:bg-yellow-400"
-                                                >
-                                                    {t.bookNow}
-                                                </button>
-                                            </div>
-                                            
-                                            {bookingError && (
-                                                <div className="text-red-300 mt-2 animate-slide-in">
-                                                    {bookingError}
-                                                </div>
-                                            )}
+                                            <button
+                                                onClick={() => setShowAppointmentModal(true)}
+                                                className="bg-white text-purple-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 inline-flex items-center gap-2"
+                                            >
+                                                <i className="fas fa-calendar-plus"></i>
+                                                {t.bookAppointment}
+                                            </button>
                                         </div>
                                         
                                         <div className="text-center">
-                                            <div className="qr-code mb-3">
-                                                <div className="text-center text-gray-800 mb-2 font-bold">VIP</div>
-                                                <div className="text-4xl">📱</div>
+                                            <div className="text-5xl mb-3">📅</div>
+                                            <div className="text-sm opacity-90">
+                                                {todayAppointments.length} {t.todayAppointments}
                                             </div>
-                                            <div className="text-sm">{t.scanQr}</div>
                                         </div>
-                                    </div>
-                                    
-                                    <div className="text-center mt-6 pt-4 border-t border-white/30">
-                                        <p className="mb-3">{t.or}</p>
-                                        <button
-                                            onClick={handleWhatsAppBooking}
-                                            className="bg-green-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-green-700 inline-flex items-center gap-2"
-                                        >
-                                            <i className="fab fa-whatsapp"></i>
-                                            {t.whatsappBooking}
-                                        </button>
                                     </div>
                                 </div>
                                 
@@ -965,34 +1251,67 @@
                                 </div>
                                 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-                                    {DEPARTMENTS.map(dept => (
-                                        <button
-                                            key={dept.id}
-                                            onClick={() => issueTicket(dept.id)}
-                                            className="card hover:border-blue-300 text-left"
-                                        >
-                                            <div className="flex flex-col items-center text-center">
-                                                <div 
-                                                    className="icon-wrapper"
-                                                    style={{ backgroundColor: dept.color }}
-                                                >
-                                                    <i className={dept.icon}></i>
-                                                </div>
-                                                <h3 className="text-lg font-bold text-gray-800 mb-2">
-                                                    {language === 'ar' ? dept.nameAr : dept.nameEn}
-                                                </h3>
-                                                <div className="text-sm text-gray-500 mb-3">
-                                                    {language === 'ar' ? dept.roomAr : dept.roomEn}
-                                                </div>
-                                                <div className="mt-2">
-                                                    <div className="text-2xl font-bold text-gray-700">
-                                                        {lastNumbers[dept.id] || 0}
+                                    {DEPARTMENTS.map(dept => {
+                                        const waitingCount = queue.filter(t => 
+                                            t.deptId === dept.id && t.status === 'waiting'
+                                        ).length;
+                                        
+                                        return (
+                                            <button
+                                                key={dept.id}
+                                                onClick={() => issueTicket(dept.id)}
+                                                className="card hover:border-blue-300 text-left"
+                                            >
+                                                <div className="flex flex-col items-center text-center">
+                                                    <div 
+                                                        className="icon-wrapper"
+                                                        style={{ backgroundColor: dept.color }}
+                                                    >
+                                                        <i className={dept.icon}></i>
                                                     </div>
-                                                    <div className="text-xs text-gray-500">{t.lastNumber}</div>
+                                                    <h3 className="text-lg font-bold text-gray-800 mb-2">
+                                                        {language === 'ar' ? dept.nameAr : dept.nameEn}
+                                                    </h3>
+                                                    <div className="text-sm text-gray-500 mb-3">
+                                                        {language === 'ar' ? dept.roomAr : dept.roomEn}
+                                                    </div>
+                                                    <div className="mt-2">
+                                                        <div className="text-2xl font-bold text-gray-700">
+                                                            {lastNumbers[dept.id] || 0}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">{t.lastNumber}</div>
+                                                        {waitingCount > 0 && (
+                                                            <div className="mt-2 text-sm text-blue-600">
+                                                                {waitingCount} {t.waiting}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </button>
-                                    ))}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                                
+                                {/* System Stats */}
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                    <div className="card text-center">
+                                        <div className="text-3xl font-bold text-blue-600">
+                                            {queue.filter(t => t.status === 'waiting').length}
+                                        </div>
+                                        <div className="text-gray-600">{t.waitingList}</div>
+                                    </div>
+                                    <div className="card text-center">
+                                        <div className="text-3xl font-bold text-green-600">
+                                            {queue.filter(t => t.status === 'called').length}
+                                        </div>
+                                        <div className="text-gray-600">{t.calledTickets}</div>
+                                    </div>
+                                    <div className="card text-center">
+                                        <div className="text-3xl font-bold text-purple-600">
+                                            {appointments.length}
+                                        </div>
+                                        <div className="text-gray-600">{t.appointments}</div>
+                                    </div>
                                 </div>
                                 
                                 {/* Instructions */}
@@ -1008,14 +1327,6 @@
                                         <li>{t.instruction4}</li>
                                         <li>{t.instruction5}</li>
                                     </ol>
-                                </div>
-                                
-                                {/* Sync Status */}
-                                <div className="mt-6 text-center">
-                                    <div className="inline-flex items-center gap-2 text-gray-600">
-                                        <i className="fas fa-sync-alt text-blue-500"></i>
-                                        <span>{isRTL ? 'مزامنة تلقائية نشطة' : 'Auto-sync active'}</span>
-                                    </div>
                                 </div>
                             </div>
                         )}
@@ -1065,9 +1376,6 @@
                                                         <div className="relative">
                                                             <div className="text-[20vw] md:text-[25vw] font-black text-white ticket-glow">
                                                                 {calledTickets[0].displayText}
-                                                                {calledTickets[0].isVip && (
-                                                                    <span className="text-yellow-300 text-[5vw] ml-4">✨</span>
-                                                                )}
                                                             </div>
                                                             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[10vw] opacity-20">
                                                                 <i className={DEPARTMENTS.find(d => d.id === calledTickets[0].deptId)?.icon}></i>
@@ -1106,15 +1414,12 @@
                                                 {calledTickets.slice(1, 6).map(ticket => (
                                                     <div 
                                                         key={ticket.id}
-                                                        className={`bg-black/40 p-4 rounded-xl border-r-4 ${ticket.isVip ? 'border-yellow-400' : ''}`}
-                                                        style={{ borderColor: ticket.isVip ? '#fbbf24' : DEPARTMENTS.find(d => d.id === ticket.deptId)?.color }}
+                                                        className="bg-black/40 p-4 rounded-xl border-r-4"
+                                                        style={{ borderColor: DEPARTMENTS.find(d => d.id === ticket.deptId)?.color }}
                                                     >
                                                         <div className="flex justify-between items-center">
                                                             <div className="text-3xl font-bold text-white">
                                                                 {ticket.displayText}
-                                                                {ticket.isVip && (
-                                                                    <span className="text-yellow-300 ml-2">✨</span>
-                                                                )}
                                                             </div>
                                                             <i className={DEPARTMENTS.find(d => d.id === ticket.deptId)?.icon + " text-xl"}></i>
                                                         </div>
@@ -1134,7 +1439,7 @@
                                             <span className="mx-8">•</span>
                                             <span className="mx-8">{t.systemMessage}</span>
                                             <span className="mx-8">•</span>
-                                            <span className="mx-8">كود الحجز VIP: {CONFIG.mobileBookingCode}</span>
+                                            <span className="mx-8">{t.holdTicket}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1154,13 +1459,37 @@
                                             <p className="text-gray-600">{t.selectDeptControl}</p>
                                         </div>
                                         
+                                        {/* System Overview */}
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            <div className="card text-center">
+                                                <div className="text-3xl font-bold text-blue-600">
+                                                    {queue.filter(t => t.status === 'waiting').length}
+                                                </div>
+                                                <div className="text-gray-600">{t.waitingList}</div>
+                                                <div className="mt-2 text-sm">
+                                                    <span className="text-blue-500">{queue.filter(t => t.type === 'walk-in').length} {t.walkIn}</span>
+                                                    <span className="mx-2">|</span>
+                                                    <span className="text-purple-500">{queue.filter(t => t.type === 'appointment').length} {t.online}</span>
+                                                </div>
+                                            </div>
+                                            <div className="card text-center">
+                                                <div className="text-3xl font-bold text-green-600">
+                                                    {queue.filter(t => t.status === 'called').length}
+                                                </div>
+                                                <div className="text-gray-600">{t.calledTickets}</div>
+                                            </div>
+                                            <div className="card text-center">
+                                                <div className="text-3xl font-bold text-purple-600">
+                                                    {appointments.length}
+                                                </div>
+                                                <div className="text-gray-600">{t.appointments}</div>
+                                            </div>
+                                        </div>
+                                        
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {DEPARTMENTS.map(dept => {
                                                 const waitingCount = queue.filter(t => 
                                                     t.deptId === dept.id && t.status === 'waiting'
-                                                ).length;
-                                                const vipCount = queue.filter(t => 
-                                                    t.deptId === dept.id && t.status === 'waiting' && t.isVip
                                                 ).length;
                                                 
                                                 return (
@@ -1190,14 +1519,6 @@
                                                                             {waitingCount}
                                                                         </span>
                                                                     </div>
-                                                                    {vipCount > 0 && (
-                                                                        <div className="flex justify-between items-center mt-1">
-                                                                            <span className="text-yellow-600 text-sm">VIP:</span>
-                                                                            <span className="text-lg font-bold text-yellow-600">
-                                                                                {vipCount}
-                                                                            </span>
-                                                                        </div>
-                                                                    )}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1266,18 +1587,23 @@
                                                     {queue
                                                         .filter(t => t.deptId === activeDept && t.status === 'waiting')
                                                         .map(ticket => (
-                                                            <div key={ticket.id} className={`flex justify-between items-center p-3 rounded-lg border ${ticket.isVip ? 'bg-yellow-50 border-yellow-200' : 'bg-gray-50'}`}>
+                                                            <div key={ticket.id} className={`flex justify-between items-center p-3 rounded-lg border ${ticket.type === 'appointment' ? 'bg-purple-50 border-purple-200' : 'bg-gray-50'}`}>
                                                                 <div>
                                                                     <div className="flex items-center gap-2">
                                                                         <div className="text-2xl font-bold text-gray-800">
                                                                             {ticket.displayText}
                                                                         </div>
-                                                                        {ticket.isVip && (
-                                                                            <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
-                                                                                VIP
+                                                                        {ticket.type === 'appointment' && (
+                                                                            <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                                                                                {t.online}
                                                                             </span>
                                                                         )}
                                                                     </div>
+                                                                    {ticket.customerName && (
+                                                                        <div className="text-sm text-gray-600 mt-1">
+                                                                            {ticket.customerName} - {ticket.customerPhone}
+                                                                        </div>
+                                                                    )}
                                                                     <div className="text-sm text-gray-500">
                                                                         {formatTime(new Date(ticket.timestamp))}
                                                                     </div>
@@ -1303,18 +1629,16 @@
                                                     {queue
                                                         .filter(t => t.deptId === activeDept && t.status === 'called')
                                                         .map(ticket => (
-                                                            <div key={ticket.id} className={`p-4 rounded-lg border ${ticket.isVip ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200' : 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200'}`}>
+                                                            <div key={ticket.id} className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
                                                                 <div className="text-center mb-4">
-                                                                    <div className="flex items-center justify-center gap-2">
-                                                                        <div className="text-3xl font-bold text-gray-800">
-                                                                            {ticket.displayText}
-                                                                        </div>
-                                                                        {ticket.isVip && (
-                                                                            <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
-                                                                                VIP
-                                                                            </span>
-                                                                        )}
+                                                                    <div className="text-3xl font-bold text-gray-800">
+                                                                        {ticket.displayText}
                                                                     </div>
+                                                                    {ticket.customerName && (
+                                                                        <div className="text-sm text-gray-600 mt-2">
+                                                                            {ticket.customerName} - {ticket.customerPhone}
+                                                                        </div>
+                                                                    )}
                                                                     <div className="text-sm text-gray-500">
                                                                         {formatTime(new Date(ticket.timestamp))}
                                                                     </div>
@@ -1329,11 +1653,10 @@
                                                                     </button>
                                                                     <button
                                                                         onClick={() => {
-                                                                            const updatedQueue = queue.map(t => 
-                                                                                t.id === ticket.id ? {...t, status: 'done'} : t
-                                                                            );
-                                                                            setQueue(updatedQueue);
-                                                                            QueueManager.saveQueue(updatedQueue);
+                                                                            if (QueueManager.updateTicket(ticket.id, { status: 'done' })) {
+                                                                                const newData = QueueManager.getData();
+                                                                                setSystemData(newData);
+                                                                            }
                                                                         }}
                                                                         className="btn-danger flex-1"
                                                                     >
@@ -1349,27 +1672,47 @@
                                     </div>
                                 )}
                                 
-                                {/* System Info */}
-                                <div className="card mt-6 bg-gray-50">
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                                        <div>
-                                            <div className="text-2xl font-bold text-blue-600">
-                                                {queue.filter(t => t.status === 'waiting').length}
+                                {/* Appointments List */}
+                                <div className="card mt-6">
+                                    <h3 className="text-xl font-bold text-gray-800 mb-4">
+                                        {t.appointmentsList} ({appointments.length})
+                                    </h3>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full">
+                                            <thead className="bg-gray-50">
+                                                <tr>
+                                                    <th className="p-3 text-right">{t.appointmentNumber}</th>
+                                                    <th className="p-3 text-right">{t.name}</th>
+                                                    <th className="p-3 text-right">{t.phone}</th>
+                                                    <th className="p-3 text-right">{t.appointmentDate}</th>
+                                                    <th className="p-3 text-right">{t.appointmentTime}</th>
+                                                    <th className="p-3 text-right">{t.selectDept}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {appointments.slice(0, 5).map(appointment => {
+                                                    const dept = DEPARTMENTS.find(d => d.id === appointment.deptId);
+                                                    return (
+                                                        <tr key={appointment.id} className="border-b hover:bg-gray-50">
+                                                            <td className="p-3 font-bold">{appointment.number}</td>
+                                                            <td className="p-3">{appointment.customerName}</td>
+                                                            <td className="p-3">{appointment.customerPhone}</td>
+                                                            <td className="p-3">{appointment.date}</td>
+                                                            <td className="p-3">{appointment.time}</td>
+                                                            <td className="p-3">
+                                                                {language === 'ar' ? dept?.nameAr : dept?.nameEn}
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                        {appointments.length === 0 && (
+                                            <div className="text-center py-8 text-gray-500">
+                                                <i className="fas fa-calendar-times text-3xl mb-2"></i>
+                                                <div>{t.noAppointments}</div>
                                             </div>
-                                            <div className="text-gray-600">{t.waitingList}</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-2xl font-bold text-green-600">
-                                                {queue.filter(t => t.status === 'called').length}
-                                            </div>
-                                            <div className="text-gray-600">{t.calledTickets}</div>
-                                        </div>
-                                        <div>
-                                            <div className="text-2xl font-bold text-purple-600">
-                                                {queue.filter(t => t.isVip).length}
-                                            </div>
-                                            <div className="text-gray-600">تذاكر VIP</div>
-                                        </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
