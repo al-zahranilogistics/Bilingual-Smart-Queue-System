@@ -3,238 +3,1011 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام الزهراني الذكي ٢٠٢٥</title>
+    <title>Al-Zahrani Logistics - Queue System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Cairo', 'Inter', sans-serif; background: #f8fafc; margin: 0; }
+        :root {
+            --primary-blue: #1e40af;
+            --secondary-blue: #3b82f6;
+            --accent-teal: #06b6d4;
+            --success-green: #10b981;
+            --warning-orange: #f59e0b;
+            --danger-red: #ef4444;
+        }
+        
+        body { 
+            font-family: 'Cairo', 'Inter', sans-serif; 
+            margin: 0; 
+            overflow-x: hidden;
+        }
+        
         .arabic { font-family: 'Cairo', sans-serif; }
-        .tv-glow { text-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .animate-marquee { display: inline-block; animation: marquee 30s linear infinite; }
+        .english { font-family: 'Inter', sans-serif; direction: ltr; text-align: left; }
+        
+        /* TV Landscape Mode */
+        .tv-container {
+            width: 100vw;
+            height: 56.25vw;
+            max-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            overflow: hidden;
+        }
+        
+        @media (max-aspect-ratio: 16/9) {
+            .tv-container {
+                height: 100vh;
+                width: 177.78vh;
+                max-width: 100vw;
+            }
+        }
+        
+        .ticket-glow {
+            text-shadow: 
+                0 0 20px rgba(59, 130, 246, 0.7),
+                0 0 40px rgba(59, 130, 246, 0.5),
+                0 0 60px rgba(59, 130, 246, 0.3);
+        }
+        
+        .glow-border {
+            border: 3px solid;
+            border-image: linear-gradient(45deg, var(--secondary-blue), var(--accent-teal)) 1;
+        }
+        
+        .neon-pulse {
+            animation: neonPulse 2s infinite alternate;
+        }
+        
+        @keyframes neonPulse {
+            from {
+                box-shadow: 0 0 10px rgba(59, 130, 246, 0.4),
+                          0 0 20px rgba(59, 130, 246, 0.3),
+                          0 0 30px rgba(59, 130, 246, 0.2);
+            }
+            to {
+                box-shadow: 0 0 15px rgba(59, 130, 246, 0.6),
+                          0 0 30px rgba(59, 130, 246, 0.4),
+                          0 0 45px rgba(59, 130, 246, 0.3);
+            }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        .animate-slide-in { animation: slideIn 0.5s ease-out; }
+        .animate-marquee { animation: marquee 30s linear infinite; }
+        
+        /* Professional Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-green), #34d399);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-red), #f87171);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        /* Professional Icons */
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
-    "react/": "https://esm.sh/react@^19.2.3/"
-  }
-}
-</script>
 </head>
-<body>
+<body class="bg-gray-50">
     <div id="root"></div>
 
     <script type="text/babel">
-        // استيراد مكتبة Gemini بشكل يدوي للعمل داخل المتصفح
-        const LOGO_URL = "https://i.ibb.co/1GHY3whz/bsxB90Z.png";
+        // Configuration
+        const CONFIG = {
+            companyName: {
+                ar: "الزهراني للخدمات اللوجستية",
+                en: "Al-Zahrani Logistics"
+            },
+            systemName: {
+                ar: "نظام إدارة الطوابير الذكي",
+                en: "Smart Queue Management System"
+            },
+            adminCode: "0906212",
+            maxTicketNumber: 20000
+        };
         
+        // Professional Icons for Departments
         const DEPARTMENTS = [
-            { id: 'vehicles', nameAr: "قسم المركبات", prefix: "V", roomAr: "مكتب المركبات", roomEn: "Vehicles Office" },
-            { id: 'finance', nameAr: "قسم المالية - المدير المالي", prefix: "F", roomAr: "مكتب المدير المالي", roomEn: "Finance Office" },
-            { id: 'supervisors', nameAr: "قسم المشرفين", prefix: "S", roomAr: "مكتب المشرفين", roomEn: "Supervisors Office" },
-            { id: 'ninja_sup', nameAr: "مشرف نينجا", prefix: "NS", roomAr: "مكتب مشرف نينجا", roomEn: "Ninja Supervisor Office" },
-            { id: 'kmart_ninja', nameAr: "مشرف كيمارت ودبابات نينجا", prefix: "K", roomAr: "مكتب كيمارت ودبابات", roomEn: "K-Mart Office" },
-            { id: 'hr', nameAr: "مدير الموارد البشرية", prefix: "HR", roomAr: "مكتب الموارد البشرية", roomEn: "HR Office" },
-            { id: 'petroleum', nameAr: "قسم البترول", prefix: "P", roomAr: "مكتب البترول", roomEn: "Petroleum Office" },
-            { id: 'naqel_mgr', nameAr: "مدير مشروع ناقل", prefix: "ON", roomAr: "مكتب مشروع ناقل", roomEn: "Naqel Office" },
-            { id: 'ninja_mgr', nameAr: "مدير مشروع نينجا", prefix: "PN", roomAr: "مكتب مشروع نينجا", roomEn: "Ninja Project Office" }
+            { 
+                id: 'vehicles', 
+                nameAr: "قسم المركبات", 
+                nameEn: "Vehicles Department",
+                prefix: "V", 
+                roomAr: "مكتب المركبات", 
+                roomEn: "Vehicles Office", 
+                color: "#3b82f6",
+                icon: "fa-solid fa-truck",
+                iconColor: "#1d4ed8"
+            },
+            { 
+                id: 'finance', 
+                nameAr: "قسم المالية", 
+                nameEn: "Finance Department",
+                prefix: "F", 
+                roomAr: "مكتب المدير المالي", 
+                roomEn: "Finance Office", 
+                color: "#10b981",
+                icon: "fa-solid fa-money-bill-wave",
+                iconColor: "#047857"
+            },
+            { 
+                id: 'supervisors', 
+                nameAr: "قسم المشرفين", 
+                nameEn: "Supervisors Department",
+                prefix: "S", 
+                roomAr: "مكتب المشرفين", 
+                roomEn: "Supervisors Office", 
+                color: "#8b5cf6",
+                icon: "fa-solid fa-user-tie",
+                iconColor: "#7c3aed"
+            },
+            { 
+                id: 'ninja_sup', 
+                nameAr: "مشرف نينجا", 
+                nameEn: "Ninja Supervisor",
+                prefix: "NS", 
+                roomAr: "مكتب مشرف نينجا", 
+                roomEn: "Ninja Supervisor Office", 
+                color: "#ec4899",
+                icon: "fa-solid fa-user-ninja",
+                iconColor: "#be185d"
+            },
+            { 
+                id: 'kmart_ninja', 
+                nameAr: "قسم كيمارت", 
+                nameEn: "K-Mart Department",
+                prefix: "K", 
+                roomAr: "مكتب كيمارت", 
+                roomEn: "K-Mart Office", 
+                color: "#f59e0b",
+                icon: "fa-solid fa-store",
+                iconColor: "#d97706"
+            },
+            { 
+                id: 'hr', 
+                nameAr: "الموارد البشرية", 
+                nameEn: "Human Resources",
+                prefix: "HR", 
+                roomAr: "مكتب الموارد البشرية", 
+                roomEn: "HR Office", 
+                color: "#ef4444",
+                icon: "fa-solid fa-users",
+                iconColor: "#dc2626"
+            },
+            { 
+                id: 'petroleum', 
+                nameAr: "قسم البترول", 
+                nameEn: "Petroleum Department",
+                prefix: "P", 
+                roomAr: "مكتب البترول", 
+                roomEn: "Petroleum Office", 
+                color: "#06b6d4",
+                icon: "fa-solid fa-gas-pump",
+                iconColor: "#0891b2"
+            },
+            { 
+                id: 'naqel_mgr', 
+                nameAr: "مشروع ناقل", 
+                nameEn: "Naqel Project",
+                prefix: "ON", 
+                roomAr: "مكتب مشروع ناقل", 
+                roomEn: "Naqel Project Office", 
+                color: "#8b5cf6",
+                icon: "fa-solid fa-truck-fast",
+                iconColor: "#7c3aed"
+            },
+            { 
+                id: 'ninja_mgr', 
+                nameAr: "مشروع نينجا", 
+                nameEn: "Ninja Project",
+                prefix: "PN", 
+                roomAr: "مكتب مشروع نينجا", 
+                roomEn: "Ninja Project Office", 
+                color: "#6366f1",
+                icon: "fa-solid fa-bolt",
+                iconColor: "#4f46e5"
+            }
         ];
+        
+        // Language Data
+        const LANGUAGES = {
+            ar: {
+                welcome: "مرحباً بكم في شركة الزهراني",
+                selectDept: "اختر القسم المناسب لخدمتكم",
+                instructions: "تعليمات الاستخدام",
+                instruction1: "اختر القسم المناسب لخدمتك",
+                instruction2: "احفظ رقم التذكرة المعروض",
+                instruction3: "اجلس في منطقة الانتظار",
+                instruction4: "انتظر حتى ظهور رقمك على الشاشة",
+                instruction5: "توجه إلى المكتب المحدد عند النداء",
+                lastNumber: "آخر رقم",
+                waiting: "في الانتظار",
+                currentCall: "النداء الحالي",
+                waitingService: "بانتظار الخدمة...",
+                pleaseWait: "يرجى الجلوس والمتابعة",
+                recentCalls: "السجل الحالي",
+                ticketGenerated: "تم استخراج تذكرتك!",
+                waitForCall: "يرجى الانتظار حتى نداء رقمك",
+                employeeLogin: "دخول الموظفين",
+                enterCode: "أدخل كود الدخول",
+                controlPanel: "لوحة تحكم الموظفين",
+                selectDeptControl: "اختر القسم للتحكم في التذاكر",
+                waitingList: "قائمة الانتظار",
+                calledTickets: "المنداء عليهم",
+                recall: "إعادة نداء",
+                finish: "إنهاء",
+                call: "نداء",
+                goBack: "العودة",
+                returnToKiosk: "العودة للكشك",
+                openDisplay: "فتح شاشة العرض",
+                welcomeMessage: "شركة الزهراني ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم",
+                systemMessage: "نظام إدارة الطابور الذكي ٢٠٢٥",
+                holdTicket: "يرجى الاحتفاظ برقم التذكرة والمتابعة",
+                allRights: "جميع الحقوق محفوظة",
+                techSupport: "رقم الدعم الفني",
+                visitorKiosk: "كشك الزوار",
+                adminPanel: "لوحة التحكم",
+                displayScreen: "شاشة العرض"
+            },
+            en: {
+                welcome: "Welcome to Al-Zahrani Company",
+                selectDept: "Select the appropriate department",
+                instructions: "Usage Instructions",
+                instruction1: "Select the appropriate department",
+                instruction2: "Save the displayed ticket number",
+                instruction3: "Sit in the waiting area",
+                instruction4: "Wait for your number to appear on screen",
+                instruction5: "Proceed to the specified office when called",
+                lastNumber: "Last Number",
+                waiting: "Waiting",
+                currentCall: "Current Call",
+                waitingService: "Waiting for service...",
+                pleaseWait: "Please sit and follow up",
+                recentCalls: "Recent Calls",
+                ticketGenerated: "Your ticket has been generated!",
+                waitForCall: "Please wait for your number to be called",
+                employeeLogin: "Employee Login",
+                enterCode: "Enter access code",
+                controlPanel: "Employee Control Panel",
+                selectDeptControl: "Select department to control tickets",
+                waitingList: "Waiting List",
+                calledTickets: "Called Tickets",
+                recall: "Recall",
+                finish: "Finish",
+                call: "Call",
+                goBack: "Go Back",
+                returnToKiosk: "Return to Kiosk",
+                openDisplay: "Open Display Screen",
+                welcomeMessage: "Al-Zahrani Company welcomes you",
+                systemMessage: "Smart Queue Management System 2025",
+                holdTicket: "Please keep your ticket number",
+                allRights: "All rights reserved",
+                techSupport: "Technical Support",
+                visitorKiosk: "Visitor Kiosk",
+                adminPanel: "Control Panel",
+                displayScreen: "Display Screen"
+            }
+        };
 
         const { useState, useEffect, useMemo } = React;
 
-        // وظيفة النداء الصوتي عبر API مباشرة
-        async function playAnnouncement(ticketId, roomAr, roomEn) {
-            try {
-                // ملاحظة: سيتم استخدام API_KEY من البيئة أو يمكنك وضعه هنا مؤقتاً للتجربة
-                const apiKey = "AIzaSyAtvZC_Ztg8lVbOUaMl8f268RBnskq3qM0"; 
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-                
-                const prompt = `أعلن بوضوح: التذكرة رقم ${ticketId.split('').join(' ')}، يرجى التوجه إلى ${roomAr}. Ticket number ${ticketId}, please proceed to ${roomEn}.`;
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            responseModalities: ["AUDIO"],
-                            speechConfig: {
-                                multiSpeakerVoiceConfig: {
-                                    speakerVoiceConfigs: [
-                                        { speaker: 'Ar', voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Kore' } } },
-                                        { speaker: 'En', voiceConfig: { prebuiltVoiceConfig: { voiceName: 'Zephyr' } } }
-                                    ]
-                                }
-                            }
-                        }
-                    })
-                });
-
-                const data = await response.json();
-                const base64Audio = data.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                
-                if (base64Audio) {
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
-                    const arrayBuffer = Uint8Array.from(atob(base64Audio), c => c.charCodeAt(0)).buffer;
-                    const dataInt16 = new Int16Array(arrayBuffer);
-                    const buffer = audioCtx.createBuffer(1, dataInt16.length, 24000);
-                    buffer.getChannelData(0).set(Array.from(dataInt16).map(v => v / 32768));
-                    const source = audioCtx.createBufferSource();
-                    source.buffer = buffer;
-                    source.connect(audioCtx.destination);
-                    source.start();
-                }
-            } catch (e) { console.error("Audio Error:", e); }
+        // Generate unique ticket number (1-20000, no separators)
+        function generateTicketNumber(deptPrefix, lastNumber) {
+            const nextNum = (lastNumber || 0) + 1;
+            // Reset to 1 if exceeds max
+            const actualNum = nextNum > CONFIG.maxTicketNumber ? 1 : nextNum;
+            // Return as plain number without separators
+            return `${actualNum}`;
         }
 
-        const App = () => {
+        // Speech announcement function
+        function speakAnnouncement(ticketNumber, roomAr, roomEn) {
+            if ('speechSynthesis' in window) {
+                // Arabic announcement
+                const arabicText = `التذكرة رقم ${ticketNumber}، يرجى التوجه إلى ${roomAr}`;
+                const englishText = `Ticket number ${ticketNumber}, please proceed to ${roomEn}`;
+                
+                const utteranceAr = new SpeechSynthesisUtterance(arabicText);
+                utteranceAr.lang = 'ar-SA';
+                utteranceAr.rate = 0.9;
+                
+                const utteranceEn = new SpeechSynthesisUtterance(englishText);
+                utteranceEn.lang = 'en-US';
+                utteranceEn.rate = 0.9;
+                
+                // Speak Arabic first, then English
+                speechSynthesis.speak(utteranceAr);
+                
+                utteranceAr.onend = () => {
+                    setTimeout(() => {
+                        speechSynthesis.speak(utteranceEn);
+                    }, 500);
+                };
+            }
+        }
+
+        // Main Application Component
+        function App() {
             const [view, setView] = useState('kiosk');
-            const [queue, setQueue] = useState(() => JSON.parse(localStorage.getItem('zahrani_queue') || '[]'));
-            const [lastNums, setLastNums] = useState(() => JSON.parse(localStorage.getItem('zahrani_nums') || '{}'));
+            const [queue, setQueue] = useState(() => {
+                const saved = localStorage.getItem('zahrani_queue');
+                return saved ? JSON.parse(saved) : [];
+            });
+            const [lastNumbers, setLastNumbers] = useState(() => {
+                const saved = localStorage.getItem('zahrani_nums');
+                return saved ? JSON.parse(saved) : {};
+            });
             const [activeDept, setActiveDept] = useState(null);
             const [successTicket, setSuccessTicket] = useState(null);
+            const [adminCode, setAdminCode] = useState('');
+            const [showAdminLogin, setShowAdminLogin] = useState(false);
+            const [adminError, setAdminError] = useState('');
+            const [language, setLanguage] = useState('ar');
+            const [currentTime, setCurrentTime] = useState(new Date());
 
+            // Save to localStorage
             useEffect(() => {
                 localStorage.setItem('zahrani_queue', JSON.stringify(queue));
-                localStorage.setItem('zahrani_nums', JSON.stringify(lastNums));
-            }, [queue, lastNums]);
+                localStorage.setItem('zahrani_nums', JSON.stringify(lastNumbers));
+            }, [queue, lastNumbers]);
 
+            // Update time
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setCurrentTime(new Date());
+                }, 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const t = LANGUAGES[language];
+            const isRTL = language === 'ar';
+
+            // Generate ticket
             const issueTicket = (deptId) => {
                 const dept = DEPARTMENTS.find(d => d.id === deptId);
-                const nextNum = (lastNums[deptId] || 0) + 1;
+                const ticketNumber = generateTicketNumber(dept.prefix, lastNumbers[deptId]);
+                
                 const ticket = {
-                    id: Math.random().toString(36).substr(2, 9),
-                    displayId: `${dept.prefix}-${nextNum.toString().padStart(3, '0')}`,
+                    id: Date.now() + Math.random(),
+                    number: ticketNumber,
                     deptId,
+                    deptPrefix: dept.prefix,
                     status: 'waiting',
-                    time: Date.now()
+                    timestamp: Date.now(),
+                    displayText: `${dept.prefix}${ticketNumber}`
                 };
+                
                 setQueue([...queue, ticket]);
-                setLastNums({...lastNums, [deptId]: nextNum});
+                setLastNumbers({...lastNumbers, [deptId]: parseInt(ticketNumber)});
                 setSuccessTicket(ticket);
-                setTimeout(() => setSuccessTicket(null), 5000);
+                
+                setTimeout(() => setSuccessTicket(null), 4000);
             };
 
+            // Call ticket
             const callTicket = (ticket) => {
                 const dept = DEPARTMENTS.find(d => d.id === ticket.deptId);
-                setQueue(queue.map(t => t.id === ticket.id ? {...t, status: 'called', time: Date.now()} : t));
-                playAnnouncement(ticket.displayId, dept.roomAr, dept.roomEn);
+                const updatedQueue = queue.map(t => 
+                    t.id === ticket.id ? {...t, status: 'called', timestamp: Date.now()} : t
+                );
+                setQueue(updatedQueue);
+                speakAnnouncement(ticket.number, dept.roomAr, dept.roomEn);
             };
 
-            const called = useMemo(() => queue.filter(t => t.status === 'called').sort((a,b) => b.time - a.time), [queue]);
+            // Admin login
+            const handleAdminLogin = () => {
+                if (adminCode === CONFIG.adminCode) {
+                    setView('admin');
+                    setShowAdminLogin(false);
+                    setAdminCode('');
+                    setAdminError('');
+                } else {
+                    setAdminError(isRTL ? 'كود الدخول غير صحيح' : 'Incorrect access code');
+                }
+            };
 
+            // Get called tickets
+            const calledTickets = useMemo(() => 
+                queue.filter(t => t.status === 'called')
+                     .sort((a, b) => b.timestamp - a.timestamp),
+                [queue]
+            );
+
+            // Format time
+            const formatTime = (date) => {
+                return date.toLocaleTimeString(isRTL ? 'ar-SA' : 'en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            };
+
+            const formatDate = (date) => {
+                return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            };
+
+            // Render based on view
             return (
-                <div className="min-h-screen flex flex-col">
-                    {view !== 'display' && (
-                        <header className="bg-white border-b-4 border-emerald-600 p-4 flex justify-between items-center shadow-md">
-                            <div className="flex items-center gap-3">
-                                <img src={LOGO_URL} alt="Logo" className="h-12" />
-                                <h1 className="text-xl font-bold text-emerald-900 arabic">شركة الزهراني ٢٠٢٥</h1>
-                            </div>
-                            <div className="flex gap-2 bg-slate-100 p-1 rounded-lg">
-                                {['kiosk', 'display', 'admin'].map(v => (
-                                    <button key={v} onClick={() => setView(v)} className={`px-4 py-1.5 rounded-md text-xs font-bold ${view === v ? 'bg-emerald-600 text-white' : 'text-slate-500'}`}>
-                                        {v === 'kiosk' ? 'التذاكر' : v === 'display' ? 'الشاشة' : 'الموظف'}
+                <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
+                    {/* Admin Login Modal */}
+                    {showAdminLogin && (
+                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                            <div className="card max-w-md w-full">
+                                <div className="text-center space-y-6">
+                                    <div>
+                                        <i className="fas fa-lock text-4xl text-blue-500 mb-4"></i>
+                                        <h2 className="text-2xl font-bold text-gray-800">{t.employeeLogin}</h2>
+                                        <p className="text-gray-600 mt-2">{t.enterCode}</p>
+                                    </div>
+                                    
+                                    <div className="space-y-4">
+                                        <input
+                                            type="password"
+                                            value={adminCode}
+                                            onChange={(e) => setAdminCode(e.target.value)}
+                                            placeholder={isRTL ? "أدخل الكود هنا" : "Enter code here"}
+                                            className="w-full p-3 border border-gray-300 rounded-lg text-center text-xl font-mono"
+                                            autoFocus
+                                            onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()}
+                                        />
+                                        
+                                        {adminError && (
+                                            <div className="text-red-500 font-medium animate-slide-in">
+                                                {adminError}
+                                            </div>
+                                        )}
+                                        
+                                        <button
+                                            onClick={handleAdminLogin}
+                                            className="btn-primary w-full"
+                                        >
+                                            {isRTL ? 'دخول' : 'Login'}
+                                        </button>
+                                    </div>
+                                    
+                                    <button
+                                        onClick={() => {
+                                            setShowAdminLogin(false);
+                                            setAdminCode('');
+                                            setAdminError('');
+                                        }}
+                                        className="text-gray-500 hover:text-gray-700"
+                                    >
+                                        {isRTL ? 'إلغاء' : 'Cancel'}
                                     </button>
-                                ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Success Ticket Modal */}
+                    {successTicket && (
+                        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                            <div className="card max-w-md w-full bg-gradient-to-br from-blue-50 to-white">
+                                <div className="text-center space-y-6">
+                                    <i className="fas fa-ticket-alt text-5xl text-blue-500"></i>
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-gray-800">{t.ticketGenerated}</h3>
+                                        <div className="text-6xl font-black text-blue-600 mt-4 tracking-wider">
+                                            {successTicket.displayText}
+                                        </div>
+                                        <p className="text-gray-600 mt-4">{t.waitForCall}</p>
+                                    </div>
+                                    <button
+                                        onClick={() => setSuccessTicket(null)}
+                                        className="btn-primary"
+                                    >
+                                        {isRTL ? 'تم' : 'OK'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Header for Kiosk and Admin */}
+                    {view !== 'display' && (
+                        <header className="bg-white shadow-md">
+                            <div className="max-w-7xl mx-auto px-4 py-4">
+                                <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                                    {/* Logo and Company */}
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-blue-600 text-white p-2 rounded-lg">
+                                            <i className="fas fa-truck text-2xl"></i>
+                                        </div>
+                                        <div className={isRTL ? 'arabic' : 'english'}>
+                                            <h1 className="text-xl font-bold text-gray-800">
+                                                {CONFIG.companyName[language]}
+                                            </h1>
+                                            <p className="text-sm text-blue-600">
+                                                {CONFIG.systemName[language]}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Navigation */}
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        {/* Language Toggle */}
+                                        <button
+                                            onClick={() => setLanguage(lang => lang === 'ar' ? 'en' : 'ar')}
+                                            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-2"
+                                        >
+                                            <span className={`font-medium ${language === 'ar' ? 'text-blue-600' : 'text-gray-600'}`}>
+                                                {language === 'ar' ? 'ع' : 'EN'}
+                                            </span>
+                                            <i className="fas fa-globe text-gray-500"></i>
+                                        </button>
+                                        
+                                        {/* View Buttons */}
+                                        <button
+                                            onClick={() => setView('kiosk')}
+                                            className={`px-4 py-2 rounded-lg font-medium transition ${view === 'kiosk' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                        >
+                                            <i className="fas fa-user mr-2"></i>
+                                            {t.visitorKiosk}
+                                        </button>
+                                        
+                                        <button
+                                            onClick={() => window.open(window.location.href + '?view=display', '_blank', 'width=1920,height=1080')}
+                                            className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
+                                        >
+                                            <i className="fas fa-tv mr-2"></i>
+                                            {t.openDisplay}
+                                        </button>
+                                        
+                                        <button
+                                            onClick={() => setShowAdminLogin(true)}
+                                            className={`px-4 py-2 rounded-lg font-medium transition ${view === 'admin' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                        >
+                                            <i className="fas fa-cog mr-2"></i>
+                                            {t.employeeLogin}
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </header>
                     )}
 
+                    {/* Main Content */}
                     <main className="flex-1">
+                        {/* Visitor Kiosk */}
                         {view === 'kiosk' && (
-                            <div className="max-w-4xl mx-auto p-6 space-y-8 text-center">
-                                <h2 className="text-4xl font-black arabic text-slate-800 py-6">مرحباً بكم في شركة الزهراني</h2>
-                                {successTicket && (
-                                    <div className="bg-emerald-600 text-white p-8 rounded-3xl shadow-2xl animate-bounce">
-                                        <p className="text-xl font-bold arabic">تم استخراج تذكرتك!</p>
-                                        <div className="text-8xl font-black">{successTicket.displayId}</div>
-                                    </div>
-                                )}
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {DEPARTMENTS.map(d => (
-                                        <button key={d.id} onClick={() => issueTicket(d.id)} className="bg-white p-6 rounded-2xl border-2 hover:border-emerald-500 shadow-sm flex flex-col items-center gap-2">
-                                            <div className="w-12 h-12 bg-emerald-50 text-emerald-700 rounded-lg flex items-center justify-center font-bold text-2xl">{d.prefix}</div>
-                                            <span className="font-bold arabic">{d.nameAr}</span>
+                            <div className="max-w-6xl mx-auto px-4 py-8">
+                                <div className="text-center mb-10">
+                                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+                                        {t.welcome}
+                                    </h1>
+                                    <p className="text-gray-600 text-lg">
+                                        {t.selectDept}
+                                    </p>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                                    {DEPARTMENTS.map(dept => (
+                                        <button
+                                            key={dept.id}
+                                            onClick={() => issueTicket(dept.id)}
+                                            className="card hover:border-blue-300 text-left"
+                                        >
+                                            <div className="flex flex-col items-center text-center">
+                                                <div 
+                                                    className="icon-wrapper"
+                                                    style={{ backgroundColor: dept.color }}
+                                                >
+                                                    <i className={dept.icon}></i>
+                                                </div>
+                                                <h3 className="text-lg font-bold text-gray-800 mb-2">
+                                                    {language === 'ar' ? dept.nameAr : dept.nameEn}
+                                                </h3>
+                                                <div className="text-sm text-gray-500 mb-3">
+                                                    {language === 'ar' ? dept.roomAr : dept.roomEn}
+                                                </div>
+                                                <div className="mt-2">
+                                                    <div className="text-2xl font-bold text-gray-700">
+                                                        {lastNumbers[dept.id] || 0}
+                                                    </div>
+                                                    <div className="text-xs text-gray-500">{t.lastNumber}</div>
+                                                </div>
+                                            </div>
                                         </button>
                                     ))}
                                 </div>
+                                
+                                {/* Instructions */}
+                                <div className="card bg-blue-50 border-blue-100">
+                                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                        <i className="fas fa-info-circle text-blue-500"></i>
+                                        {t.instructions}
+                                    </h3>
+                                    <ol className={`space-y-2 text-gray-700 ${isRTL ? 'list-decimal pr-5' : 'list-decimal pl-5'}`}>
+                                        <li>{t.instruction1}</li>
+                                        <li>{t.instruction2}</li>
+                                        <li>{t.instruction3}</li>
+                                        <li>{t.instruction4}</li>
+                                        <li>{t.instruction5}</li>
+                                    </ol>
+                                </div>
                             </div>
                         )}
 
+                        {/* Display Screen (TV Mode) */}
                         {view === 'display' && (
-                            <div className="h-screen w-screen bg-slate-900 text-white flex flex-col overflow-hidden">
-                                <div className="bg-emerald-800 p-6 flex justify-between items-center border-b-8 border-emerald-600">
-                                    <img src={LOGO_URL} alt="Logo" className="h-20 bg-white p-2 rounded-xl" />
-                                    <h1 className="text-5xl font-black arabic">شركة الزهراني ٢٠٢٥</h1>
-                                    <div className="text-5xl font-mono">{new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                                </div>
-                                <div className="flex-1 flex">
-                                    <div className="flex-1 flex flex-col items-center justify-center bg-slate-950 relative">
-                                        <div className="absolute top-10 right-10 text-emerald-500 text-3xl font-bold arabic animate-pulse">النداء الحالي</div>
-                                        {called[0] ? (
-                                            <div className="text-center">
-                                                <div className="text-[30rem] font-black leading-none tv-glow">{called[0].displayId}</div>
-                                                <div className="text-7xl font-bold text-emerald-400 arabic">{DEPARTMENTS.find(d => d.id === called[0].deptId)?.roomAr}</div>
+                            <div className="tv-container mx-auto">
+                                <div className="h-full flex flex-col">
+                                    {/* Header */}
+                                    <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-4">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center gap-4">
+                                                <div className="bg-white p-2 rounded-lg">
+                                                    <i className="fas fa-truck text-2xl text-blue-600"></i>
+                                                </div>
+                                                <div>
+                                                    <h1 className="text-2xl md:text-3xl font-bold arabic">
+                                                        {CONFIG.companyName.ar}
+                                                    </h1>
+                                                    <h1 className="text-xl md:text-2xl font-bold english">
+                                                        {CONFIG.companyName.en}
+                                                    </h1>
+                                                </div>
                                             </div>
-                                        ) : <div className="text-4xl text-slate-700 arabic">بانتظار الخدمة...</div>}
-                                    </div>
-                                    <div className="w-1/3 bg-slate-900 p-8 flex flex-col gap-4">
-                                        <h3 className="text-3xl font-bold border-b-2 border-emerald-500 pb-2 arabic">السجل</h3>
-                                        {called.slice(1, 6).map(t => (
-                                            <div key={t.id} className="bg-slate-800 p-6 rounded-xl flex justify-between items-center border-r-8 border-emerald-500">
-                                                <span className="text-6xl font-black">{t.displayId}</span>
-                                                <span className="text-xl arabic text-emerald-400">{DEPARTMENTS.find(d => d.id === t.deptId)?.prefix}</span>
+                                            <div className="text-right">
+                                                <div className="text-3xl md:text-4xl font-mono font-bold">
+                                                    {formatTime(currentTime)}
+                                                </div>
+                                                <div className="text-sm opacity-80">
+                                                    {formatDate(currentTime)}
+                                                </div>
                                             </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="bg-emerald-700 py-3 overflow-hidden whitespace-nowrap border-t-4 border-emerald-500">
-                                    <div className="animate-marquee text-3xl font-bold arabic">شركة الزهراني ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم على الشاشة .. نتمنى لكم يوماً سعيداً</div>
-                                </div>
-                            </div>
-                        )}
-
-                        {view === 'admin' && (
-                            <div className="max-w-4xl mx-auto p-6 space-y-6">
-                                {!activeDept ? (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {DEPARTMENTS.map(d => (
-                                            <button key={d.id} onClick={() => setActiveDept(d.id)} className="bg-white p-6 rounded-xl border-2 hover:border-emerald-500 font-bold arabic">دخول: {d.nameAr}</button>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="space-y-6">
-                                        <div className="bg-emerald-900 text-white p-6 rounded-2xl flex justify-between items-center">
-                                            <h2 className="text-2xl font-bold arabic">{DEPARTMENTS.find(d => d.id === activeDept).nameAr}</h2>
-                                            <button onClick={() => setActiveDept(null)} className="text-sm opacity-70">خروج</button>
                                         </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <div className="space-y-4">
-                                                <h3 className="font-bold arabic">الانتظار</h3>
-                                                {queue.filter(t => t.deptId === activeDept && t.status === 'waiting').map(t => (
-                                                    <div key={t.id} className="bg-white p-4 rounded-xl shadow flex justify-between items-center border-r-4 border-emerald-500">
-                                                        <span className="text-2xl font-black">{t.displayId}</span>
-                                                        <button onClick={() => callTicket(t)} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-bold">نداء</button>
+                                    </div>
+                                    
+                                    {/* Main Display Area */}
+                                    <div className="flex-1 flex p-4">
+                                        {/* Current Call - Large Display */}
+                                        <div className="flex-1 flex flex-col items-center justify-center">
+                                            <div className="text-center space-y-8">
+                                                <div className="text-blue-400 text-2xl font-bold">
+                                                    {t.currentCall}
+                                                </div>
+                                                
+                                                {calledTickets[0] ? (
+                                                    <>
+                                                        <div className="relative">
+                                                            <div className="text-[20vw] md:text-[25vw] font-black text-white ticket-glow">
+                                                                {calledTickets[0].displayText}
+                                                            </div>
+                                                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[10vw] opacity-20">
+                                                                <i className={DEPARTMENTS.find(d => d.id === calledTickets[0].deptId)?.icon}></i>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <div className="space-y-2">
+                                                            <div className="text-3xl md:text-4xl font-bold text-blue-300 arabic">
+                                                                {DEPARTMENTS.find(d => d.id === calledTickets[0].deptId)?.roomAr}
+                                                            </div>
+                                                            <div className="text-2xl md:text-3xl font-bold text-blue-300 english">
+                                                                {DEPARTMENTS.find(d => d.id === calledTickets[0].deptId)?.roomEn}
+                                                            </div>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="space-y-6">
+                                                        <div className="text-[15vw] opacity-30">
+                                                            <i className="fas fa-clock"></i>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <div className="text-4xl text-gray-400 arabic">{t.waitingService}</div>
+                                                            <div className="text-3xl text-gray-400 english">Waiting for service...</div>
+                                                        </div>
                                                     </div>
-                                                ))}
+                                                )}
                                             </div>
-                                            <div className="space-y-4">
-                                                <h3 className="font-bold arabic">المنادى عليهم</h3>
-                                                {queue.filter(t => t.deptId === activeDept && t.status === 'called').map(t => (
-                                                    <div key={t.id} className="bg-slate-800 text-white p-6 rounded-xl flex flex-col gap-4">
-                                                        <span className="text-5xl font-black text-center">{t.displayId}</span>
-                                                        <div className="flex gap-2">
-                                                            <button onClick={() => callTicket(t)} className="flex-1 bg-white/10 py-2 rounded font-bold">إعادة نداء</button>
-                                                            <button onClick={() => setQueue(queue.map(i => i.id === t.id ? {...i, status: 'done'} : i))} className="flex-1 bg-emerald-500 py-2 rounded font-bold">إنهاء</button>
+                                        </div>
+                                        
+                                        {/* Recent Calls Sidebar */}
+                                        <div className="w-1/3 bg-black/30 backdrop-blur-sm p-4 rounded-l-2xl">
+                                            <h3 className="text-xl font-bold text-white mb-4 border-b border-blue-500 pb-2">
+                                                {t.recentCalls}
+                                            </h3>
+                                            <div className="space-y-3 overflow-y-auto h-[calc(100%-3rem)]">
+                                                {calledTickets.slice(1, 6).map(ticket => (
+                                                    <div 
+                                                        key={ticket.id}
+                                                        className="bg-black/40 p-4 rounded-xl border-r-4"
+                                                        style={{ borderColor: DEPARTMENTS.find(d => d.id === ticket.deptId)?.color }}
+                                                    >
+                                                        <div className="flex justify-between items-center">
+                                                            <div className="text-3xl font-bold text-white">
+                                                                {ticket.displayText}
+                                                            </div>
+                                                            <i className={DEPARTMENTS.find(d => d.id === ticket.deptId)?.icon + " text-xl"}></i>
+                                                        </div>
+                                                        <div className="text-gray-300 text-sm mt-1">
+                                                            {formatTime(new Date(ticket.timestamp))}
                                                         </div>
                                                     </div>
                                                 ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Ticker */}
+                                    <div className="bg-gradient-to-r from-blue-800 to-blue-600 py-2 overflow-hidden">
+                                        <div className="animate-marquee whitespace-nowrap text-lg font-medium">
+                                            <span className="mx-8">{t.welcomeMessage}</span>
+                                            <span className="mx-8">•</span>
+                                            <span className="mx-8">{t.systemMessage}</span>
+                                            <span className="mx-8">•</span>
+                                            <span className="mx-8">{t.holdTicket}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Admin Panel */}
+                        {view === 'admin' && (
+                            <div className="max-w-7xl mx-auto px-4 py-8">
+                                {!activeDept ? (
+                                    // Department Selection
+                                    <div className="space-y-8">
+                                        <div className="text-center">
+                                            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                                                {t.controlPanel}
+                                            </h1>
+                                            <p className="text-gray-600">{t.selectDeptControl}</p>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {DEPARTMENTS.map(dept => {
+                                                const waitingCount = queue.filter(t => 
+                                                    t.deptId === dept.id && t.status === 'waiting'
+                                                ).length;
+                                                
+                                                return (
+                                                    <button
+                                                        key={dept.id}
+                                                        onClick={() => setActiveDept(dept.id)}
+                                                        className="card hover:border-blue-300"
+                                                    >
+                                                        <div className="flex items-center gap-4">
+                                                            <div 
+                                                                className="icon-wrapper"
+                                                                style={{ backgroundColor: dept.color }}
+                                                            >
+                                                                <i className={dept.icon}></i>
+                                                            </div>
+                                                            <div className="text-left flex-1">
+                                                                <h3 className="font-bold text-gray-800">
+                                                                    {language === 'ar' ? dept.nameAr : dept.nameEn}
+                                                                </h3>
+                                                                <p className="text-sm text-gray-500">
+                                                                    {language === 'ar' ? dept.roomAr : dept.roomEn}
+                                                                </p>
+                                                                <div className="mt-2">
+                                                                    <div className="flex justify-between items-center">
+                                                                        <span className="text-gray-600">{t.waiting}:</span>
+                                                                        <span className="text-xl font-bold" style={{ color: dept.color }}>
+                                                                            {waitingCount}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                        
+                                        <div className="flex justify-center gap-4">
+                                            <button
+                                                onClick={() => setView('kiosk')}
+                                                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
+                                            >
+                                                {t.returnToKiosk}
+                                            </button>
+                                            <button
+                                                onClick={() => window.open(window.location.href + '?view=display', '_blank', 'width=1920,height=1080')}
+                                                className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
+                                            >
+                                                {t.openDisplay}
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    // Department Management
+                                    <div className="space-y-6">
+                                        <div className="card bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                                            <div className="flex justify-between items-center">
+                                                <div className="flex items-center gap-4">
+                                                    <button
+                                                        onClick={() => setActiveDept(null)}
+                                                        className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition"
+                                                    >
+                                                        <i className="fas fa-arrow-left"></i>
+                                                    </button>
+                                                    <div>
+                                                        <h2 className="text-2xl font-bold">
+                                                            {language === 'ar' ? 
+                                                                DEPARTMENTS.find(d => d.id === activeDept)?.nameAr :
+                                                                DEPARTMENTS.find(d => d.id === activeDept)?.nameEn}
+                                                        </h2>
+                                                        <p className="opacity-90">
+                                                            {language === 'ar' ? 
+                                                                DEPARTMENTS.find(d => d.id === activeDept)?.roomAr :
+                                                                DEPARTMENTS.find(d => d.id === activeDept)?.roomEn}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="text-center">
+                                                    <div className="text-3xl font-bold">
+                                                        {lastNumbers[activeDept] || 0}
+                                                    </div>
+                                                    <div className="text-sm opacity-80">{t.lastNumber}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                            {/* Waiting Queue */}
+                                            <div className="card">
+                                                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                                                    {t.waitingList} ({queue.filter(t => t.deptId === activeDept && t.status === 'waiting').length})
+                                                </h3>
+                                                <div className="space-y-3 max-h-96 overflow-y-auto">
+                                                    {queue
+                                                        .filter(t => t.deptId === activeDept && t.status === 'waiting')
+                                                        .map(ticket => (
+                                                            <div key={ticket.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border">
+                                                                <div>
+                                                                    <div className="text-2xl font-bold text-gray-800">
+                                                                        {ticket.displayText}
+                                                                    </div>
+                                                                    <div className="text-sm text-gray-500">
+                                                                        {formatTime(new Date(ticket.timestamp))}
+                                                                    </div>
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => callTicket(ticket)}
+                                                                    className="btn-primary"
+                                                                >
+                                                                    <i className="fas fa-bullhorn mr-2"></i>
+                                                                    {t.call}
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Called Tickets */}
+                                            <div className="card">
+                                                <h3 className="text-xl font-bold text-gray-800 mb-4">
+                                                    {t.calledTickets} ({queue.filter(t => t.deptId === activeDept && t.status === 'called').length})
+                                                </h3>
+                                                <div className="space-y-3 max-h-96 overflow-y-auto">
+                                                    {queue
+                                                        .filter(t => t.deptId === activeDept && t.status === 'called')
+                                                        .map(ticket => (
+                                                            <div key={ticket.id} className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+                                                                <div className="text-center mb-4">
+                                                                    <div className="text-3xl font-bold text-gray-800">
+                                                                        {ticket.displayText}
+                                                                    </div>
+                                                                    <div className="text-sm text-gray-500">
+                                                                        {formatTime(new Date(ticket.timestamp))}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex gap-2">
+                                                                    <button
+                                                                        onClick={() => callTicket(ticket)}
+                                                                        className="btn-success flex-1"
+                                                                    >
+                                                                        <i className="fas fa-redo mr-2"></i>
+                                                                        {t.recall}
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setQueue(queue.map(t => 
+                                                                                t.id === ticket.id ? {...t, status: 'done'} : t
+                                                                            ));
+                                                                        }}
+                                                                        className="btn-danger flex-1"
+                                                                    >
+                                                                        <i className="fas fa-check mr-2"></i>
+                                                                        {t.finish}
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -243,16 +1016,61 @@
                         )}
                     </main>
 
+                    {/* Footer */}
                     {view !== 'display' && (
-                        <footer className="p-6 text-center text-slate-400 text-xs border-t">
-                            <p className="arabic">© ٢٠٢٥ شركة الزهراني - جميع الحقوق محفوظة</p>
+                        <footer className="bg-gray-800 text-white py-6">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <i className="fas fa-truck text-2xl text-blue-300"></i>
+                                        <div>
+                                            <div className="font-bold">{CONFIG.companyName[language]}</div>
+                                            <div className="text-sm text-gray-400">{CONFIG.systemName[language]}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="text-center text-gray-300">
+                                        <div>© 2025 {t.allRights}</div>
+                                        <div className="text-sm mt-1">
+                                            {t.techSupport}: {CONFIG.adminCode}
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex gap-4">
+                                        <a href="./?view=kiosk" className="text-gray-300 hover:text-white">
+                                            {t.visitorKiosk}
+                                        </a>
+                                        <a href="./?view=display" target="_blank" className="text-gray-300 hover:text-white">
+                                            {t.displayScreen}
+                                        </a>
+                                        <a href="./?view=admin" className="text-gray-300 hover:text-white">
+                                            {t.adminPanel}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </footer>
                     )}
                 </div>
             );
-        };
+        }
 
+        // Initialize the app
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+        
+        // Check URL parameters for view
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestedView = urlParams.get('view');
+        
+        if (requestedView) {
+            setTimeout(() => {
+                const rootElement = document.getElementById('root');
+                const appInstance = rootElement._reactRootContainer?._internalRoot?.current?.child?.stateNode;
+                if (appInstance) {
+                    appInstance.setState({ view: requestedView });
+                }
+            }, 100);
+        }
     </script>
 </body>
 </html>
