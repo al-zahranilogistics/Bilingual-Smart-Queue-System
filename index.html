@@ -95,7 +95,7 @@
         }
         
         .animate-slide-in { animation: slideIn 0.5s ease-out; }
-        .animate-marquee { animation: marquee 30s linear infinite; }
+        .animate-marquee { animation: marquee 40s linear infinite; }
         
         /* Responsive font sizes */
         @media (max-width: 768px) {
@@ -184,11 +184,42 @@
         .status-online {
             background-color: #10b981;
             box-shadow: 0 0 10px #10b981;
+            animation: pulse 2s infinite;
         }
         
         .status-offline {
             background-color: #ef4444;
             box-shadow: 0 0 10px #ef4444;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        /* Speaking indicator */
+        .speaking-indicator {
+            animation: speakingPulse 1s infinite;
+        }
+        
+        @keyframes speakingPulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        
+        /* Language indicator */
+        .language-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 10;
         }
     </style>
 </head>
@@ -343,7 +374,10 @@
                 pleaseWait: "يرجى الانتظار في منطقة الانتظار",
                 lastUpdate: "آخر تحديث",
                 connected: "متصل بالنظام",
-                disconnected: "غير متصل"
+                disconnected: "غير متصل",
+                speakingArabic: "جاري النداء بالعربية...",
+                speakingEnglish: "جاري النداء بالإنجليزية...",
+                announcementActive: "جاري الإعلان عن التذكرة"
             },
             en: {
                 currentCall: "Current Call",
@@ -356,43 +390,95 @@
                 pleaseWait: "Please wait in the waiting area",
                 lastUpdate: "Last update",
                 connected: "System Connected",
-                disconnected: "Disconnected"
+                disconnected: "Disconnected",
+                speakingArabic: "Announcing in Arabic...",
+                speakingEnglish: "Announcing in English...",
+                announcementActive: "Announcing ticket"
             }
         };
 
         const { useState, useEffect, useRef } = React;
 
-        // === Speech Announcement Function ===
-        const speakAnnouncement = (ticketNumber, roomAr, roomEn, departmentAr, departmentEn) => {
-            if ('speechSynthesis' in window) {
-                // Stop any ongoing speech
-                speechSynthesis.cancel();
-                
-                // Arabic announcement
-                const arabicText = `التذكرة رقم ${ticketNumber}، يرجى التوجه إلى ${roomAr}`;
-                const utteranceAr = new SpeechSynthesisUtterance(arabicText);
-                utteranceAr.lang = 'ar-SA';
-                utteranceAr.rate = 0.8; // أبطأ قليلاً للوضوح
-                utteranceAr.pitch = 1;
-                utteranceAr.volume = 1;
-                
-                // English announcement
-                const englishText = `Ticket number ${ticketNumber}, please proceed to ${roomEn}`;
-                const utteranceEn = new SpeechSynthesisUtterance(englishText);
-                utteranceEn.lang = 'en-US';
-                utteranceEn.rate = 0.8;
-                utteranceEn.pitch = 1;
-                utteranceEn.volume = 1;
-                
-                // Speak Arabic first, then English after delay
-                speechSynthesis.speak(utteranceAr);
-                
-                utteranceAr.onend = () => {
+        // === Enhanced Speech Announcement Function ===
+        const useSpeechAnnouncement = () => {
+            const [isSpeaking, setIsSpeaking] = useState(false);
+            const [currentLanguage, setCurrentLanguage] = useState(null);
+            const lastAnnouncedRef = useRef({});
+
+            const speakAnnouncement = (ticketNumber, roomAr, roomEn, departmentAr, departmentEn) => {
+                if ('speechSynthesis' in window) {
+                    // Create unique key for this announcement
+                    const announcementKey = `${ticketNumber}_${roomAr}`;
+                    
+                    // Check if we announced this recently (within 15 seconds)
+                    const lastAnnounced = lastAnnouncedRef.current[announcementKey];
+                    if (lastAnnounced && (Date.now() - lastAnnounced) < 15000) {
+                        console.log('Skipping duplicate announcement');
+                        return;
+                    }
+                    
+                    // Stop any ongoing speech
+                    speechSynthesis.cancel();
+                    
+                    // Set speaking state
+                    setIsSpeaking(true);
+                    
+                    // Wait a moment before starting
                     setTimeout(() => {
-                        speechSynthesis.speak(utteranceEn);
-                    }, 1000); // انتظر ثانية بين اللغتين
-                };
-            }
+                        // 1. ARABIC ANNOUNCEMENT - FIRST
+                        const arabicText = `التذكرة رقم ${ticketNumber}، يرجى التوجه إلى ${roomAr}`;
+                        const utteranceAr = new SpeechSynthesisUtterance(arabicText);
+                        utteranceAr.lang = 'ar-SA';
+                        utteranceAr.rate = 0.75; // أبطأ للوضوح
+                        utteranceAr.pitch = 1;
+                        utteranceAr.volume = 1;
+                        
+                        // 2. ENGLISH ANNOUNCEMENT - SECOND
+                        const englishText = `Ticket number ${ticketNumber}, please proceed to ${roomEn}`;
+                        const utteranceEn = new SpeechSynthesisUtterance(englishText);
+                        utteranceEn.lang = 'en-US';
+                        utteranceEn.rate = 0.75; // نفس السرعة للوضوح
+                        utteranceEn.pitch = 1;
+                        utteranceEn.volume = 1;
+                        
+                        // Track current language
+                        utteranceAr.onstart = () => {
+                            setCurrentLanguage('ar');
+                        };
+                        
+                        utteranceEn.onstart = () => {
+                            setCurrentLanguage('en');
+                        };
+                        
+                        // Speak Arabic FIRST
+                        speechSynthesis.speak(utteranceAr);
+                        
+                        // After Arabic finishes, wait 2 seconds then speak English
+                        utteranceAr.onend = () => {
+                            setTimeout(() => {
+                                speechSynthesis.speak(utteranceEn);
+                            }, 2000); // انتظر 2 ثانية بين اللغتين
+                        };
+                        
+                        // Reset states when finished
+                        utteranceEn.onend = () => {
+                            setIsSpeaking(false);
+                            setCurrentLanguage(null);
+                            // Mark as announced
+                            lastAnnouncedRef.current[announcementKey] = Date.now();
+                        };
+                        
+                        utteranceAr.onerror = utteranceEn.onerror = (error) => {
+                            console.error('Speech synthesis error:', error);
+                            setIsSpeaking(false);
+                            setCurrentLanguage(null);
+                        };
+                        
+                    }, 800); // انتظر 0.8 ثانية قبل البدء
+                }
+            };
+
+            return { speakAnnouncement, isSpeaking, currentLanguage };
         };
 
         // === Display Screen Component ===
@@ -403,9 +489,8 @@
             const [tickets, setTickets] = useState([]);
             const [isOnline, setIsOnline] = useState(true);
             const [lastAnnouncement, setLastAnnouncement] = useState(null);
-            const [isSpeaking, setIsSpeaking] = useState(false);
             
-            const lastCalledRef = useRef({});
+            const { speakAnnouncement, isSpeaking, currentLanguage } = useSpeechAnnouncement();
             const t = LANGUAGES[language];
             const isRTL = language === 'ar';
 
@@ -419,26 +504,23 @@
                     // Check for new calls to announce
                     Object.entries(calls).forEach(([deptId, call]) => {
                         if (call && call.ticketNumber) {
-                            const callKey = `${deptId}_${call.ticketNumber}`;
-                            const lastCalled = lastCalledRef.current[callKey];
-                            
-                            if (!lastCalled || (Date.now() - lastCalled) > 10000) { // Prevent repeating within 10 seconds
-                                const dept = CONFIG.departments.find(d => d.id === deptId);
-                                if (dept) {
-                                    speakAnnouncement(
-                                        call.ticketNumber,
-                                        dept.roomAr,
-                                        dept.roomEn,
-                                        dept.nameAr,
-                                        dept.nameEn
-                                    );
-                                    lastCalledRef.current[callKey] = Date.now();
-                                    setLastAnnouncement({
-                                        ticketNumber: call.ticketNumber,
-                                        department: dept,
-                                        timestamp: Date.now()
-                                    });
-                                }
+                            const dept = CONFIG.departments.find(d => d.id === deptId);
+                            if (dept) {
+                                // Announce in Arabic FIRST, then English
+                                speakAnnouncement(
+                                    call.ticketNumber,
+                                    dept.roomAr,
+                                    dept.roomEn,
+                                    dept.nameAr,
+                                    dept.nameEn
+                                );
+                                
+                                setLastAnnouncement({
+                                    ticketNumber: call.ticketNumber,
+                                    department: dept,
+                                    timestamp: Date.now(),
+                                    announced: true
+                                });
                             }
                         }
                     });
@@ -468,12 +550,19 @@
                 }, 1000);
 
                 // Check online status
-                const handleOnline = () => setIsOnline(true);
-                const handleOffline = () => setIsOnline(false);
+                const handleOnline = () => {
+                    setIsOnline(true);
+                    console.log('System is back online');
+                };
+                const handleOffline = () => {
+                    setIsOnline(false);
+                    console.log('System is offline');
+                };
                 
                 window.addEventListener('online', handleOnline);
                 window.addEventListener('offline', handleOffline);
 
+                // Cleanup
                 return () => {
                     unsubscribeCalls();
                     unsubscribeTickets();
@@ -580,6 +669,15 @@
                                     </span>
                                 </div>
                                 
+                                {isSpeaking && (
+                                    <div className="flex items-center gap-2 bg-yellow-600 px-3 py-1 rounded-full animate-pulse">
+                                        <i className="fas fa-volume-up"></i>
+                                        <span className="text-sm">
+                                            {currentLanguage === 'ar' ? t.speakingArabic : t.speakingEnglish}
+                                        </span>
+                                    </div>
+                                )}
+                                
                                 <button
                                     onClick={() => setLanguage(lang => lang === 'ar' ? 'en' : 'ar')}
                                     className="px-3 py-1 bg-white/20 hover:bg-white/30 rounded-lg text-sm"
@@ -632,10 +730,18 @@
                                         </div>
                                     )}
                                     
-                                    {lastAnnouncement && lastAnnouncement.ticketNumber === currentCall.ticketNumber && (
-                                        <div className="mt-4 text-green-300 text-sm">
-                                            <i className="fas fa-volume-up mr-2"></i>
-                                            {isRTL ? 'تم الإعلان عن التذكرة' : 'Ticket announced'}
+                                    {isSpeaking && (
+                                        <div className="mt-4">
+                                            <div className="inline-flex items-center gap-2 bg-blue-600 px-4 py-2 rounded-full">
+                                                <div className="flex space-x-1">
+                                                    <div className="w-2 h-6 bg-white rounded-full speaking-indicator" style={{animationDelay: '0ms'}}></div>
+                                                    <div className="w-2 h-6 bg-white rounded-full speaking-indicator" style={{animationDelay: '100ms'}}></div>
+                                                    <div className="w-2 h-6 bg-white rounded-full speaking-indicator" style={{animationDelay: '200ms'}}></div>
+                                                </div>
+                                                <span className="text-white text-sm font-medium">
+                                                    {t.announcementActive}
+                                                </span>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
