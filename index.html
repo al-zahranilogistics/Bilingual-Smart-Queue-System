@@ -3,96 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Zahrani - Display Screen</title>
+    <title>Al-Zahrani Logistics - Queue Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            overflow: hidden;
-            height: 100vh;
+        :root {
+            --primary-blue: #1e40af;
+            --secondary-blue: #3b82f6;
+            --accent-teal: #06b6d4;
+            --success-green: #10b981;
         }
         
-        /* TV Horizontal Layout */
-        .tv-container {
+        body { 
+            font-family: 'Cairo', 'Inter', sans-serif; 
+            margin: 0; 
+            overflow-x: hidden;
+        }
+        
+        .arabic { font-family: 'Cairo', sans-serif; }
+        .english { font-family: 'Inter', sans-serif; direction: ltr; text-align: left; }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
             display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .oval-logo {
+            width: 100px;
+            height: 50px;
+            border-radius: 50% / 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            padding: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .oval-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .connection-status.connected {
+            background: rgba(34, 197, 94, 0.1);
+            color: #16a34a;
+            border: 1px solid #86efac;
+        }
+        
+        .connection-status.disconnected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+        }
+        
+        /* Display Screen Styles */
+        .tv-display {
+            width: 100%;
             height: 100vh;
-            width: 100vw;
             background: linear-gradient(135deg, #0c1a2d 0%, #162a45 100%);
+            overflow: hidden;
             position: relative;
         }
         
-        /* Left Side - Current Call (70%) */
+        .display-header {
+            background: linear-gradient(90deg, #1e40af, #3b82f6);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid #60a5fa;
+        }
+        
+        .display-logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .display-company-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .time-display {
+            text-align: right;
+        }
+        
+        .current-time {
+            font-size: 2.5rem;
+            font-family: monospace;
+            font-weight: bold;
+            color: #10b981;
+        }
+        
+        .current-date {
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+        
+        .display-main-content {
+            display: flex;
+            height: calc(100vh - 85px);
+        }
+        
         .current-call-section {
             flex: 0.7;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 30px;
             border-right: 3px solid #3b82f6;
-            background: rgba(15, 23, 42, 0.7);
         }
         
-        /* Right Side - Recent Calls (30%) */
-        .recent-calls-section {
-            flex: 0.3;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            overflow-y: auto;
+        .call-title {
+            font-size: 2rem;
+            color: #60a5fa;
+            margin-bottom: 20px;
         }
         
-        /* Ticket Number - HUGE */
         .ticket-number {
-            font-size: 18vw;
+            font-size: 15rem;
             font-weight: 900;
             color: white;
             text-shadow: 
-                0 0 40px rgba(59, 130, 246, 0.9),
-                0 0 80px rgba(59, 130, 246, 0.7),
-                0 0 120px rgba(59, 130, 246, 0.5);
+                0 0 20px #3b82f6,
+                0 0 40px #3b82f6,
+                0 0 60px #3b82f6;
             margin: 20px 0;
-            animation: glow 2s ease-in-out infinite alternate;
+            animation: glow 2s infinite alternate;
         }
         
         @keyframes glow {
-            from { text-shadow: 0 0 30px rgba(59, 130, 246, 0.7); }
-            to { text-shadow: 0 0 50px rgba(59, 130, 246, 0.9); }
+            from { text-shadow: 0 0 20px #3b82f6; }
+            to { text-shadow: 0 0 40px #3b82f6, 0 0 80px #3b82f6; }
         }
         
-        /* Department Info */
-        .dept-info {
-            text-align: center;
+        .dept-name-arabic {
+            font-size: 2.5rem;
+            color: #93c5fd;
+            font-weight: bold;
             margin-top: 20px;
         }
         
-        .dept-name-ar {
-            font-size: 3.5vw;
-            color: #60a5fa;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .dept-name-en {
-            font-size: 2.5vw;
-            color: #93c5fd;
-            margin-bottom: 15px;
+        .dept-name-english {
+            font-size: 1.8rem;
+            color: #bfdbfe;
+            margin-bottom: 20px;
         }
         
         .room-info {
-            font-size: 2vw;
-            color: #bfdbfe;
+            font-size: 1.5rem;
+            color: #dbeafe;
             background: rgba(59, 130, 246, 0.2);
-            padding: 10px 20px;
-            border-radius: 10px;
-            margin: 5px 0;
+            padding: 12px 25px;
+            border-radius: 12px;
+            margin: 10px 0;
         }
         
-        /* Recent Calls */
+        .recent-calls-section {
+            flex: 0.3;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
         .recent-title {
-            font-size: 2vw;
+            font-size: 1.5rem;
             color: #60a5fa;
             margin-bottom: 15px;
             padding-bottom: 10px;
@@ -100,95 +239,14 @@
             text-align: center;
         }
         
-        .recent-ticket {
+        .recent-item {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 12px;
             margin-bottom: 10px;
-            border-right: 4px solid;
-            transition: all 0.3s;
+            border-right: 5px solid;
         }
         
-        .recent-ticket:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateX(-5px);
-        }
-        
-        /* Header */
-        .header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(30, 41, 59, 0.9);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            border-bottom: 2px solid #3b82f6;
-        }
-        
-        .logo-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo {
-            background: white;
-            padding: 8px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .company-name {
-            font-size: 1.8vw;
-            font-weight: bold;
-        }
-        
-        /* Time Display */
-        .time-display {
-            text-align: center;
-        }
-        
-        .current-time {
-            font-size: 2.5vw;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            color: #10b981;
-        }
-        
-        .current-date {
-            font-size: 1.2vw;
-            color: #94a3b8;
-        }
-        
-        /* Status */
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
-        
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #10b981;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        
-        /* Ticker */
         .ticker {
             position: absolute;
             bottom: 0;
@@ -202,8 +260,8 @@
         .ticker-content {
             display: inline-block;
             white-space: nowrap;
-            animation: ticker 30s linear infinite;
-            font-size: 1.3vw;
+            animation: ticker 40s linear infinite;
+            font-size: 1.1rem;
             padding-left: 100%;
         }
         
@@ -212,153 +270,288 @@
             100% { transform: translateX(-100%); }
         }
         
-        /* Speaking Indicator */
+        .no-calls {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+        
+        .no-calls i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
         .speaking-indicator {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(245, 158, 11, 0.9);
+            top: 15px;
+            right: 15px;
+            background: #f59e0b;
             color: white;
             padding: 8px 15px;
             border-radius: 20px;
-            font-size: 1.2vw;
+            font-size: 1rem;
             display: flex;
             align-items: center;
             gap: 8px;
-            animation: speakingPulse 1s infinite;
-            z-index: 1000;
+            animation: pulse 1s infinite;
         }
         
-        @keyframes speakingPulse {
+        @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.7; }
             100% { opacity: 1; }
         }
         
-        /* No Calls */
-        .no-calls {
-            text-align: center;
-            padding: 40px 20px;
-            color: #94a3b8;
-            font-size: 1.5vw;
+        /* Hide elements by default */
+        [data-screen] {
+            display: none;
         }
         
-        .no-calls i {
-            font-size: 3vw;
-            margin-bottom: 15px;
+        [data-screen].active {
             display: block;
         }
         
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .ticket-number { font-size: 15vw; }
-            .dept-name-ar { font-size: 4vw; }
-            .dept-name-en { font-size: 3vw; }
-            .room-info { font-size: 2.5vw; }
+        /* Navigation */
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        /* Arabic Font */
-        .arabic { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .english { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: ltr; }
+        .nav-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid #3b82f6;
+        }
+        
+        .screen-indicator {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 999;
+        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
-<body>
-    <!-- Speaking Indicator -->
-    <div id="speakingIndicator" class="speaking-indicator" style="display: none;">
-        <i class="fas fa-volume-up"></i>
-        <span id="speakingText">جاري النداء...</span>
+<body class="bg-gray-50">
+    <!-- Connection Status -->
+    <div id="connectionStatus" class="connection-status">
+        <i class="fas fa-wifi"></i>
+        <span>جاري الاتصال...</span>
     </div>
 
-    <div class="tv-container">
-        <!-- Header -->
-        <div class="header">
-            <div class="logo-section">
-                <div class="logo">
-                    <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo" style="height: 50px; width: auto;">
+    <!-- Screen Indicator -->
+    <div id="screenIndicator" class="screen-indicator hidden">
+        <i class="fas fa-tv mr-2"></i>
+        <span>شاشة العرض</span>
+    </div>
+
+    <!-- Header (Visible on Visitor Screen only) -->
+    <header id="mainHeader" class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <!-- Logo and Company -->
+                <div class="flex items-center gap-3">
+                    <div class="oval-logo">
+                        <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo">
+                    </div>
+                    <div class="arabic">
+                        <h1 class="text-xl font-bold text-gray-800">الزهراني للخدمات اللوجستية</h1>
+                        <p class="text-sm text-blue-600">نظام إدارة الطوابير الذكي</p>
+                    </div>
                 </div>
-                <div>
-                    <div class="company-name arabic">الزهراني للخدمات اللوجستية</div>
-                    <div class="company-name english">Al-Zahrani Logistics</div>
+                
+                <!-- Navigation -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Language Toggle -->
+                    <button id="languageToggle" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-2">
+                        <span id="languageText" class="font-medium text-blue-600">ع</span>
+                        <i class="fas fa-globe text-gray-500"></i>
+                    </button>
+                    
+                    <!-- Screen Navigation -->
+                    <button data-screen="visitor" class="nav-btn bg-blue-600 text-white hover:bg-blue-700 active">
+                        <i class="fas fa-user"></i>
+                        شاشة الزوار
+                    </button>
+                    
+                    <button data-screen="display" class="nav-btn bg-green-600 text-white hover:bg-green-700">
+                        <i class="fas fa-tv"></i>
+                        شاشة العرض
+                    </button>
+                    
+                    <a href="admin.html" class="nav-btn bg-red-600 text-white hover:bg-red-700">
+                        <i class="fas fa-cog"></i>
+                        دخول الموظفين
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Visitor Screen -->
+    <main id="visitorScreen" data-screen="visitor" class="active max-w-7xl mx-auto px-4 py-8">
+        <div class="text-center mb-10">
+            <h1 id="welcomeText" class="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+                مرحباً بكم في شركة الزهراني
+            </h1>
+            <p id="selectDeptText" class="text-gray-600 text-lg">
+                اختر القسم المناسب لخدمتكم
+            </p>
+        </div>
+        
+        <!-- Departments Grid -->
+        <div id="departmentsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+            <!-- Departments will be loaded here -->
+        </div>
+        
+        <!-- System Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card text-center">
+                <div id="waitingCount" class="text-3xl font-bold text-blue-600">0</div>
+                <div class="text-gray-600">في الانتظار</div>
+            </div>
+            <div class="card text-center">
+                <div id="calledCount" class="text-3xl font-bold text-green-600">0</div>
+                <div class="text-gray-600">المنداء عليهم</div>
+            </div>
+            <div class="card text-center">
+                <div id="totalCount" class="text-3xl font-bold text-purple-600">0</div>
+                <div class="text-gray-600">إجمالي التذاكر</div>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="card bg-blue-50 border-blue-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-info-circle text-blue-500"></i>
+                تعليمات الاستخدام
+            </h3>
+            <ol id="instructionsList" class="space-y-2 text-gray-700 list-decimal pr-5">
+                <li>اختر القسم المناسب لخدمتك</li>
+                <li>احفظ رقم التذكرة المعروض</li>
+                <li>اجلس في منطقة الانتظار</li>
+                <li>انتظر حتى ظهور رقمك على الشاشة</li>
+                <li>توجه إلى المكتب المحدد عند النداء</li>
+            </ol>
+        </div>
+    </main>
+
+    <!-- Display Screen -->
+    <div id="displayScreen" data-screen="display" class="tv-display">
+        <!-- Header -->
+        <div class="display-header">
+            <div class="display-logo-section">
+                <div class="oval-logo">
+                    <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo">
+                </div>
+                <div class="display-company-name">
+                    الزهراني للخدمات اللوجستية
                 </div>
             </div>
             
             <div class="time-display">
-                <div id="currentTime" class="current-time">00:00:00</div>
-                <div id="currentDate" class="current-date">...</div>
-            </div>
-            
-            <div class="status-indicator">
-                <div class="status-dot"></div>
-                <span id="statusText" class="arabic">متصل بالنظام</span>
+                <div id="displayCurrentTime" class="current-time">00:00:00</div>
+                <div id="displayCurrentDate" class="current-date">الاثنين ١ يناير ٢٠٢٤</div>
             </div>
         </div>
-
-        <!-- Current Call Section -->
-        <div class="current-call-section">
-            <div id="currentCallContainer" style="text-align: center;">
-                <div class="arabic" style="font-size: 2.5vw; color: #60a5fa; margin-bottom: 20px;">
-                    النداء الحالي
+        
+        <!-- Main Content -->
+        <div class="display-main-content">
+            <!-- Current Call Section -->
+            <div class="current-call-section">
+                <div id="speakingIndicator" class="speaking-indicator hidden">
+                    <i class="fas fa-volume-up"></i>
+                    جاري النداء
                 </div>
                 
                 <div id="noCurrentCall" class="no-calls">
-                    <i class="fas fa-clock"></i>
-                    <div class="arabic" style="font-size: 2vw; margin-bottom: 10px;">بانتظار الخدمة...</div>
-                    <div class="english" style="font-size: 1.5vw;">Waiting for service...</div>
+                    <i class="fas fa-volume-off"></i>
+                    <h3>لا يوجد تذاكر حالياً</h3>
+                    <p>في انتظار تذاكر جديدة...</p>
                 </div>
                 
-                <div id="currentCallDisplay" style="display: none;">
-                    <div id="ticketNumber" class="ticket-number">123</div>
-                    
-                    <div class="dept-info">
-                        <div id="deptNameAr" class="dept-name-ar arabic">قسم المركبات</div>
-                        <div id="deptNameEn" class="dept-name-en english">Vehicles Department</div>
-                        
-                        <div class="arabic room-info">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span id="roomAr">مكتب المركبات</span>
+                <div id="currentCallInfo" class="text-center hidden">
+                    <div class="call-title">التذكرة الحالية</div>
+                    <div id="displayTicketNumber" class="ticket-number">0</div>
+                    <div id="displayDeptArabic" class="dept-name-arabic">قسم المركبات</div>
+                    <div id="displayDeptEnglish" class="dept-name-english">Vehicles Department</div>
+                    <div id="displayRoomArabic" class="room-info">مكتب المركبات</div>
+                    <div id="displayRoomEnglish" class="room-info">Vehicles Office</div>
+                </div>
+            </div>
+            
+            <!-- Recent Calls Section -->
+            <div class="recent-calls-section">
+                <div class="recent-title">آخر ١٠ تذاكر</div>
+                <div id="recentCallsList"></div>
+            </div>
+        </div>
+        
+        <!-- Ticker -->
+        <div class="ticker">
+            <div class="ticker-content" id="tickerContent">
+                • مرحباً بكم في شركة الزهراني للخدمات اللوجستية • نظام إدارة الطوابير الذكي • يرجى الانتظار في منطقة الانتظار حتى نداء رقمك • شكراً لتفهمكم •
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (Visible on Visitor Screen only) -->
+    <footer id="mainFooter" class="bg-gray-800 text-white py-6">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-truck text-2xl text-blue-300"></i>
+                    <div>
+                        <div class="font-bold">الزهراني للخدمات اللوجستية</div>
+                        <div class="text-sm text-gray-400">نظام إدارة الطوابير الذكي</div>
+                    </div>
+                </div>
+                
+                <div class="text-center text-gray-300">
+                    <div>© 2025 جميع الحقوق محفوظة</div>
+                    <div class="text-sm mt-1">رقم الدعم الفني: 0906212</div>
+                </div>
+                
+                <div class="flex flex-wrap gap-4">
+                    <button data-screen="visitor" class="text-gray-300 hover:text-white">شاشة الزوار</button>
+                    <button data-screen="display" class="text-gray-300 hover:text-white">شاشة العرض</button>
+                    <a href="admin.html" class="text-gray-300 hover:text-white">لوحة التحكم</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal (Visitor Screen) -->
+    <div id="successModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 p-4">
+        <div class="card max-w-md w-full bg-gradient-to-br from-blue-50 to-white">
+            <div class="text-center space-y-6">
+                <i class="fas fa-ticket-alt text-5xl text-blue-500"></i>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800">تم استخراج تذكرتك!</h3>
+                    <div id="ticketNumber" class="text-6xl font-black text-blue-600 mt-4 tracking-wider">
+                        123
+                    </div>
+                    <div class="mt-4 space-y-2">
+                        <div id="ticketDept" class="text-lg font-medium text-gray-700">
+                            القسم: قسم المركبات
                         </div>
-                        <div class="english room-info">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span id="roomEn">Vehicles Office</span>
+                        <div class="text-gray-600">
+                            يرجى الانتظار حتى نداء رقمك
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Recent Calls Section -->
-        <div class="recent-calls-section">
-            <div class="recent-title arabic">
-                <i class="fas fa-history"></i>
-                التذاكر المنداة مؤخراً
-            </div>
-            
-            <div id="recentCallsList">
-                <!-- Recent calls will be added here by JavaScript -->
-            </div>
-            
-            <div id="noRecentCalls" class="no-calls" style="display: none;">
-                <i class="fas fa-ticket-alt"></i>
-                <div class="arabic">لا توجد تذاكر مناداة</div>
-                <div class="english" style="margin-top: 5px;">No tickets called yet</div>
-            </div>
-        </div>
-
-        <!-- Ticker -->
-        <div class="ticker">
-            <div class="ticker-content">
-                <span class="arabic" style="margin-right: 50px;">🏢 شركة الزهراني للخدمات اللوجستية ترحب بكم</span>
-                <span class="arabic" style="margin-right: 50px;">🎫 يرجى الاحتفاظ برقم التذكرة ومتابعة الشاشة</span>
-                <span class="arabic" style="margin-right: 50px;">🕒 نظام إدارة الطوابير الذكي 2024</span>
-                <span class="english" style="margin-right: 50px;">🏢 Al-Zahrani Logistics welcomes you</span>
-                <span class="english" style="margin-right: 50px;">🎫 Please keep your ticket number and follow the screen</span>
-                <span class="english" style="margin-right: 50px;">🕒 Smart Queue Management System 2024</span>
+                <button onclick="closeSuccessModal()" class="btn-primary">
+                    تم
+                </button>
             </div>
         </div>
     </div>
@@ -367,7 +560,7 @@
         // === Firebase Configuration ===
         const firebaseConfig = {
             apiKey: "AIzaSyA2WwSnB54y4Xf3p_WPFHeSf7QOGgi3rS8",
-            authDomain: "zahrani-4bbf3.firebasestorage.app",
+            authDomain: "zahrani-4bbf3.firebaseapp.com",
             databaseURL: "https://zahrani-4bbf3-default-rtdb.firebaseio.com",
             projectId: "zahrani-4bbf3",
             storageBucket: "zahrani-4bbf3.firebasestorage.app",
@@ -377,398 +570,532 @@
 
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const firestore = firebase.firestore();
+        const db = firebase.firestore();
+        const realtimeDB = firebase.database();
 
-        // === Departments Configuration ===
-        const DEPARTMENTS = {
-            vehicles: { 
-                nameAr: "قسم المركبات", 
-                nameEn: "Vehicles Department",
-                roomAr: "مكتب المركبات", 
-                roomEn: "Vehicles Office",
-                color: "#3b82f6",
-                icon: "fa-truck"
+        // === System Configuration ===
+        const CONFIG = {
+            companyName: { ar: "الزهراني للخدمات اللوجستية", en: "Al-Zahrani Logistics" },
+            systemName: { ar: "نظام إدارة الطوابير الذكي", en: "Smart Queue Management System" },
+            maxTicketNumber: 10000,
+            departments: [
+                { id: 'vehicles', nameAr: "قسم المركبات", nameEn: "Vehicles Department", color: "#3b82f6", icon: "fa-truck", roomAr: "مكتب المركبات", roomEn: "Vehicles Office" },
+                { id: 'finance', nameAr: "قسم المالية", nameEn: "Finance Department", color: "#10b981", icon: "fa-money-bill-wave", roomAr: "مكتب المدير المالي", roomEn: "Finance Office" },
+                { id: 'supervisors', nameAr: "مدير التشغيل", nameEn: "Supervisors Department", color: "#8b5cf6", icon: "fa-user-tie", roomAr: "مدير التشغيل", roomEn: "Supervisors Office" },
+                { id: 'ninja_sup', nameAr: "مشرف نينجا", nameEn: "Ninja Supervisor", color: "#ec4899", icon: "fa-user-ninja", roomAr: "مكتب مشرف نينجا", roomEn: "Ninja Supervisor Office" },
+                { id: 'kmart_ninja', nameAr: "مشرف كيمارت", nameEn: "K-Mart Department", color: "#f59e0b", icon: "fa-store", roomAr: "مكتب كيمارت", roomEn: "K-Mart Office" },
+                { id: 'hr', nameAr: "الموارد البشرية", nameEn: "Human Resources", color: "#ef4444", icon: "fa-users", roomAr: "مكتب الموارد البشرية", roomEn: "HR Office" },
+                { id: 'petroleum', nameAr: "قسم البترول", nameEn: "Petroleum Department", color: "#06b6d4", icon: "fa-gas-pump", roomAr: "مكتب البترول", roomEn: "Petroleum Office" },
+                { id: 'naqel_mgr', nameAr: "مدير تشغيل ناقل", nameEn: "Naqel Project", color: "#8b5cf6", icon: "fa-truck-fast", roomAr: "مكتب مدير التشغيل", roomEn: "Naqel Project Office" },
+                { id: 'ninja_mgr', nameAr: "مشروع نينجا", nameEn: "Ninja Project", color: "#6366f1", icon: "fa-bolt", roomAr: "مكتب مشروع نينجا", roomEn: "Ninja Project Office" }
+            ]
+        };
+
+        // === Language Data ===
+        const LANGUAGES = {
+            ar: {
+                welcome: "مرحباً بكم في شركة الزهراني",
+                selectDept: "اختر القسم المناسب لخدمتكم",
+                waiting: "في الانتظار",
+                lastNumber: "آخر رقم",
+                instructions: "تعليمات الاستخدام",
+                instruction1: "اختر القسم المناسب لخدمتك",
+                instruction2: "احفظ رقم التذكرة المعروض",
+                instruction3: "اجلس في منطقة الانتظار",
+                instruction4: "انتظر حتى ظهور رقمك على الشاشة",
+                instruction5: "توجه إلى المكتب المحدد عند النداء",
+                generateTicket: "توليد تذكرة",
+                connected: "متصل",
+                disconnected: "غير متصل",
+                currentTicket: "التذكرة الحالية",
+                last10Tickets: "آخر ١٠ تذاكر",
+                noTickets: "لا يوجد تذاكر حالياً",
+                waitingNew: "في انتظار تذاكر جديدة...",
+                speakingNow: "جاري النداء"
             },
-            finance: { 
-                nameAr: "قسم المالية", 
-                nameEn: "Finance Department",
-                roomAr: "مكتب المدير المالي", 
-                roomEn: "Finance Office",
-                color: "#10b981",
-                icon: "fa-money-bill-wave"
-            },
-            supervisors: { 
-                nameAr: "مدير التشغيل", 
-                nameEn: "Supervisors Department",
-                roomAr: "مكتب مدير التشغيل", 
-                roomEn: "Supervisors Office",
-                color: "#8b5cf6",
-                icon: "fa-user-tie"
-            },
-            ninja_sup: { 
-                nameAr: "مشرف نينجا", 
-                nameEn: "Ninja Supervisor",
-                roomAr: "مكتب مشرف نينجا", 
-                roomEn: "Ninja Supervisor Office",
-                color: "#ec4899",
-                icon: "fa-user-ninja"
-            },
-            kmart_ninja: { 
-                nameAr: "مشرف كيمارت", 
-                nameEn: "K-Mart Department",
-                roomAr: "مكتب كيمارت", 
-                roomEn: "K-Mart Office",
-                color: "#f59e0b",
-                icon: "fa-store"
-            },
-            hr: { 
-                nameAr: "الموارد البشرية", 
-                nameEn: "Human Resources",
-                roomAr: "مكتب الموارد البشرية", 
-                roomEn: "HR Office",
-                color: "#ef4444",
-                icon: "fa-users"
-            },
-            petroleum: { 
-                nameAr: "قسم البترول", 
-                nameEn: "Petroleum Department",
-                roomAr: "مكتب البترول", 
-                roomEn: "Petroleum Office",
-                color: "#06b6d4",
-                icon: "fa-gas-pump"
-            },
-            naqel_mgr: { 
-                nameAr: "مدير تشغيل ناقل", 
-                nameEn: "Naqel Project",
-                roomAr: "مكتب مدير التشغيل", 
-                roomEn: "Naqel Project Office",
-                color: "#8b5cf6",
-                icon: "fa-truck-fast"
-            },
-            ninja_mgr: { 
-                nameAr: "مشروع نينجا", 
-                nameEn: "Ninja Project",
-                roomAr: "مكتب مشروع نينجا", 
-                roomEn: "Ninja Project Office",
-                color: "#6366f1",
-                icon: "fa-bolt"
+            en: {
+                welcome: "Welcome to Al-Zahrani Company",
+                selectDept: "Select the appropriate department",
+                waiting: "Waiting",
+                lastNumber: "Last Number",
+                instructions: "Usage Instructions",
+                instruction1: "Select the appropriate department",
+                instruction2: "Save the displayed ticket number",
+                instruction3: "Sit in the waiting area",
+                instruction4: "Wait for your number to appear on screen",
+                instruction5: "Proceed to the specified office when called",
+                generateTicket: "Generate Ticket",
+                connected: "Connected",
+                disconnected: "Disconnected",
+                currentTicket: "Current Ticket",
+                last10Tickets: "Last 10 Tickets",
+                noTickets: "No tickets currently",
+                waitingNew: "Waiting for new tickets...",
+                speakingNow: "Speaking Now"
             }
         };
 
         // === Global Variables ===
-        let currentCall = null;
-        let recentCalls = [];
-        let isSpeaking = false;
-        let lastAnnouncedTicket = null;
-        let lastAnnouncementTime = 0;
+        let currentLanguage = 'ar';
+        let isOnline = true;
+        let isGeneratingTicket = false;
+        let currentScreen = 'visitor';
+        let calledTickets = [];
+        let recentTickets = [];
 
-        // === Initialize Speech Synthesis ===
-        function initSpeechSynthesis() {
-            if ('speechSynthesis' in window) {
-                console.log("✅ Speech synthesis is available");
+        // === Initialize ===
+        async function init() {
+            updateLanguage();
+            initDepartments();
+            initFirebaseListeners();
+            updateConnectionStatus();
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
+            await initializeCounters();
+            
+            // Setup screen navigation
+            setupScreenNavigation();
+            
+            // Show current screen
+            showScreen(currentScreen);
+        }
+
+        // === Screen Management ===
+        function setupScreenNavigation() {
+            document.querySelectorAll('[data-screen]').forEach(btn => {
+                if (btn.tagName === 'BUTTON') {
+                    btn.addEventListener('click', () => {
+                        const screen = btn.getAttribute('data-screen');
+                        showScreen(screen);
+                    });
+                }
+            });
+        }
+
+        function showScreen(screen) {
+            currentScreen = screen;
+            
+            // Update active screen
+            document.querySelectorAll('[data-screen]').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-screen') === screen) {
+                    el.classList.add('active');
+                }
+            });
+            
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-screen') === screen) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Show/hide header and footer based on screen
+            const showHeaderFooter = screen === 'visitor';
+            document.getElementById('mainHeader').style.display = showHeaderFooter ? 'block' : 'none';
+            document.getElementById('mainFooter').style.display = showHeaderFooter ? 'block' : 'none';
+            
+            // Show/hide screen indicator
+            document.getElementById('screenIndicator').classList.toggle('hidden', screen === 'visitor');
+        }
+
+        // === Language Functions ===
+        function updateLanguage() {
+            const t = LANGUAGES[currentLanguage];
+            const isRTL = currentLanguage === 'ar';
+            
+            document.body.dir = isRTL ? 'rtl' : 'ltr';
+            document.getElementById('languageText').textContent = currentLanguage === 'ar' ? 'ع' : 'EN';
+            document.getElementById('welcomeText').textContent = t.welcome;
+            document.getElementById('selectDeptText').textContent = t.selectDept;
+            document.getElementById('instructionsList').innerHTML = `
+                <li>${t.instruction1}</li>
+                <li>${t.instruction2}</li>
+                <li>${t.instruction3}</li>
+                <li>${t.instruction4}</li>
+                <li>${t.instruction5}</li>
+            `;
+            
+            // Update display screen texts
+            document.querySelector('.call-title').textContent = t.currentTicket;
+            document.querySelector('.recent-title').textContent = t.last10Tickets;
+            document.getElementById('speakingIndicator').innerHTML = `<i class="fas fa-volume-up"></i> ${t.speakingNow}`;
+            
+            const noCallsDiv = document.getElementById('noCurrentCall');
+            if (noCallsDiv) {
+                noCallsDiv.innerHTML = `
+                    <i class="fas fa-volume-off"></i>
+                    <h3>${t.noTickets}</h3>
+                    <p>${t.waitingNew}</p>
+                `;
+            }
+            
+            updateDepartmentDisplay();
+        }
+
+        // === Department Functions ===
+        function initDepartments() {
+            const container = document.getElementById('departmentsGrid');
+            container.innerHTML = CONFIG.departments.map(dept => `
+                <div class="card hover:border-blue-300 text-left">
+                    <div class="flex flex-col items-center text-center">
+                        <div class="icon-wrapper" style="background-color: ${dept.color}">
+                            <i class="fas ${dept.icon}"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2 dept-name">
+                            ${currentLanguage === 'ar' ? dept.nameAr : dept.nameEn}
+                        </h3>
+                        <div class="text-sm text-gray-500 mb-3 dept-room">
+                            ${currentLanguage === 'ar' ? dept.roomAr : dept.roomEn}
+                        </div>
+                        <div class="mt-2">
+                            <div class="text-2xl font-bold text-gray-700 dept-last-number" data-dept="${dept.id}">0</div>
+                            <div class="text-xs text-gray-500">${LANGUAGES[currentLanguage].lastNumber}</div>
+                            <div class="mt-2 text-sm text-blue-600 dept-waiting" data-dept="${dept.id}">0 ${LANGUAGES[currentLanguage].waiting}</div>
+                        </div>
+                        <div class="mt-4">
+                            <button onclick="generateTicket('${dept.id}')" class="btn-primary generate-btn" data-dept="${dept.id}">
+                                <i class="fas fa-ticket-alt mr-2"></i>
+                                ${LANGUAGES[currentLanguage].generateTicket}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateDepartmentDisplay() {
+            const t = LANGUAGES[currentLanguage];
+            
+            document.querySelectorAll('.dept-name').forEach((el, index) => {
+                const dept = CONFIG.departments[index];
+                el.textContent = currentLanguage === 'ar' ? dept.nameAr : dept.nameEn;
+            });
+            
+            document.querySelectorAll('.dept-room').forEach((el, index) => {
+                const dept = CONFIG.departments[index];
+                el.textContent = currentLanguage === 'ar' ? dept.roomAr : dept.roomEn;
+            });
+            
+            document.querySelectorAll('.generate-btn').forEach(btn => {
+                btn.innerHTML = `<i class="fas fa-ticket-alt mr-2"></i>${t.generateTicket}`;
+            });
+        }
+
+        // === DateTime Functions ===
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format time
+            const timeStr = now.toLocaleTimeString('ar-EG', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // Format date
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const dateStr = now.toLocaleDateString('ar-EG', dateOptions);
+            
+            // Update both screens
+            const timeElements = document.querySelectorAll('.current-time');
+            const dateElements = document.querySelectorAll('.current-date');
+            
+            timeElements.forEach(el => el.textContent = timeStr);
+            dateElements.forEach(el => el.textContent = dateStr);
+        }
+
+        // === Firebase Functions ===
+        async function initializeCounters() {
+            try {
+                for (const dept of CONFIG.departments) {
+                    const counterRef = db.collection('counters').doc(dept.id);
+                    const doc = await counterRef.get();
+                    
+                    if (!doc.exists) {
+                        await counterRef.set({
+                            lastNumber: 0,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error initializing counters:', error);
+            }
+        }
+
+        async function getNextTicketNumber(deptId) {
+            try {
+                const counterRef = db.collection('counters').doc(deptId);
                 
-                // Try to speak a silent test to initialize
-                const testUtterance = new SpeechSynthesisUtterance('');
-                testUtterance.volume = 0;
-                speechSynthesis.speak(testUtterance);
-                speechSynthesis.cancel();
+                const result = await db.runTransaction(async (transaction) => {
+                    const counterDoc = await transaction.get(counterRef);
+                    let newNumber = 1;
+                    
+                    if (counterDoc.exists) {
+                        const data = counterDoc.data();
+                        newNumber = (data.lastNumber || 0) + 1;
+                        if (newNumber > CONFIG.maxTicketNumber) {
+                            newNumber = 1;
+                        }
+                    }
+                    
+                    transaction.set(counterRef, {
+                        lastNumber: newNumber,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                    
+                    return newNumber;
+                });
                 
-                return true;
+                return result.toString();
+            } catch (error) {
+                console.error('Error getting ticket number:', error);
+                throw error;
+            }
+        }
+
+        async function generateTicket(deptId) {
+            if (!isOnline || isGeneratingTicket) return;
+            
+            isGeneratingTicket = true;
+            const button = document.querySelector(`button[data-dept="${deptId}"]`);
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>جاري التوليد...';
+            button.disabled = true;
+            
+            try {
+                const dept = CONFIG.departments.find(d => d.id === deptId);
+                const ticketNumber = await getNextTicketNumber(deptId);
+                
+                const ticket = {
+                    id: `ticket_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                    number: ticketNumber,
+                    deptId,
+                    displayText: ticketNumber,
+                    status: 'waiting',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    departmentNameAr: dept.nameAr,
+                    departmentNameEn: dept.nameEn,
+                    roomAr: dept.roomAr,
+                    roomEn: dept.roomEn
+                };
+                
+                await db.collection('tickets').doc(ticket.id).set(ticket);
+                
+                showSuccessModal(ticketNumber, dept.nameAr, dept.nameEn);
+                
+            } catch (error) {
+                console.error('Error generating ticket:', error);
+                alert(currentLanguage === 'ar' ? 'حدث خطأ في توليد التذكرة' : 'Error generating ticket');
+            } finally {
+                isGeneratingTicket = false;
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        }
+
+        function initFirebaseListeners() {
+            // Listen to all tickets for visitor screen
+            db.collection('tickets')
+                .orderBy('createdAt', 'desc')
+                .limit(100)
+                .onSnapshot(snapshot => {
+                    const tickets = [];
+                    snapshot.forEach(doc => {
+                        tickets.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    updateStats(tickets);
+                    updateRecentTickets(tickets);
+                }, error => {
+                    console.error('Error listening to tickets:', error);
+                });
+            
+            // Listen to called tickets for display screen
+            db.collection('tickets')
+                .where('status', '==', 'called')
+                .orderBy('updatedAt', 'desc')
+                .limit(20)
+                .onSnapshot(snapshot => {
+                    calledTickets = [];
+                    snapshot.forEach(doc => {
+                        calledTickets.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    updateCurrentCall();
+                });
+            
+            // Listen to department counters
+            CONFIG.departments.forEach(dept => {
+                db.collection('counters').doc(dept.id)
+                    .onSnapshot(doc => {
+                        if (doc.exists) {
+                            const data = doc.data();
+                            const lastNumber = data.lastNumber || 0;
+                            const el = document.querySelector(`.dept-last-number[data-dept="${dept.id}"]`);
+                            if (el) el.textContent = lastNumber;
+                        }
+                    });
+            });
+            
+            // Connection status
+            realtimeDB.ref('.info/connected').on('value', snapshot => {
+                isOnline = snapshot.val();
+                updateConnectionStatus();
+            });
+        }
+
+        function updateStats(tickets) {
+            const waitingCount = tickets.filter(t => t.status === 'waiting').length;
+            const calledCount = tickets.filter(t => t.status === 'called').length;
+            const totalCount = tickets.length;
+            
+            document.getElementById('waitingCount').textContent = waitingCount;
+            document.getElementById('calledCount').textContent = calledCount;
+            document.getElementById('totalCount').textContent = totalCount;
+            
+            updateDepartmentStats(tickets);
+        }
+
+        function updateDepartmentStats(tickets = []) {
+            CONFIG.departments.forEach(dept => {
+                const waitingCount = tickets.filter(t => t.deptId === dept.id && t.status === 'waiting').length;
+                const waitingElement = document.querySelector(`.dept-waiting[data-dept="${dept.id}"]`);
+                if (waitingElement) {
+                    waitingElement.textContent = `${waitingCount} ${LANGUAGES[currentLanguage].waiting}`;
+                }
+            });
+        }
+
+        function updateRecentTickets(tickets) {
+            recentTickets = tickets.slice(0, 10);
+            
+            if (currentScreen === 'display') {
+                updateRecentCallsList();
+            }
+        }
+
+        function updateCurrentCall() {
+            const currentCallInfo = document.getElementById('currentCallInfo');
+            const noCurrentCall = document.getElementById('noCurrentCall');
+            const speakingIndicator = document.getElementById('speakingIndicator');
+            
+            if (calledTickets.length > 0) {
+                const latestCalled = calledTickets[0];
+                const dept = CONFIG.departments.find(d => d.id === latestCalled.deptId) || CONFIG.departments[0];
+                
+                // Update display
+                document.getElementById('displayTicketNumber').textContent = latestCalled.number;
+                document.getElementById('displayDeptArabic').textContent = dept.nameAr;
+                document.getElementById('displayDeptEnglish').textContent = dept.nameEn;
+                document.getElementById('displayRoomArabic').textContent = dept.roomAr;
+                document.getElementById('displayRoomEnglish').textContent = dept.roomEn;
+                
+                // Show/hide elements
+                currentCallInfo.classList.remove('hidden');
+                noCurrentCall.classList.add('hidden');
+                speakingIndicator.classList.remove('hidden');
+                
+                // Update border color based on department
+                currentCallInfo.style.borderColor = dept.color;
             } else {
-                console.log("❌ Speech synthesis not supported");
-                return false;
+                currentCallInfo.classList.add('hidden');
+                noCurrentCall.classList.remove('hidden');
+                speakingIndicator.classList.add('hidden');
+            }
+            
+            if (currentScreen === 'display') {
+                updateRecentCallsList();
             }
         }
 
-        // === Enhanced Speech Announcement ===
-        function speakAnnouncement(ticketNumber, roomAr, roomEn, deptNameAr, deptNameEn) {
-            if (!('speechSynthesis' in window) || isSpeaking) {
+        function updateRecentCallsList() {
+            const recentCallsList = document.getElementById('recentCallsList');
+            
+            // Combine recent tickets and called tickets
+            const allRecent = [...calledTickets, ...recentTickets]
+                .filter((ticket, index, self) => 
+                    index === self.findIndex(t => t.id === ticket.id)
+                )
+                .slice(0, 10);
+            
+            if (allRecent.length === 0) {
+                recentCallsList.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-ticket-alt text-3xl mb-3"></i>
+                        <p>لا توجد تذاكر حديثة</p>
+                    </div>
+                `;
                 return;
             }
-
-            // Prevent duplicate announcements within 20 seconds
-            const now = Date.now();
-            const announcementKey = `${ticketNumber}_${roomAr}`;
             
-            if (lastAnnouncedTicket === announcementKey && (now - lastAnnouncementTime) < 20000) {
-                console.log("⚠️ Skipping duplicate announcement");
-                return;
-            }
-
-            isSpeaking = true;
-            lastAnnouncedTicket = announcementKey;
-            lastAnnouncementTime = now;
-
-            // Show speaking indicator
-            const indicator = document.getElementById('speakingIndicator');
-            const speakingText = document.getElementById('speakingText');
-            indicator.style.display = 'flex';
-
-            // Clear any ongoing speech
-            speechSynthesis.cancel();
-
-            // Get available voices
-            const voices = speechSynthesis.getVoices();
-            const arabicVoice = voices.find(v => v.lang.startsWith('ar') || v.lang.includes('ar'));
-            const englishVoice = voices.find(v => v.lang.startsWith('en') || v.lang.includes('en'));
-
-            console.log("🎙️ Available voices:", voices.length);
-            console.log("🎙️ Arabic voice:", arabicVoice?.name || 'Default');
-            console.log("🎙️ English voice:", englishVoice?.name || 'Default');
-
-            // 1. ARABIC ANNOUNCEMENT - FIRST
-            const arabicText = `التذكرة رقم ${ticketNumber}، يرجى التوجه إلى ${roomAr}`;
-            const utteranceAr = new SpeechSynthesisUtterance(arabicText);
-            utteranceAr.lang = 'ar-SA';
-            utteranceAr.rate = 0.8;  // سرعة مناسبة للعربية
-            utteranceAr.pitch = 1;
-            utteranceAr.volume = 1;
-            
-            if (arabicVoice) {
-                utteranceAr.voice = arabicVoice;
-            }
-
-            // 2. ENGLISH ANNOUNCEMENT - SECOND
-            const englishText = `Ticket number ${ticketNumber}, please proceed to ${roomEn}`;
-            const utteranceEn = new SpeechSynthesisUtterance(englishText);
-            utteranceEn.lang = 'en-US';
-            utteranceEn.rate = 0.8;  // نفس السرعة
-            utteranceEn.pitch = 1;
-            utteranceEn.volume = 1;
-            
-            if (englishVoice) {
-                utteranceEn.voice = englishVoice;
-            }
-
-            // Event handlers
-            utteranceAr.onstart = () => {
-                speakingText.textContent = "جاري النداء بالعربية...";
-                console.log("🔊 Starting Arabic announcement");
-            };
-
-            utteranceEn.onstart = () => {
-                speakingText.textContent = "جاري النداء بالإنجليزية...";
-                console.log("🔊 Starting English announcement");
-            };
-
-            utteranceAr.onerror = (event) => {
-                console.error("❌ Arabic announcement error:", event.error);
-                isSpeaking = false;
-                indicator.style.display = 'none';
-            };
-
-            utteranceEn.onerror = (event) => {
-                console.error("❌ English announcement error:", event.error);
-                isSpeaking = false;
-                indicator.style.display = 'none';
-            };
-
-            utteranceEn.onend = () => {
-                console.log("✅ Announcement completed");
-                isSpeaking = false;
-                indicator.style.display = 'none';
-            };
-
-            // Start with Arabic, then English after 2 seconds
-            console.log("🎙️ Starting Arabic announcement...");
-            speechSynthesis.speak(utteranceAr);
-
-            utteranceAr.onend = () => {
-                console.log("✅ Arabic announcement completed");
-                setTimeout(() => {
-                    console.log("🎙️ Starting English announcement...");
-                    speechSynthesis.speak(utteranceEn);
-                }, 2000); // Wait 2 seconds between languages
-            };
-        }
-
-        // === Update Current Call Display ===
-        function updateCurrentCall(callData) {
-            if (!callData) {
-                document.getElementById('noCurrentCall').style.display = 'block';
-                document.getElementById('currentCallDisplay').style.display = 'none';
-                return;
-            }
-
-            const dept = DEPARTMENTS[callData.deptId];
-            if (!dept) return;
-
-            document.getElementById('noCurrentCall').style.display = 'none';
-            document.getElementById('currentCallDisplay').style.display = 'block';
-            
-            document.getElementById('ticketNumber').textContent = callData.ticketNumber;
-            document.getElementById('deptNameAr').textContent = dept.nameAr;
-            document.getElementById('deptNameEn').textContent = dept.nameEn;
-            document.getElementById('roomAr').textContent = dept.roomAr;
-            document.getElementById('roomEn').textContent = dept.roomEn;
-
-            // Announce the call
-            speakAnnouncement(
-                callData.ticketNumber,
-                dept.roomAr,
-                dept.roomEn,
-                dept.nameAr,
-                dept.nameEn
-            );
-        }
-
-        // === Update Recent Calls ===
-        function updateRecentCalls(calls) {
-            const container = document.getElementById('recentCallsList');
-            const noCallsMsg = document.getElementById('noRecentCalls');
-            
-            if (!calls || calls.length === 0) {
-                container.innerHTML = '';
-                noCallsMsg.style.display = 'block';
-                return;
-            }
-
-            noCallsMsg.style.display = 'none';
-            container.innerHTML = calls.map(call => {
-                const dept = DEPARTMENTS[call.deptId];
-                const time = call.calledAt?.toDate 
-                    ? call.calledAt.toDate().toLocaleTimeString('ar-SA')
-                    : new Date(call.calledAt).toLocaleTimeString('ar-SA');
-
+            recentCallsList.innerHTML = allRecent.map(ticket => {
+                const dept = CONFIG.departments.find(d => d.id === ticket.deptId) || CONFIG.departments[0];
+                const isCalled = ticket.status === 'called';
+                
                 return `
-                    <div class="recent-ticket" style="border-color: ${dept?.color || '#3b82f6'}">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <div style="font-size: 1.8vw; font-weight: bold;">${call.number}</div>
-                                <div style="font-size: 1.2vw; color: #cbd5e1; margin-top: 5px;">
-                                    ${dept?.nameAr || ''}
-                                </div>
-                            </div>
-                            <div style="text-align: left;">
-                                <div style="font-size: 1vw; color: #94a3b8;">${time}</div>
-                                <div style="font-size: 1.5vw; opacity: 0.7; margin-top: 5px;">
-                                    <i class="fas ${dept?.icon || 'fa-ticket-alt'}"></i>
-                                </div>
+                    <div class="recent-item" style="border-color: ${dept.color}">
+                        <div class="flex justify-between items-center">
+                            <div class="text-xl font-bold">${ticket.number}</div>
+                            <div class="text-sm ${isCalled ? 'text-green-400' : 'text-yellow-400'}">
+                                ${isCalled ? 'تم النداء' : 'في الانتظار'}
                             </div>
                         </div>
+                        <div class="text-sm mt-1">${dept.nameAr}</div>
+                        <div class="text-xs text-gray-400">${dept.roomAr}</div>
                     </div>
                 `;
             }).join('');
         }
 
-        // === Time Update ===
-        function updateTime() {
-            const now = new Date();
-            
-            document.getElementById('currentTime').textContent = 
-                now.toLocaleTimeString('ar-SA', { 
-                    hour12: true,
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
-            
-            document.getElementById('currentDate').textContent = 
-                now.toLocaleDateString('ar-SA', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+        // === UI Functions ===
+        function showSuccessModal(ticketNumber, deptNameAr, deptNameEn) {
+            document.getElementById('ticketNumber').textContent = ticketNumber;
+            document.getElementById('ticketDept').textContent = 
+                `القسم: ${currentLanguage === 'ar' ? deptNameAr : deptNameEn}`;
+            document.getElementById('successModal').classList.remove('hidden');
+            document.getElementById('successModal').classList.add('flex');
         }
 
-        // === Initialize Firebase Listeners ===
-        function initFirebaseListeners() {
-            // Listen for current calls from Realtime Database
-            db.ref('currentCalls').on('value', (snapshot) => {
-                const calls = snapshot.val() || {};
-                
-                // Find the most recent call
-                let latestCall = null;
-                let latestTime = 0;
-                
-                Object.entries(calls).forEach(([deptId, call]) => {
-                    if (call && call.calledAt > latestTime) {
-                        latestTime = call.calledAt;
-                        latestCall = { deptId, ...call };
-                    }
-                });
-                
-                currentCall = latestCall;
-                updateCurrentCall(latestCall);
-                
-                console.log("📞 Current call updated:", latestCall);
-            });
-
-            // Listen for called tickets from Firestore
-            firestore.collection('tickets')
-                .where('status', '==', 'called')
-                .orderBy('calledAt', 'desc')
-                .limit(6)
-                .onSnapshot((snapshot) => {
-                    recentCalls = [];
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        recentCalls.push({
-                            id: doc.id,
-                            number: data.number,
-                            deptId: data.deptId,
-                            calledAt: data.calledAt
-                        });
-                    });
-                    
-                    updateRecentCalls(recentCalls);
-                    console.log("📋 Recent calls updated:", recentCalls.length);
-                }, (error) => {
-                    console.error("❌ Error listening to tickets:", error);
-                });
-
-            // Update connection status
-            db.ref('.info/connected').on('value', (snapshot) => {
-                const isConnected = snapshot.val();
-                document.getElementById('statusText').textContent = 
-                    isConnected ? 'متصل بالنظام' : 'غير متصل';
-                
-                if (!isConnected) {
-                    document.getElementById('statusText').style.color = '#ef4444';
-                }
-            });
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('flex');
+            document.getElementById('successModal').classList.add('hidden');
         }
 
-        // === Initialize Everything ===
-        function init() {
-            console.log("🚀 Initializing Display System...");
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connectionStatus');
+            const icon = statusElement.querySelector('i');
+            const text = statusElement.querySelector('span');
             
-            // Initialize speech synthesis
-            initSpeechSynthesis();
-            
-            // Start time updates
-            updateTime();
-            setInterval(updateTime, 1000);
-            
-            // Initialize Firebase listeners
-            initFirebaseListeners();
-            
-            // Force voices to load
-            if ('speechSynthesis' in window) {
-                setTimeout(() => {
-                    const voices = speechSynthesis.getVoices();
-                    console.log("🎙️ Loaded voices:", voices.length);
-                }, 1000);
+            if (isOnline) {
+                statusElement.className = 'connection-status connected';
+                icon.className = 'fas fa-wifi';
+                text.textContent = LANGUAGES[currentLanguage].connected;
+            } else {
+                statusElement.className = 'connection-status disconnected';
+                icon.className = 'fas fa-wifi-slash';
+                text.textContent = LANGUAGES[currentLanguage].disconnected;
             }
-            
-            console.log("✅ Display System Initialized");
         }
 
-        // Start the system when page loads
-        document.addEventListener('DOMContentLoaded', init);
+        // === Event Listeners ===
+        document.getElementById('languageToggle').addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+            updateLanguage();
+        });
 
-        // Test function (for debugging)
-        window.testAnnouncement = function() {
-            speakAnnouncement(
-                "123",
-                "مكتب المركبات",
-                "Vehicles Office",
-                "قسم المركبات",
-                "Vehicles Department"
-            );
-        };
+        // === Initialize on load ===
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
