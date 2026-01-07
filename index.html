@@ -632,6 +632,95 @@
         .footer-links a:hover {
             color: #60a5fa;
         }
+        
+        /* Department Login Cards */
+        .dept-login-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .dept-login-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .dept-login-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dept-login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            border-color: #3b82f6;
+        }
+        
+        .dept-login-card.active {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #f8fafc, #f0f9ff);
+        }
+        
+        .dept-login-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: white;
+        }
+        
+        .dept-login-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1e293b;
+        }
+        
+        .dept-login-room {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+        
+        .login-hint {
+            text-align: center;
+            margin-top: 30px;
+            color: #64748b;
+            font-size: 0.9rem;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+        }
+        
+        .admin-login-btn {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: none;
+            margin-top: 20px;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .admin-login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -820,53 +909,98 @@
         </div>
     </div>
 
-    <!-- ==================== SCREEN 3: ADMIN LOGIN ==================== -->
-    <div id="adminLoginScreen" data-screen="admin" class="flex items-center justify-center min-h-screen p-4">
-        <div class="login-container">
-            <div class="login-header">
-                <div class="oval-logo">
+    <!-- ==================== SCREEN 3: ADMIN LOGIN SELECTION ==================== -->
+    <div id="adminLoginScreen" data-screen="admin" class="min-h-screen p-4 bg-gradient-to-br from-blue-50 to-gray-50">
+        <div class="dept-login-container">
+            <div class="text-center mb-10">
+                <div class="oval-logo mx-auto mb-6">
                     <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo">
                 </div>
-                <h1 class="text-2xl font-bold mb-2">الزهراني للخدمات اللوجستية</h1>
-                <p class="opacity-90">نظام إدارة الطوابير - دخول الموظفين</p>
+                <h1 class="text-3xl font-bold text-gray-800 mb-3">دخول الموظفين</h1>
+                <p class="text-gray-600 text-lg">اختر القسم الخاص بك للدخول إلى لوحة التحكم</p>
             </div>
             
-            <div class="login-form">
-                <div id="errorMessage" class="error-message">
-                    <i class="fas fa-exclamation-circle mr-2"></i>
-                    <span id="errorText">اسم المستخدم أو كلمة المرور غير صحيحة</span>
-                </div>
-                
-                <div class="form-group">
-                    <label for="username" class="form-label">
-                        <i class="fas fa-user mr-2"></i>
-                        اسم المستخدم
-                    </label>
-                    <input type="text" id="username" class="form-input" placeholder="أدخل اسم المستخدم">
-                </div>
-                
-                <div class="form-group">
-                    <label for="password" class="form-label">
-                        <i class="fas fa-lock mr-2"></i>
-                        كلمة المرور
-                    </label>
-                    <input type="password" id="password" class="form-input" placeholder="أدخل كلمة المرور">
-                </div>
-                
-                <button id="loginBtn" class="btn-primary">
-                    <span id="loginText">تسجيل الدخول</span>
-                    <span id="loginSpinner" class="hidden loading"></span>
+            <!-- Department Selection Grid -->
+            <div class="dept-login-grid" id="deptLoginGrid">
+                <!-- Departments will be loaded here -->
+            </div>
+            
+            <!-- Admin Login Button -->
+            <div class="max-w-md mx-auto mt-10">
+                <button id="adminLoginBtn" class="admin-login-btn">
+                    <i class="fas fa-user-shield mr-2"></i>
+                    دخول مدير النظام (لجميع الأقسام)
                 </button>
+            </div>
+            
+            <div class="login-hint mt-8">
+                <i class="fas fa-info-circle mr-2"></i>
+                <strong>معلومة:</strong> كلمة المرور لجميع الأقسام هي <strong>00</strong>
+            </div>
+            
+            <div class="text-center mt-12 text-gray-500 text-sm">
+                <p>© 2025 الزهراني للخدمات اللوجستية - نظام إدارة الطوابير الذكي</p>
+                <p class="mt-1">للحصول على مساعدة، اتصل بالدعم الفني: 0906212</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SCREEN 4: DEPARTMENT PASSWORD SCREEN ==================== -->
+    <div id="deptPasswordScreen" data-screen="dept-password" class="hidden">
+        <div class="flex items-center justify-center min-h-screen p-4 bg-gradient-to-br from-blue-50 to-gray-50">
+            <div class="login-container">
+                <div class="login-header">
+                    <div class="oval-logo mx-auto mb-4">
+                        <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo">
+                    </div>
+                    <h2 id="deptLoginTitle" class="text-xl font-bold">الدخول إلى القسم</h2>
+                    <p id="deptLoginSubtitle" class="opacity-90">أدخل كلمة المرور للوصول إلى لوحة التحكم</p>
+                </div>
                 
-                <div class="mt-6 text-center text-gray-500 text-sm">
-                    <p>للوصول إلى لوحة التحكم الخاصة بالموظفين</p>
-                    <p class="mt-1">© 2025 الزهراني للخدمات اللوجستية</p>
+                <div class="login-form">
+                    <div id="passwordErrorMessage" class="error-message">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        <span id="passwordErrorText">كلمة المرور غير صحيحة</span>
+                    </div>
+                    
+                    <div class="text-center mb-6">
+                        <div id="selectedDeptIcon" class="icon-wrapper mx-auto mb-4">
+                            <!-- Icon will be set dynamically -->
+                        </div>
+                        <h3 id="selectedDeptName" class="text-xl font-bold text-gray-800 mb-2">قسم المركبات</h3>
+                        <p id="selectedDeptRoom" class="text-gray-600">مكتب المركبات</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="deptPassword" class="form-label">
+                            <i class="fas fa-lock mr-2"></i>
+                            كلمة المرور
+                        </label>
+                        <input type="password" id="deptPassword" class="form-input text-center text-2xl tracking-widest" 
+                               placeholder="00" maxlength="2" inputmode="numeric">
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <button id="backToDeptSelect" class="btn-primary flex-1 bg-gray-500 hover:bg-gray-600">
+                            <i class="fas fa-arrow-right ml-2"></i>
+                            رجوع
+                        </button>
+                        <button id="deptLoginBtn" class="btn-primary flex-1">
+                            <span id="deptLoginText">دخول</span>
+                            <span id="deptLoginSpinner" class="hidden loading"></span>
+                        </button>
+                    </div>
+                    
+                    <div class="mt-6 text-center text-gray-500 text-sm">
+                        <p>كلمة المرور: <strong>00</strong></p>
+                        <p class="mt-1">لجميع أقسام الموظفين</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ==================== SCREEN 4: ADMIN DASHBOARD ==================== -->
+    <!-- ==================== SCREEN 5: ADMIN DASHBOARD ==================== -->
     <div id="adminDashboardScreen" data-screen="admin-dashboard" class="hidden">
         <div class="dashboard-header">
             <div class="flex items-center gap-4">
@@ -875,7 +1009,7 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold">لوحة تحكم الموظفين</h1>
-                    <p class="opacity-90 text-sm" id="welcomeMessage">مرحباً بك، الموظف</p>
+                    <p class="opacity-90 text-sm" id="welcomeMessage">مرحباً بك في قسم المركبات</p>
                 </div>
             </div>
             
@@ -912,14 +1046,14 @@
                 </div>
             </div>
             
-            <!-- Department Selection -->
-            <div class="card">
+            <!-- Department Selection (Admin only) -->
+            <div id="adminDeptSelect" class="card hidden">
                 <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                     <i class="fas fa-building text-blue-500"></i>
-                    اختيار القسم
+                    اختيار القسم للتحكم
                 </h2>
                 <select id="departmentSelect" class="department-select">
-                    <option value="">اختر القسم...</option>
+                    <option value="">اختر القسم للتحكم...</option>
                     <option value="vehicles">قسم المركبات</option>
                     <option value="finance">قسم المالية</option>
                     <option value="supervisors">مدير التشغيل</option>
@@ -930,6 +1064,28 @@
                     <option value="naqel_mgr">مدير تشغيل ناقل</option>
                     <option value="ninja_mgr">مشروع نينجا</option>
                 </select>
+            </div>
+            
+            <!-- Current Department Info -->
+            <div class="card bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-info-circle text-blue-500"></i>
+                    معلومات القسم الحالي
+                </h2>
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div id="currentDeptIcon" class="icon-wrapper" style="width: 80px; height: 80px; font-size: 32px;">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 id="currentDeptName" class="text-2xl font-bold text-gray-800 mb-2">قسم المركبات</h3>
+                        <p id="currentDeptRoom" class="text-gray-600 text-lg">مكتب المركبات</p>
+                        <div class="mt-2">
+                            <span id="currentDeptRole" class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                                موظف القسم
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Ticket Controls -->
@@ -971,7 +1127,7 @@
             <div class="card">
                 <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
                     <i class="fas fa-list-ol text-purple-500"></i>
-                    قائمة الطابور
+                    قائمة الطابور - <span id="queueDeptName">قسم المركبات</span>
                 </h2>
                 
                 <div class="overflow-x-auto">
@@ -1084,30 +1240,114 @@
         const realtimeDB = firebase.database();
 
         // ==================== SYSTEM CONFIGURATION ====================
-        const CONFIG = {
-            companyName: { ar: "الزهراني للخدمات اللوجستية", en: "Al-Zahrani Logistics" },
-            systemName: { ar: "نظام إدارة الطوابير الذكي", en: "Smart Queue Management System" },
-            maxTicketNumber: 10000,
-            departments: [
-                { id: 'vehicles', nameAr: "قسم المركبات", nameEn: "Vehicles Department", color: "#3b82f6", icon: "fa-truck", roomAr: "مكتب المركبات", roomEn: "Vehicles Office" },
-                { id: 'finance', nameAr: "قسم المالية", nameEn: "Finance Department", color: "#10b981", icon: "fa-money-bill-wave", roomAr: "مكتب المدير المالي", roomEn: "Finance Office" },
-                { id: 'supervisors', nameAr: "مدير التشغيل", nameEn: "Supervisors Department", color: "#8b5cf6", icon: "fa-user-tie", roomAr: "مدير التشغيل", roomEn: "Supervisors Office" },
-                { id: 'ninja_sup', nameAr: "مشرف نينجا", nameEn: "Ninja Supervisor", color: "#ec4899", icon: "fa-user-ninja", roomAr: "مكتب مشرف نينجا", roomEn: "Ninja Supervisor Office" },
-                { id: 'kmart_ninja', nameAr: "مشرف كيمارت", nameEn: "K-Mart Department", color: "#f59e0b", icon: "fa-store", roomAr: "مكتب كيمارت", roomEn: "K-Mart Office" },
-                { id: 'hr', nameAr: "الموارد البشرية", nameEn: "Human Resources", color: "#ef4444", icon: "fa-users", roomAr: "مكتب الموارد البشرية", roomEn: "HR Office" },
-                { id: 'petroleum', nameAr: "قسم البترول", nameEn: "Petroleum Department", color: "#06b6d4", icon: "fa-gas-pump", roomAr: "مكتب البترول", roomEn: "Petroleum Office" },
-                { id: 'naqel_mgr', nameAr: "مدير تشغيل ناقل", nameEn: "Naqel Project", color: "#8b5cf6", icon: "fa-truck-fast", roomAr: "مكتب مدير التشغيل", roomEn: "Naqel Project Office" },
-                { id: 'ninja_mgr', nameAr: "مشروع نينجا", nameEn: "Ninja Project", color: "#6366f1", icon: "fa-bolt", roomAr: "مكتب مشروع نينجا", roomEn: "Ninja Project Office" }
-            ]
+        const DEPARTMENTS = {
+            vehicles: { 
+                id: 'vehicles', 
+                nameAr: "قسم المركبات", 
+                nameEn: "Vehicles Department", 
+                color: "#3b82f6", 
+                icon: "fa-truck", 
+                roomAr: "مكتب المركبات", 
+                roomEn: "Vehicles Office",
+                username: "مدير المركبات",
+                password: "00"
+            },
+            finance: { 
+                id: 'finance', 
+                nameAr: "قسم المالية", 
+                nameEn: "Finance Department", 
+                color: "#10b981", 
+                icon: "fa-money-bill-wave", 
+                roomAr: "مكتب المدير المالي", 
+                roomEn: "Finance Office",
+                username: "المدير المالي",
+                password: "00"
+            },
+            supervisors: { 
+                id: 'supervisors', 
+                nameAr: "مدير التشغيل", 
+                nameEn: "Supervisors Department", 
+                color: "#8b5cf6", 
+                icon: "fa-user-tie", 
+                roomAr: "مكتب مدير التشغيل", 
+                roomEn: "Supervisors Office",
+                username: "مدير التشغيل",
+                password: "00"
+            },
+            ninja_sup: { 
+                id: 'ninja_sup', 
+                nameAr: "مشرف نينجا", 
+                nameEn: "Ninja Supervisor", 
+                color: "#ec4899", 
+                icon: "fa-user-ninja", 
+                roomAr: "مكتب مشرف نينجا", 
+                roomEn: "Ninja Supervisor Office",
+                username: "مشرف نينجا",
+                password: "00"
+            },
+            kmart_ninja: { 
+                id: 'kmart_ninja', 
+                nameAr: "مشرف كيمارت", 
+                nameEn: "K-Mart Department", 
+                color: "#f59e0b", 
+                icon: "fa-store", 
+                roomAr: "مكتب كيمارت", 
+                roomEn: "K-Mart Office",
+                username: "مشرف كيمارت",
+                password: "00"
+            },
+            hr: { 
+                id: 'hr', 
+                nameAr: "الموارد البشرية", 
+                nameEn: "Human Resources", 
+                color: "#ef4444", 
+                icon: "fa-users", 
+                roomAr: "مكتب الموارد البشرية", 
+                roomEn: "HR Office",
+                username: "مدير الموارد البشرية",
+                password: "00"
+            },
+            petroleum: { 
+                id: 'petroleum', 
+                nameAr: "قسم البترول", 
+                nameEn: "Petroleum Department", 
+                color: "#06b6d4", 
+                icon: "fa-gas-pump", 
+                roomAr: "مكتب البترول", 
+                roomEn: "Petroleum Office",
+                username: "مدير البترول",
+                password: "00"
+            },
+            naqel_mgr: { 
+                id: 'naqel_mgr', 
+                nameAr: "مدير تشغيل ناقل", 
+                nameEn: "Naqel Project", 
+                color: "#8b5cf6", 
+                icon: "fa-truck-fast", 
+                roomAr: "مكتب مدير التشغيل", 
+                roomEn: "Naqel Project Office",
+                username: "مدير مشروع ناقل",
+                password: "00"
+            },
+            ninja_mgr: { 
+                id: 'ninja_mgr', 
+                nameAr: "مشروع نينجا", 
+                nameEn: "Ninja Project", 
+                color: "#6366f1", 
+                icon: "fa-bolt", 
+                roomAr: "مكتب مشروع نينجا", 
+                roomEn: "Ninja Project Office",
+                username: "مدير مشروع نينجا",
+                password: "00"
+            }
         };
 
-        // ==================== EMPLOYEE CREDENTIALS ====================
-        const EMPLOYEES = {
-            "admin": { password: "admin123", name: "مدير النظام", dept: "all", role: "admin" },
-            "employee1": { password: "emp123", name: "أحمد محمد", dept: "vehicles", role: "employee" },
-            "employee2": { password: "emp123", name: "سارة عبدالله", dept: "finance", role: "employee" },
-            "employee3": { password: "emp123", name: "خالد علي", dept: "hr", role: "employee" },
-            "operator": { password: "op123", name: "مشغل النظام", dept: "all", role: "operator" }
+        // ==================== ADMIN CREDENTIALS ====================
+        const ADMIN_CREDENTIALS = {
+            username: "مدير النظام",
+            password: "00",
+            role: "admin",
+            dept: "all"
         };
 
         // ==================== LANGUAGE CONFIGURATION ====================
@@ -1130,7 +1370,15 @@
                 last10Tickets: "آخر ١٠ تذاكر",
                 noTickets: "لا يوجد تذاكر حالياً",
                 waitingNew: "في انتظار تذاكر جديدة...",
-                speakingNow: "جاري النداء"
+                speakingNow: "جاري النداء",
+                employeeLogin: "دخول الموظفين",
+                selectYourDept: "اختر القسم الخاص بك",
+                enterPassword: "أدخل كلمة المرور",
+                passwordHint: "كلمة المرور: 00",
+                adminLogin: "دخول مدير النظام",
+                welcomeDept: "مرحباً بك في",
+                deptEmployee: "موظف القسم",
+                adminRole: "مدير النظام"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Company",
@@ -1150,7 +1398,15 @@
                 last10Tickets: "Last 10 Tickets",
                 noTickets: "No tickets currently",
                 waitingNew: "Waiting for new tickets...",
-                speakingNow: "Speaking Now"
+                speakingNow: "Speaking Now",
+                employeeLogin: "Employee Login",
+                selectYourDept: "Select Your Department",
+                enterPassword: "Enter Password",
+                passwordHint: "Password: 00",
+                adminLogin: "Admin Login",
+                welcomeDept: "Welcome to",
+                deptEmployee: "Department Employee",
+                adminRole: "System Administrator"
             }
         };
 
@@ -1167,6 +1423,7 @@
         let ticketsListener = null;
         let isGeneratingTicket = false;
         let pendingAction = null;
+        let selectedDeptForLogin = null;
 
         // ==================== INITIALIZATION ====================
         async function init() {
@@ -1175,18 +1432,16 @@
             
             updateLanguage();
             initDepartments();
+            initLoginDepartments();
             initFirebaseListeners();
             updateConnectionStatus();
             
             await initializeCounters();
             
-            // Setup screen navigation
             setupScreenNavigation();
+            setupEventListeners();
             
-            // Check for saved user session
             checkSavedSession();
-            
-            // Show current screen
             showScreen(currentScreen);
         }
 
@@ -1205,7 +1460,6 @@
         function showScreen(screen) {
             currentScreen = screen;
             
-            // Update active buttons
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.getAttribute('data-screen') === screen) {
@@ -1213,7 +1467,6 @@
                 }
             });
             
-            // Show/hide screens
             document.querySelectorAll('[data-screen]').forEach(el => {
                 el.classList.remove('active');
                 if (el.getAttribute('data-screen') === screen) {
@@ -1221,26 +1474,24 @@
                 }
             });
             
-            // Show/hide admin dashboard
             if (screen === 'admin' && currentUser) {
                 document.getElementById('adminDashboardScreen').classList.add('active');
                 document.getElementById('adminLoginScreen').classList.remove('active');
+                document.getElementById('deptPasswordScreen').classList.remove('active');
             } else if (screen === 'admin') {
                 document.getElementById('adminDashboardScreen').classList.remove('active');
                 document.getElementById('adminLoginScreen').classList.add('active');
+                document.getElementById('deptPasswordScreen').classList.remove('active');
             }
             
-            // Show/hide navigation based on screen
-            const showNav = !['display', 'admin'].includes(screen);
+            const showNav = !['display', 'admin', 'dept-password'].includes(screen);
             document.getElementById('mainNav').style.display = showNav ? 'block' : 'none';
             
-            // Update display screen if needed
             if (screen === 'display') {
                 updateCurrentCall();
                 updateRecentCallsList();
             }
             
-            // Update admin dashboard if needed
             if (screen === 'admin-dashboard' || (screen === 'admin' && currentUser)) {
                 updateAdminStats();
                 updateTicketsDisplay();
@@ -1250,8 +1501,6 @@
         // ==================== DATE & TIME ====================
         function updateDateTime() {
             const now = new Date();
-            
-            // Format time
             const timeStr = now.toLocaleTimeString('ar-EG', { 
                 hour12: false,
                 hour: '2-digit',
@@ -1259,7 +1508,6 @@
                 second: '2-digit'
             });
             
-            // Format date
             const dateOptions = { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -1268,7 +1516,6 @@
             };
             const dateStr = now.toLocaleDateString('ar-EG', dateOptions);
             
-            // Update all time displays
             document.querySelectorAll('.current-time').forEach(el => {
                 if (el.textContent !== timeStr) el.textContent = timeStr;
             });
@@ -1294,13 +1541,13 @@
                 <li>${t.instruction5}</li>
             `;
             
-            // Update display screen
             if (document.querySelector('.call-title')) {
                 document.querySelector('.call-title').textContent = t.currentTicket;
                 document.querySelector('.recent-title').textContent = t.last10Tickets;
             }
             
             updateDepartmentDisplay();
+            updateLoginDepartmentDisplay();
         }
 
         // ==================== DEPARTMENT FUNCTIONS ====================
@@ -1308,7 +1555,7 @@
             const container = document.getElementById('departmentsGrid');
             if (!container) return;
             
-            container.innerHTML = CONFIG.departments.map(dept => `
+            container.innerHTML = Object.values(DEPARTMENTS).map(dept => `
                 <div class="card hover:border-blue-300 fade-in">
                     <div class="flex flex-col items-center text-center">
                         <div class="icon-wrapper" style="background-color: ${dept.color}">
@@ -1340,12 +1587,12 @@
             const t = LANGUAGES[currentLanguage];
             
             document.querySelectorAll('.dept-name').forEach((el, index) => {
-                const dept = CONFIG.departments[index];
+                const dept = Object.values(DEPARTMENTS)[index];
                 if (dept) el.textContent = currentLanguage === 'ar' ? dept.nameAr : dept.nameEn;
             });
             
             document.querySelectorAll('.dept-room').forEach((el, index) => {
-                const dept = CONFIG.departments[index];
+                const dept = Object.values(DEPARTMENTS)[index];
                 if (dept) el.textContent = currentLanguage === 'ar' ? dept.roomAr : dept.roomEn;
             });
             
@@ -1354,10 +1601,311 @@
             });
         }
 
+        // ==================== LOGIN DEPARTMENT FUNCTIONS ====================
+        function initLoginDepartments() {
+            const container = document.getElementById('deptLoginGrid');
+            if (!container) return;
+            
+            container.innerHTML = Object.values(DEPARTMENTS).map(dept => `
+                <div class="dept-login-card fade-in" data-dept="${dept.id}">
+                    <div class="dept-login-icon" style="background-color: ${dept.color}">
+                        <i class="fas ${dept.icon}"></i>
+                    </div>
+                    <h3 class="dept-login-name">${dept.nameAr}</h3>
+                    <p class="dept-login-room">${dept.roomAr}</p>
+                    <div class="mt-4">
+                        <div class="text-sm text-gray-500 mb-2">اسم المستخدم:</div>
+                        <div class="font-bold text-gray-800">${dept.username}</div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="text-sm text-gray-500">كلمة المرور:</div>
+                        <div class="font-mono text-xl text-gray-800">00</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add click event to department cards
+            document.querySelectorAll('.dept-login-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const deptId = card.getAttribute('data-dept');
+                    showDeptPasswordScreen(deptId);
+                });
+            });
+        }
+
+        function updateLoginDepartmentDisplay() {
+            document.querySelectorAll('.dept-login-card').forEach((card, index) => {
+                const dept = Object.values(DEPARTMENTS)[index];
+                if (dept) {
+                    const name = card.querySelector('.dept-login-name');
+                    const room = card.querySelector('.dept-login-room');
+                    if (name) name.textContent = dept.nameAr;
+                    if (room) room.textContent = dept.roomAr;
+                }
+            });
+        }
+
+        function showDeptPasswordScreen(deptId) {
+            const dept = DEPARTMENTS[deptId];
+            if (!dept) return;
+            
+            selectedDeptForLogin = dept;
+            
+            document.getElementById('deptLoginTitle').textContent = `الدخول إلى ${dept.nameAr}`;
+            document.getElementById('deptLoginSubtitle').textContent = `أدخل كلمة المرور للوصول إلى لوحة التحكم`;
+            
+            const iconElement = document.getElementById('selectedDeptIcon');
+            iconElement.className = 'icon-wrapper mx-auto mb-4';
+            iconElement.style.backgroundColor = dept.color;
+            iconElement.innerHTML = `<i class="fas ${dept.icon}"></i>`;
+            
+            document.getElementById('selectedDeptName').textContent = dept.nameAr;
+            document.getElementById('selectedDeptRoom').textContent = dept.roomAr;
+            
+            document.getElementById('deptPassword').value = '';
+            document.getElementById('passwordErrorMessage').classList.remove('show');
+            
+            document.getElementById('adminLoginScreen').classList.remove('active');
+            document.getElementById('deptPasswordScreen').classList.add('active');
+            document.getElementById('mainNav').style.display = 'none';
+            
+            currentScreen = 'dept-password';
+        }
+
+        function handleDeptLogin() {
+            const password = document.getElementById('deptPassword').value;
+            const errorElement = document.getElementById('passwordErrorMessage');
+            const loginBtn = document.getElementById('deptLoginBtn');
+            const loginText = document.getElementById('deptLoginText');
+            const loginSpinner = document.getElementById('deptLoginSpinner');
+            
+            if (!selectedDeptForLogin) {
+                showError('يرجى اختيار القسم أولاً');
+                return;
+            }
+            
+            loginText.classList.add('hidden');
+            loginSpinner.classList.remove('hidden');
+            loginBtn.disabled = true;
+            
+            setTimeout(() => {
+                if (password === selectedDeptForLogin.password) {
+                    loginDeptSuccess(selectedDeptForLogin);
+                } else {
+                    showPasswordError('كلمة المرور غير صحيحة. الرجاء إدخال 00');
+                }
+                
+                loginText.classList.remove('hidden');
+                loginSpinner.classList.add('hidden');
+                loginBtn.disabled = false;
+            }, 800);
+        }
+
+        function loginDeptSuccess(dept) {
+            currentUser = {
+                username: dept.username,
+                name: dept.nameAr,
+                dept: dept.id,
+                role: 'employee',
+                deptData: dept
+            };
+            
+            localStorage.setItem('zahrani_employee', JSON.stringify(currentUser));
+            
+            setupUserDashboard();
+            showScreen('admin-dashboard');
+        }
+
+        function handleAdminLogin() {
+            showDeptPasswordScreenForAdmin();
+        }
+
+        function showDeptPasswordScreenForAdmin() {
+            selectedDeptForLogin = {
+                id: 'admin',
+                nameAr: 'مدير النظام',
+                nameEn: 'System Administrator',
+                color: '#f59e0b',
+                icon: 'fa-user-shield',
+                roomAr: 'لوحة التحكم الرئيسية',
+                roomEn: 'Main Control Panel',
+                username: 'مدير النظام',
+                password: '00'
+            };
+            
+            document.getElementById('deptLoginTitle').textContent = 'دخول مدير النظام';
+            document.getElementById('deptLoginSubtitle').textContent = 'أدخل كلمة المرور للوصول إلى جميع الأقسام';
+            
+            const iconElement = document.getElementById('selectedDeptIcon');
+            iconElement.className = 'icon-wrapper mx-auto mb-4';
+            iconElement.style.backgroundColor = '#f59e0b';
+            iconElement.innerHTML = `<i class="fas fa-user-shield"></i>`;
+            
+            document.getElementById('selectedDeptName').textContent = 'مدير النظام';
+            document.getElementById('selectedDeptRoom').textContent = 'لوحة التحكم الرئيسية';
+            
+            document.getElementById('deptPassword').value = '';
+            document.getElementById('passwordErrorMessage').classList.remove('show');
+            
+            document.getElementById('adminLoginScreen').classList.remove('active');
+            document.getElementById('deptPasswordScreen').classList.add('active');
+            document.getElementById('mainNav').style.display = 'none';
+            
+            currentScreen = 'dept-password';
+        }
+
+        function showPasswordError(message) {
+            const errorElement = document.getElementById('passwordErrorMessage');
+            const errorText = document.getElementById('passwordErrorText');
+            
+            if (errorElement && errorText) {
+                errorText.textContent = message;
+                errorElement.classList.add('show');
+                
+                setTimeout(() => {
+                    errorElement.classList.remove('show');
+                }, 5000);
+            }
+        }
+
+        // ==================== DASHBOARD SETUP ====================
+        function setupUserDashboard() {
+            if (!currentUser) return;
+            
+            const welcomeElement = document.getElementById('welcomeMessage');
+            const deptSelectElement = document.getElementById('adminDeptSelect');
+            const currentDeptIcon = document.getElementById('currentDeptIcon');
+            const currentDeptName = document.getElementById('currentDeptName');
+            const currentDeptRoom = document.getElementById('currentDeptRoom');
+            const currentDeptRole = document.getElementById('currentDeptRole');
+            const queueDeptName = document.getElementById('queueDeptName');
+            
+            if (currentUser.role === 'admin') {
+                welcomeElement.textContent = `${LANGUAGES[currentLanguage].welcomeDept} لوحة التحكم الرئيسية`;
+                deptSelectElement.classList.remove('hidden');
+                currentDeptName.textContent = 'مدير النظام';
+                currentDeptRoom.textContent = 'التحكم في جميع الأقسام';
+                currentDeptRole.textContent = LANGUAGES[currentLanguage].adminRole;
+                currentDeptIcon.style.backgroundColor = '#f59e0b';
+                currentDeptIcon.innerHTML = `<i class="fas fa-user-shield"></i>`;
+                queueDeptName.textContent = 'جميع الأقسام';
+                
+                const deptSelect = document.getElementById('departmentSelect');
+                deptSelect.value = '';
+                selectedDepartment = null;
+                document.getElementById('callNextBtn').disabled = true;
+            } else {
+                welcomeElement.textContent = `${LANGUAGES[currentLanguage].welcomeDept} ${currentUser.name}`;
+                deptSelectElement.classList.add('hidden');
+                
+                const dept = DEPARTMENTS[currentUser.dept];
+                if (dept) {
+                    currentDeptName.textContent = dept.nameAr;
+                    currentDeptRoom.textContent = dept.roomAr;
+                    currentDeptRole.textContent = LANGUAGES[currentLanguage].deptEmployee;
+                    currentDeptIcon.style.backgroundColor = dept.color;
+                    currentDeptIcon.innerHTML = `<i class="fas ${dept.icon}"></i>`;
+                    queueDeptName.textContent = dept.nameAr;
+                    
+                    selectedDepartment = currentUser.dept;
+                    updateTicketsDisplay();
+                }
+            }
+        }
+
+        // ==================== EVENT LISTENERS SETUP ====================
+        function setupEventListeners() {
+            // Language toggle
+            document.getElementById('languageToggle')?.addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+                updateLanguage();
+            });
+            
+            // Admin login button
+            document.getElementById('adminLoginBtn')?.addEventListener('click', handleAdminLogin);
+            
+            // Department login
+            document.getElementById('deptLoginBtn')?.addEventListener('click', handleDeptLogin);
+            
+            // Back to department selection
+            document.getElementById('backToDeptSelect')?.addEventListener('click', () => {
+                document.getElementById('deptPasswordScreen').classList.remove('active');
+                document.getElementById('adminLoginScreen').classList.add('active');
+                currentScreen = 'admin';
+            });
+            
+            // Enter key in password field
+            document.getElementById('deptPassword')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleDeptLogin();
+            });
+            
+            // Department selection in dashboard
+            document.getElementById('departmentSelect')?.addEventListener('change', handleDepartmentChange);
+            
+            // Ticket control buttons
+            document.getElementById('callNextBtn')?.addEventListener('click', callNextTicket);
+            document.getElementById('completeTicketBtn')?.addEventListener('click', completeCurrentTicket);
+            document.getElementById('cancelTicketBtn')?.addEventListener('click', cancelCurrentTicket);
+            document.getElementById('resetQueueBtn')?.addEventListener('click', resetQueue);
+            
+            // Logout button
+            document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+            
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
+        }
+
+        // ==================== SESSION MANAGEMENT ====================
+        function checkSavedSession() {
+            const savedUser = localStorage.getItem('zahrani_employee');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    if (user && user.dept) {
+                        if (user.role === 'admin') {
+                            currentUser = user;
+                            setupUserDashboard();
+                            showScreen('admin-dashboard');
+                        } else if (DEPARTMENTS[user.dept]) {
+                            currentUser = user;
+                            currentUser.deptData = DEPARTMENTS[user.dept];
+                            setupUserDashboard();
+                            showScreen('admin-dashboard');
+                        }
+                    }
+                } catch (e) {
+                    localStorage.removeItem('zahrani_employee');
+                }
+            }
+        }
+
+        function handleLogout() {
+            showConfirm('تسجيل الخروج', 'هل تريد تسجيل الخروج من النظام؟', () => {
+                if (ticketsListener) {
+                    ticketsListener();
+                }
+                
+                currentUser = null;
+                selectedDepartment = null;
+                currentTicket = null;
+                selectedDeptForLogin = null;
+                
+                localStorage.removeItem('zahrani_employee');
+                
+                showScreen('admin');
+            });
+        }
+
         // ==================== FIREBASE FUNCTIONS ====================
         async function initializeCounters() {
             try {
-                for (const dept of CONFIG.departments) {
+                for (const dept of Object.values(DEPARTMENTS)) {
                     const counterRef = db.collection('counters').doc(dept.id);
                     const doc = await counterRef.get();
                     
@@ -1384,7 +1932,7 @@
                     if (counterDoc.exists) {
                         const data = counterDoc.data();
                         newNumber = (data.lastNumber || 0) + 1;
-                        if (newNumber > CONFIG.maxTicketNumber) {
+                        if (newNumber > 10000) {
                             newNumber = 1;
                         }
                     }
@@ -1416,7 +1964,7 @@
             button.disabled = true;
             
             try {
-                const dept = CONFIG.departments.find(d => d.id === deptId);
+                const dept = DEPARTMENTS[deptId];
                 if (!dept) throw new Error('Department not found');
                 
                 const ticketNumber = await getNextTicketNumber(deptId);
@@ -1452,7 +2000,6 @@
         }
 
         function initFirebaseListeners() {
-            // Listen to all tickets
             ticketsListener = db.collection('tickets')
                 .orderBy('createdAt', 'desc')
                 .limit(100)
@@ -1470,7 +2017,6 @@
                     console.error('Error listening to tickets:', error);
                 });
             
-            // Listen to called tickets for display screen
             db.collection('tickets')
                 .where('status', '==', 'called')
                 .orderBy('updatedAt', 'desc')
@@ -1484,8 +2030,7 @@
                     updateCurrentCall();
                 });
             
-            // Listen to department counters
-            CONFIG.departments.forEach(dept => {
+            Object.values(DEPARTMENTS).forEach(dept => {
                 db.collection('counters').doc(dept.id)
                     .onSnapshot(doc => {
                         if (doc.exists) {
@@ -1497,13 +2042,13 @@
                     });
             });
             
-            // Connection status
             realtimeDB.ref('.info/connected').on('value', snapshot => {
                 isOnline = snapshot.val();
                 updateConnectionStatus();
             });
         }
 
+        // ==================== STATS FUNCTIONS ====================
         function updateStats() {
             const waitingCount = tickets.filter(t => t.status === 'waiting').length;
             const calledCount = tickets.filter(t => t.status === 'called').length;
@@ -1538,7 +2083,7 @@
         }
 
         function updateDepartmentStats() {
-            CONFIG.departments.forEach(dept => {
+            Object.values(DEPARTMENTS).forEach(dept => {
                 const waitingCount = tickets.filter(t => t.deptId === dept.id && t.status === 'waiting').length;
                 const waitingElement = document.querySelector(`.dept-waiting[data-dept="${dept.id}"]`);
                 if (waitingElement) {
@@ -1548,7 +2093,7 @@
         }
 
         function updateDepartmentCounters() {
-            CONFIG.departments.forEach(dept => {
+            Object.values(DEPARTMENTS).forEach(dept => {
                 const lastTicket = tickets
                     .filter(t => t.deptId === dept.id)
                     .sort((a, b) => parseInt(b.number) - parseInt(a.number))[0];
@@ -1577,7 +2122,7 @@
             
             if (calledTickets.length > 0) {
                 const latestCalled = calledTickets[0];
-                const dept = CONFIG.departments.find(d => d.id === latestCalled.deptId) || CONFIG.departments[0];
+                const dept = DEPARTMENTS[latestCalled.deptId] || Object.values(DEPARTMENTS)[0];
                 
                 document.getElementById('displayTicketNumber').textContent = latestCalled.number;
                 document.getElementById('displayDeptArabic').textContent = dept.nameAr;
@@ -1620,7 +2165,7 @@
             }
             
             recentCallsList.innerHTML = allRecent.map(ticket => {
-                const dept = CONFIG.departments.find(d => d.id === ticket.deptId) || CONFIG.departments[0];
+                const dept = DEPARTMENTS[ticket.deptId] || Object.values(DEPARTMENTS)[0];
                 const isCalled = ticket.status === 'called';
                 
                 return `
@@ -1638,113 +2183,7 @@
             }).join('');
         }
 
-        // ==================== ADMIN FUNCTIONS ====================
-        function checkSavedSession() {
-            const savedUser = localStorage.getItem('zahrani_employee');
-            if (savedUser) {
-                try {
-                    const user = JSON.parse(savedUser);
-                    if (user && user.username && EMPLOYEES[user.username]) {
-                        loginSuccess(user.username);
-                    }
-                } catch (e) {
-                    localStorage.removeItem('zahrani_employee');
-                }
-            }
-        }
-
-        function handleLogin() {
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorElement = document.getElementById('errorMessage');
-            const loginBtn = document.getElementById('loginBtn');
-            const loginText = document.getElementById('loginText');
-            const loginSpinner = document.getElementById('loginSpinner');
-            
-            if (!username || !password) {
-                showError('يرجى إدخال اسم المستخدم وكلمة المرور');
-                return;
-            }
-            
-            loginText.classList.add('hidden');
-            loginSpinner.classList.remove('hidden');
-            loginBtn.disabled = true;
-            
-            setTimeout(() => {
-                if (EMPLOYEES[username] && EMPLOYEES[username].password === password) {
-                    loginSuccess(username);
-                } else {
-                    showError('اسم المستخدم أو كلمة المرور غير صحيحة');
-                }
-                
-                loginText.classList.remove('hidden');
-                loginSpinner.classList.add('hidden');
-                loginBtn.disabled = false;
-            }, 1000);
-        }
-
-        function loginSuccess(username) {
-            currentUser = {
-                username: username,
-                name: EMPLOYEES[username].name,
-                dept: EMPLOYEES[username].dept,
-                role: EMPLOYEES[username].role
-            };
-            
-            localStorage.setItem('zahrani_employee', JSON.stringify(currentUser));
-            
-            document.getElementById('welcomeMessage').textContent = `مرحباً بك، ${currentUser.name}`;
-            showScreen('admin-dashboard');
-            setupUserDepartment();
-        }
-
-        function setupUserDepartment() {
-            const deptSelect = document.getElementById('departmentSelect');
-            if (!deptSelect) return;
-            
-            if (currentUser.dept === 'all') {
-                deptSelect.disabled = false;
-            } else {
-                deptSelect.value = currentUser.dept;
-                deptSelect.disabled = true;
-                handleDepartmentChange();
-            }
-        }
-
-        function showError(message) {
-            const errorElement = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-            
-            if (errorElement && errorText) {
-                errorText.textContent = message;
-                errorElement.classList.add('show');
-                
-                setTimeout(() => {
-                    errorElement.classList.remove('show');
-                }, 5000);
-            }
-        }
-
-        function handleLogout() {
-            showConfirm('تسجيل الخروج', 'هل تريد تسجيل الخروج من النظام؟', () => {
-                if (ticketsListener) {
-                    ticketsListener();
-                }
-                
-                currentUser = null;
-                selectedDepartment = null;
-                currentTicket = null;
-                
-                localStorage.removeItem('zahrani_employee');
-                
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-                document.getElementById('errorMessage').classList.remove('show');
-                
-                showScreen('admin');
-            });
-        }
-
+        // ==================== ADMIN DASHBOARD FUNCTIONS ====================
         function handleDepartmentChange() {
             const deptId = document.getElementById('departmentSelect').value;
             selectedDepartment = deptId;
@@ -1760,12 +2199,19 @@
         function updateTicketsDisplay() {
             const tableBody = document.getElementById('queueTableBody');
             const emptyMessage = document.getElementById('emptyQueueMessage');
+            const queueDeptName = document.getElementById('queueDeptName');
             
             if (!tableBody || !emptyMessage) return;
             
             let filteredTickets = tickets;
             if (selectedDepartment) {
                 filteredTickets = tickets.filter(t => t.deptId === selectedDepartment);
+                const dept = DEPARTMENTS[selectedDepartment];
+                if (dept && queueDeptName) {
+                    queueDeptName.textContent = dept.nameAr;
+                }
+            } else {
+                if (queueDeptName) queueDeptName.textContent = 'جميع الأقسام';
             }
             
             if (filteredTickets.length === 0) {
@@ -1782,7 +2228,7 @@
             });
             
             tableBody.innerHTML = filteredTickets.map(ticket => {
-                const dept = CONFIG.departments.find(d => d.id === ticket.deptId) || CONFIG.departments[0];
+                const dept = DEPARTMENTS[ticket.deptId] || Object.values(DEPARTMENTS)[0];
                 const time = ticket.createdAt ? new Date(ticket.createdAt.toDate()).toLocaleTimeString('ar-EG') : '--:--';
                 const statusText = getStatusText(ticket.status);
                 const statusClass = getStatusClass(ticket.status);
@@ -1843,7 +2289,7 @@
             if (!infoElement || !completeBtn || !cancelBtn) return;
             
             if (currentTicket) {
-                const dept = CONFIG.departments.find(d => d.id === currentTicket.deptId) || CONFIG.departments[0];
+                const dept = DEPARTMENTS[currentTicket.deptId] || Object.values(DEPARTMENTS)[0];
                 infoElement.innerHTML = `
                     <div class="text-2xl font-bold text-blue-600 mb-1">${currentTicket.number}</div>
                     <div class="text-gray-700">${dept.nameAr}</div>
@@ -1883,7 +2329,7 @@
                 await ticketRef.update({
                     status: 'called',
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    calledBy: currentUser.name,
+                    calledBy: currentUser.username,
                     calledAt: new Date().toISOString()
                 });
                 
@@ -1916,7 +2362,7 @@
                 await ticketRef.update({
                     status: 'completed',
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    completedBy: currentUser.name,
+                    completedBy: currentUser.username,
                     completedAt: new Date().toISOString()
                 });
                 
@@ -1947,7 +2393,7 @@
                 await ticketRef.update({
                     status: 'waiting',
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    cancelledBy: currentUser.name,
+                    cancelledBy: currentUser.username,
                     cancelledAt: new Date().toISOString()
                 });
                 
@@ -1962,27 +2408,56 @@
         }
 
         async function resetQueue() {
-            showConfirm('إعادة ضبط الطابور', 'هل أنت متأكد من إعادة ضبط طابور الانتظار؟ هذا الإجراء سيمسح جميع التذاكر.', async () => {
+            const message = currentUser.role === 'admin' 
+                ? 'هل أنت متأكد من إعادة ضبط جميع التذاكر في النظام؟' 
+                : 'هل أنت متأكد من إعادة ضبط تذاكر القسم الحالي؟';
+            
+            showConfirm('إعادة ضبط الطابور', message, async () => {
                 try {
-                    const snapshot = await db.collection('tickets').get();
-                    const batch = db.batch();
-                    
-                    snapshot.docs.forEach(doc => {
-                        batch.delete(doc.ref);
-                    });
-                    
-                    await batch.commit();
-                    
-                    const countersBatch = db.batch();
-                    Object.keys(CONFIG.departments).forEach(deptId => {
+                    if (currentUser.role === 'admin' && !selectedDepartment) {
+                        // Reset all tickets
+                        const snapshot = await db.collection('tickets').get();
+                        const batch = db.batch();
+                        
+                        snapshot.docs.forEach(doc => {
+                            batch.delete(doc.ref);
+                        });
+                        
+                        await batch.commit();
+                        
+                        // Reset all counters
+                        const countersBatch = db.batch();
+                        Object.values(DEPARTMENTS).forEach(dept => {
+                            const counterRef = db.collection('counters').doc(dept.id);
+                            countersBatch.set(counterRef, {
+                                lastNumber: 0,
+                                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        });
+                        
+                        await countersBatch.commit();
+                    } else {
+                        // Reset only selected department
+                        const deptId = selectedDepartment || currentUser.dept;
+                        
+                        // Delete department tickets
+                        const snapshot = await db.collection('tickets')
+                            .where('deptId', '==', deptId)
+                            .get();
+                        
+                        const batch = db.batch();
+                        snapshot.docs.forEach(doc => {
+                            batch.delete(doc.ref);
+                        });
+                        await batch.commit();
+                        
+                        // Reset department counter
                         const counterRef = db.collection('counters').doc(deptId);
-                        countersBatch.set(counterRef, {
+                        await counterRef.set({
                             lastNumber: 0,
                             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                         });
-                    });
-                    
-                    await countersBatch.commit();
+                    }
                     
                     currentTicket = null;
                     updateCurrentTicketInfo();
@@ -2095,46 +2570,9 @@
             }
         }
 
-        // ==================== EVENT LISTENERS ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            init();
-            
-            // Language toggle
-            document.getElementById('languageToggle')?.addEventListener('click', () => {
-                currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
-                updateLanguage();
-            });
-            
-            // Login button
-            document.getElementById('loginBtn')?.addEventListener('click', handleLogin);
-            
-            // Enter key in password field
-            document.getElementById('password')?.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') handleLogin();
-            });
-            
-            // Department selection
-            document.getElementById('departmentSelect')?.addEventListener('change', handleDepartmentChange);
-            
-            // Ticket control buttons
-            document.getElementById('callNextBtn')?.addEventListener('click', callNextTicket);
-            document.getElementById('completeTicketBtn')?.addEventListener('click', completeCurrentTicket);
-            document.getElementById('cancelTicketBtn')?.addEventListener('click', cancelCurrentTicket);
-            document.getElementById('resetQueueBtn')?.addEventListener('click', resetQueue);
-            
-            // Logout button
-            document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
-            
-            // Close modals when clicking outside
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.remove('active');
-                    }
-                });
-            });
-        });
-
+        // ==================== INITIALIZE ====================
+        document.addEventListener('DOMContentLoaded', init);
+        
         // Add CSS for animations
         const style = document.createElement('style');
         style.textContent = `
