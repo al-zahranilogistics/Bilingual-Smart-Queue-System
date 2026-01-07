@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Zahrani Logistics - Queue Management System</title>
+    <title>الزهراني اللوجستية - نظام إدارة الطوابير</title>
+    
+    <!-- CSS Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,8 +27,10 @@
             font-family: 'Cairo', 'Inter', sans-serif; 
             margin: 0; 
             overflow-x: hidden;
+            background: #f8fafc;
         }
         
+        /* Utility Classes */
         .arabic { font-family: 'Cairo', sans-serif; }
         .english { font-family: 'Inter', sans-serif; direction: ltr; text-align: left; }
         
@@ -39,6 +43,7 @@
             border: none;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            cursor: pointer;
         }
         
         .btn-primary:hover {
@@ -117,6 +122,247 @@
             border: 1px solid #fca5a5;
         }
         
+        /* Screen Management */
+        [data-screen] {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        [data-screen].active {
+            display: block;
+        }
+        
+        .nav-btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            border: 2px solid transparent;
+        }
+        
+        .nav-btn.active {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid #3b82f6;
+        }
+        
+        /* Login Screen Styles */
+        .login-container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin: 20px auto;
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .login-form {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 15px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .dashboard-content {
+            padding: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 25px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        
+        .ticket-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .control-btn {
+            padding: 16px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .call-btn {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+        }
+        
+        .complete-btn {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+            color: white;
+        }
+        
+        .cancel-btn {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .queue-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .queue-table th {
+            background: #f8fafc;
+            padding: 15px;
+            text-align: right;
+            border-bottom: 2px solid #e5e7eb;
+            font-weight: 700;
+            color: #374151;
+        }
+        
+        .queue-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: right;
+        }
+        
+        .ticket-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .status-waiting {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-called {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .department-select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #d1d5db;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: 'Cairo', sans-serif;
+            margin-bottom: 20px;
+        }
+        
         /* Display Screen Styles */
         .tv-display {
             width: 100%;
@@ -145,22 +391,6 @@
             font-size: 1.5rem;
             font-weight: bold;
             color: white;
-        }
-        
-        .time-display {
-            text-align: right;
-        }
-        
-        .current-time {
-            font-size: 2.5rem;
-            font-family: monospace;
-            font-weight: bold;
-            color: #10b981;
-        }
-        
-        .current-date {
-            font-size: 1rem;
-            color: #94a3b8;
         }
         
         .display-main-content {
@@ -276,12 +506,6 @@
             color: #94a3b8;
         }
         
-        .no-calls i {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            display: block;
-        }
-        
         .speaking-indicator {
             position: absolute;
             top: 15px;
@@ -303,60 +527,123 @@
             100% { opacity: 1; }
         }
         
-        /* Hide elements by default */
-        [data-screen] {
-            display: none;
-        }
-        
-        [data-screen].active {
-            display: block;
-        }
-        
-        /* Navigation */
-        .nav-btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .nav-btn.active {
-            background: rgba(59, 130, 246, 0.2);
-            border: 2px solid #3b82f6;
-        }
-        
-        .screen-indicator {
+        /* Modal Styles */
+        .modal {
             position: fixed;
-            top: 70px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 8px 16px;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
             border-radius: 20px;
-            font-size: 12px;
-            z-index: 999;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Footer */
+        .main-footer {
+            background: #1e293b;
+            color: white;
+            padding: 30px 20px;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #60a5fa;
+        }
+        
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: #60a5fa;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
     <!-- Connection Status -->
     <div id="connectionStatus" class="connection-status">
         <i class="fas fa-wifi"></i>
         <span>جاري الاتصال...</span>
     </div>
 
-    <!-- Screen Indicator -->
-    <div id="screenIndicator" class="screen-indicator hidden">
-        <i class="fas fa-tv mr-2"></i>
-        <span>شاشة العرض</span>
-    </div>
-
-    <!-- Header (Visible on Visitor Screen only) -->
-    <header id="mainHeader" class="bg-white shadow-md">
-        <div class="max-w-7xl mx-auto px-4 py-4">
+    <!-- Main Navigation (Hidden in Login/Display Screens) -->
+    <nav id="mainNav" class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 py-3">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                 <!-- Logo and Company -->
                 <div class="flex items-center gap-3">
@@ -369,7 +656,7 @@
                     </div>
                 </div>
                 
-                <!-- Navigation -->
+                <!-- Navigation Buttons -->
                 <div class="flex flex-wrap items-center gap-2">
                     <!-- Language Toggle -->
                     <button id="languageToggle" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-2">
@@ -378,7 +665,7 @@
                     </button>
                     
                     <!-- Screen Navigation -->
-                    <button data-screen="visitor" class="nav-btn bg-blue-600 text-white hover:bg-blue-700 active">
+                    <button data-screen="visitor" class="nav-btn bg-blue-600 text-white hover:bg-blue-700">
                         <i class="fas fa-user"></i>
                         شاشة الزوار
                     </button>
@@ -388,18 +675,18 @@
                         شاشة العرض
                     </button>
                     
-                    <a href="admin.html" class="nav-btn bg-red-600 text-white hover:bg-red-700">
+                    <button data-screen="admin" class="nav-btn bg-red-600 text-white hover:bg-red-700">
                         <i class="fas fa-cog"></i>
                         دخول الموظفين
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
-    </header>
+    </nav>
 
-    <!-- Visitor Screen -->
+    <!-- ==================== SCREEN 1: VISITOR SCREEN ==================== -->
     <main id="visitorScreen" data-screen="visitor" class="active max-w-7xl mx-auto px-4 py-8">
-        <div class="text-center mb-10">
+        <div class="text-center mb-10 fade-in">
             <h1 id="welcomeText" class="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
                 مرحباً بكم في شركة الزهراني
             </h1>
@@ -415,22 +702,22 @@
         
         <!-- System Stats -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="card text-center">
+            <div class="card text-center fade-in" style="animation-delay: 0.1s">
                 <div id="waitingCount" class="text-3xl font-bold text-blue-600">0</div>
                 <div class="text-gray-600">في الانتظار</div>
             </div>
-            <div class="card text-center">
+            <div class="card text-center fade-in" style="animation-delay: 0.2s">
                 <div id="calledCount" class="text-3xl font-bold text-green-600">0</div>
                 <div class="text-gray-600">المنداء عليهم</div>
             </div>
-            <div class="card text-center">
+            <div class="card text-center fade-in" style="animation-delay: 0.3s">
                 <div id="totalCount" class="text-3xl font-bold text-purple-600">0</div>
                 <div class="text-gray-600">إجمالي التذاكر</div>
             </div>
         </div>
         
         <!-- Instructions -->
-        <div class="card bg-blue-50 border-blue-100">
+        <div class="card bg-blue-50 border-blue-100 fade-in" style="animation-delay: 0.4s">
             <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <i class="fas fa-info-circle text-blue-500"></i>
                 تعليمات الاستخدام
@@ -443,9 +730,38 @@
                 <li>توجه إلى المكتب المحدد عند النداء</li>
             </ol>
         </div>
+        
+        <!-- Footer -->
+        <footer class="main-footer mt-12 rounded-xl">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>عن الشركة</h3>
+                    <p class="text-gray-300">الزهراني للخدمات اللوجستية - تقدم حلولاً لوجستية متكاملة مع أفضل معايير الجودة والكفاءة.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>روابط سريعة</h3>
+                    <ul class="footer-links">
+                        <li><button data-screen="visitor" class="text-left">شاشة الزوار</button></li>
+                        <li><button data-screen="display" class="text-left">شاشة العرض</button></li>
+                        <li><button data-screen="admin" class="text-left">دخول الموظفين</button></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>معلومات الاتصال</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-phone ml-2"></i> الدعم الفني: 0906212</li>
+                        <li><i class="fas fa-clock ml-2"></i> ساعات العمل: 8 صباحاً - 5 مساءً</li>
+                        <li><i class="fas fa-map-marker-alt ml-2"></i> المملكة العربية السعودية</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center text-gray-400 mt-8 pt-6 border-t border-gray-700">
+                <p>© 2025 الزهراني للخدمات اللوجستية. جميع الحقوق محفوظة.</p>
+            </div>
+        </footer>
     </main>
 
-    <!-- Display Screen -->
+    <!-- ==================== SCREEN 2: DISPLAY SCREEN ==================== -->
     <div id="displayScreen" data-screen="display" class="tv-display">
         <!-- Header -->
         <div class="display-header">
@@ -504,35 +820,190 @@
         </div>
     </div>
 
-    <!-- Footer (Visible on Visitor Screen only) -->
-    <footer id="mainFooter" class="bg-gray-800 text-white py-6">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <i class="fas fa-truck text-2xl text-blue-300"></i>
-                    <div>
-                        <div class="font-bold">الزهراني للخدمات اللوجستية</div>
-                        <div class="text-sm text-gray-400">نظام إدارة الطوابير الذكي</div>
-                    </div>
+    <!-- ==================== SCREEN 3: ADMIN LOGIN ==================== -->
+    <div id="adminLoginScreen" data-screen="admin" class="flex items-center justify-center min-h-screen p-4">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="oval-logo">
+                    <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo">
+                </div>
+                <h1 class="text-2xl font-bold mb-2">الزهراني للخدمات اللوجستية</h1>
+                <p class="opacity-90">نظام إدارة الطوابير - دخول الموظفين</p>
+            </div>
+            
+            <div class="login-form">
+                <div id="errorMessage" class="error-message">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span id="errorText">اسم المستخدم أو كلمة المرور غير صحيحة</span>
                 </div>
                 
-                <div class="text-center text-gray-300">
-                    <div>© 2025 جميع الحقوق محفوظة</div>
-                    <div class="text-sm mt-1">رقم الدعم الفني: 0906212</div>
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user mr-2"></i>
+                        اسم المستخدم
+                    </label>
+                    <input type="text" id="username" class="form-input" placeholder="أدخل اسم المستخدم">
                 </div>
                 
-                <div class="flex flex-wrap gap-4">
-                    <button data-screen="visitor" class="text-gray-300 hover:text-white">شاشة الزوار</button>
-                    <button data-screen="display" class="text-gray-300 hover:text-white">شاشة العرض</button>
-                    <a href="admin.html" class="text-gray-300 hover:text-white">لوحة التحكم</a>
+                <div class="form-group">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock mr-2"></i>
+                        كلمة المرور
+                    </label>
+                    <input type="password" id="password" class="form-input" placeholder="أدخل كلمة المرور">
+                </div>
+                
+                <button id="loginBtn" class="btn-primary">
+                    <span id="loginText">تسجيل الدخول</span>
+                    <span id="loginSpinner" class="hidden loading"></span>
+                </button>
+                
+                <div class="mt-6 text-center text-gray-500 text-sm">
+                    <p>للوصول إلى لوحة التحكم الخاصة بالموظفين</p>
+                    <p class="mt-1">© 2025 الزهراني للخدمات اللوجستية</p>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
 
-    <!-- Success Modal (Visitor Screen) -->
-    <div id="successModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 p-4">
-        <div class="card max-w-md w-full bg-gradient-to-br from-blue-50 to-white">
+    <!-- ==================== SCREEN 4: ADMIN DASHBOARD ==================== -->
+    <div id="adminDashboardScreen" data-screen="admin-dashboard" class="hidden">
+        <div class="dashboard-header">
+            <div class="flex items-center gap-4">
+                <div class="oval-logo">
+                    <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">لوحة تحكم الموظفين</h1>
+                    <p class="opacity-90 text-sm" id="welcomeMessage">مرحباً بك، الموظف</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden md:block">
+                    <div id="currentTime" class="font-mono">00:00:00</div>
+                    <div id="currentDate" class="text-sm opacity-80">الاثنين ١ يناير ٢٠٢٤</div>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt ml-2"></i>
+                    تسجيل الخروج
+                </button>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Quick Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number text-blue-600" id="statWaiting">0</div>
+                    <div class="text-gray-600">في الانتظار</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number text-green-600" id="statCalled">0</div>
+                    <div class="text-gray-600">المنداء عليهم</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number text-purple-600" id="statCompleted">0</div>
+                    <div class="text-gray-600">المكتملة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number text-orange-600" id="statTotal">0</div>
+                    <div class="text-gray-600">إجمالي التذاكر</div>
+                </div>
+            </div>
+            
+            <!-- Department Selection -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-building text-blue-500"></i>
+                    اختيار القسم
+                </h2>
+                <select id="departmentSelect" class="department-select">
+                    <option value="">اختر القسم...</option>
+                    <option value="vehicles">قسم المركبات</option>
+                    <option value="finance">قسم المالية</option>
+                    <option value="supervisors">مدير التشغيل</option>
+                    <option value="ninja_sup">مشرف نينجا</option>
+                    <option value="kmart_ninja">مشرف كيمارت</option>
+                    <option value="hr">الموارد البشرية</option>
+                    <option value="petroleum">قسم البترول</option>
+                    <option value="naqel_mgr">مدير تشغيل ناقل</option>
+                    <option value="ninja_mgr">مشروع نينجا</option>
+                </select>
+            </div>
+            
+            <!-- Ticket Controls -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-ticket-alt text-green-500"></i>
+                    التحكم في التذاكر
+                </h2>
+                
+                <div class="ticket-controls">
+                    <button id="callNextBtn" class="control-btn call-btn" disabled>
+                        <i class="fas fa-volume-up"></i>
+                        نداء التالي
+                    </button>
+                    
+                    <button id="completeTicketBtn" class="control-btn complete-btn" disabled>
+                        <i class="fas fa-check-circle"></i>
+                        إكمال التذكرة
+                    </button>
+                    
+                    <button id="cancelTicketBtn" class="control-btn cancel-btn" disabled>
+                        <i class="fas fa-times-circle"></i>
+                        إلغاء التذكرة
+                    </button>
+                    
+                    <button id="resetQueueBtn" class="control-btn reset-btn">
+                        <i class="fas fa-redo"></i>
+                        إعادة ضبط الطابور
+                    </button>
+                </div>
+                
+                <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                    <div class="font-bold text-blue-800 mb-2">التذكرة الحالية:</div>
+                    <div id="currentTicketInfo" class="text-gray-600">لا توجد تذكرة مختارة</div>
+                </div>
+            </div>
+            
+            <!-- Queue List -->
+            <div class="card">
+                <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                    <i class="fas fa-list-ol text-purple-500"></i>
+                    قائمة الطابور
+                </h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="queue-table">
+                        <thead>
+                            <tr>
+                                <th>رقم التذكرة</th>
+                                <th>القسم</th>
+                                <th>الوقت</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="queueTableBody">
+                            <!-- Tickets will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div id="emptyQueueMessage" class="text-center py-8 text-gray-500">
+                    <i class="fas fa-ticket-alt text-3xl mb-3"></i>
+                    <p>لا توجد تذاكر في الوقت الحالي</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content fade-in">
+            <button class="close-modal" onclick="closeSuccessModal()">×</button>
             <div class="text-center space-y-6">
                 <i class="fas fa-ticket-alt text-5xl text-blue-500"></i>
                 <div>
@@ -549,15 +1020,54 @@
                         </div>
                     </div>
                 </div>
-                <button onclick="closeSuccessModal()" class="btn-primary">
+                <button onclick="closeSuccessModal()" class="btn-primary w-full">
                     تم
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content fade-in">
+            <div class="text-center space-y-6">
+                <i class="fas fa-question-circle text-5xl text-yellow-500"></i>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800" id="confirmTitle">تأكيد العملية</h3>
+                    <p class="text-gray-600 mt-2" id="confirmMessage">هل أنت متأكد من تنفيذ هذه العملية؟</p>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="confirmAction(false)" class="btn-primary flex-1 bg-gray-500 hover:bg-gray-600">
+                        إلغاء
+                    </button>
+                    <button onclick="confirmAction(true)" class="btn-primary flex-1" id="confirmBtn">
+                        تأكيد
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content fade-in">
+            <button class="close-modal" onclick="closeMessageModal()">×</button>
+            <div class="text-center space-y-6">
+                <i id="messageIcon" class="fas fa-info-circle text-5xl text-blue-500"></i>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800" id="messageTitle">رسالة</h3>
+                    <p class="text-gray-600 mt-2" id="messageText"></p>
+                </div>
+                <button onclick="closeMessageModal()" class="btn-primary w-full">
+                    موافق
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
     <script>
-        // === Firebase Configuration ===
+        // ==================== FIREBASE CONFIGURATION ====================
         const firebaseConfig = {
             apiKey: "AIzaSyA2WwSnB54y4Xf3p_WPFHeSf7QOGgi3rS8",
             authDomain: "zahrani-4bbf3.firebaseapp.com",
@@ -573,7 +1083,7 @@
         const db = firebase.firestore();
         const realtimeDB = firebase.database();
 
-        // === System Configuration ===
+        // ==================== SYSTEM CONFIGURATION ====================
         const CONFIG = {
             companyName: { ar: "الزهراني للخدمات اللوجستية", en: "Al-Zahrani Logistics" },
             systemName: { ar: "نظام إدارة الطوابير الذكي", en: "Smart Queue Management System" },
@@ -591,7 +1101,16 @@
             ]
         };
 
-        // === Language Data ===
+        // ==================== EMPLOYEE CREDENTIALS ====================
+        const EMPLOYEES = {
+            "admin": { password: "admin123", name: "مدير النظام", dept: "all", role: "admin" },
+            "employee1": { password: "emp123", name: "أحمد محمد", dept: "vehicles", role: "employee" },
+            "employee2": { password: "emp123", name: "سارة عبدالله", dept: "finance", role: "employee" },
+            "employee3": { password: "emp123", name: "خالد علي", dept: "hr", role: "employee" },
+            "operator": { password: "op123", name: "مشغل النظام", dept: "all", role: "operator" }
+        };
+
+        // ==================== LANGUAGE CONFIGURATION ====================
         const LANGUAGES = {
             ar: {
                 welcome: "مرحباً بكم في شركة الزهراني",
@@ -635,33 +1154,43 @@
             }
         };
 
-        // === Global Variables ===
+        // ==================== GLOBAL VARIABLES ====================
         let currentLanguage = 'ar';
         let isOnline = true;
-        let isGeneratingTicket = false;
         let currentScreen = 'visitor';
+        let currentUser = null;
+        let selectedDepartment = null;
+        let currentTicket = null;
+        let tickets = [];
         let calledTickets = [];
         let recentTickets = [];
+        let ticketsListener = null;
+        let isGeneratingTicket = false;
+        let pendingAction = null;
 
-        // === Initialize ===
+        // ==================== INITIALIZATION ====================
         async function init() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            
             updateLanguage();
             initDepartments();
             initFirebaseListeners();
             updateConnectionStatus();
-            updateDateTime();
-            setInterval(updateDateTime, 1000);
             
             await initializeCounters();
             
             // Setup screen navigation
             setupScreenNavigation();
             
+            // Check for saved user session
+            checkSavedSession();
+            
             // Show current screen
             showScreen(currentScreen);
         }
 
-        // === Screen Management ===
+        // ==================== SCREEN MANAGEMENT ====================
         function setupScreenNavigation() {
             document.querySelectorAll('[data-screen]').forEach(btn => {
                 if (btn.tagName === 'BUTTON') {
@@ -676,15 +1205,7 @@
         function showScreen(screen) {
             currentScreen = screen;
             
-            // Update active screen
-            document.querySelectorAll('[data-screen]').forEach(el => {
-                el.classList.remove('active');
-                if (el.getAttribute('data-screen') === screen) {
-                    el.classList.add('active');
-                }
-            });
-            
-            // Update navigation buttons
+            // Update active buttons
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.getAttribute('data-screen') === screen) {
@@ -692,16 +1213,71 @@
                 }
             });
             
-            // Show/hide header and footer based on screen
-            const showHeaderFooter = screen === 'visitor';
-            document.getElementById('mainHeader').style.display = showHeaderFooter ? 'block' : 'none';
-            document.getElementById('mainFooter').style.display = showHeaderFooter ? 'block' : 'none';
+            // Show/hide screens
+            document.querySelectorAll('[data-screen]').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-screen') === screen) {
+                    el.classList.add('active');
+                }
+            });
             
-            // Show/hide screen indicator
-            document.getElementById('screenIndicator').classList.toggle('hidden', screen === 'visitor');
+            // Show/hide admin dashboard
+            if (screen === 'admin' && currentUser) {
+                document.getElementById('adminDashboardScreen').classList.add('active');
+                document.getElementById('adminLoginScreen').classList.remove('active');
+            } else if (screen === 'admin') {
+                document.getElementById('adminDashboardScreen').classList.remove('active');
+                document.getElementById('adminLoginScreen').classList.add('active');
+            }
+            
+            // Show/hide navigation based on screen
+            const showNav = !['display', 'admin'].includes(screen);
+            document.getElementById('mainNav').style.display = showNav ? 'block' : 'none';
+            
+            // Update display screen if needed
+            if (screen === 'display') {
+                updateCurrentCall();
+                updateRecentCallsList();
+            }
+            
+            // Update admin dashboard if needed
+            if (screen === 'admin-dashboard' || (screen === 'admin' && currentUser)) {
+                updateAdminStats();
+                updateTicketsDisplay();
+            }
         }
 
-        // === Language Functions ===
+        // ==================== DATE & TIME ====================
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format time
+            const timeStr = now.toLocaleTimeString('ar-EG', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // Format date
+            const dateOptions = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const dateStr = now.toLocaleDateString('ar-EG', dateOptions);
+            
+            // Update all time displays
+            document.querySelectorAll('.current-time').forEach(el => {
+                if (el.textContent !== timeStr) el.textContent = timeStr;
+            });
+            document.querySelectorAll('.current-date').forEach(el => {
+                if (el.textContent !== dateStr) el.textContent = dateStr;
+            });
+        }
+
+        // ==================== LANGUAGE MANAGEMENT ====================
         function updateLanguage() {
             const t = LANGUAGES[currentLanguage];
             const isRTL = currentLanguage === 'ar';
@@ -718,28 +1294,22 @@
                 <li>${t.instruction5}</li>
             `;
             
-            // Update display screen texts
-            document.querySelector('.call-title').textContent = t.currentTicket;
-            document.querySelector('.recent-title').textContent = t.last10Tickets;
-            document.getElementById('speakingIndicator').innerHTML = `<i class="fas fa-volume-up"></i> ${t.speakingNow}`;
-            
-            const noCallsDiv = document.getElementById('noCurrentCall');
-            if (noCallsDiv) {
-                noCallsDiv.innerHTML = `
-                    <i class="fas fa-volume-off"></i>
-                    <h3>${t.noTickets}</h3>
-                    <p>${t.waitingNew}</p>
-                `;
+            // Update display screen
+            if (document.querySelector('.call-title')) {
+                document.querySelector('.call-title').textContent = t.currentTicket;
+                document.querySelector('.recent-title').textContent = t.last10Tickets;
             }
             
             updateDepartmentDisplay();
         }
 
-        // === Department Functions ===
+        // ==================== DEPARTMENT FUNCTIONS ====================
         function initDepartments() {
             const container = document.getElementById('departmentsGrid');
+            if (!container) return;
+            
             container.innerHTML = CONFIG.departments.map(dept => `
-                <div class="card hover:border-blue-300 text-left">
+                <div class="card hover:border-blue-300 fade-in">
                     <div class="flex flex-col items-center text-center">
                         <div class="icon-wrapper" style="background-color: ${dept.color}">
                             <i class="fas ${dept.icon}"></i>
@@ -771,12 +1341,12 @@
             
             document.querySelectorAll('.dept-name').forEach((el, index) => {
                 const dept = CONFIG.departments[index];
-                el.textContent = currentLanguage === 'ar' ? dept.nameAr : dept.nameEn;
+                if (dept) el.textContent = currentLanguage === 'ar' ? dept.nameAr : dept.nameEn;
             });
             
             document.querySelectorAll('.dept-room').forEach((el, index) => {
                 const dept = CONFIG.departments[index];
-                el.textContent = currentLanguage === 'ar' ? dept.roomAr : dept.roomEn;
+                if (dept) el.textContent = currentLanguage === 'ar' ? dept.roomAr : dept.roomEn;
             });
             
             document.querySelectorAll('.generate-btn').forEach(btn => {
@@ -784,36 +1354,7 @@
             });
         }
 
-        // === DateTime Functions ===
-        function updateDateTime() {
-            const now = new Date();
-            
-            // Format time
-            const timeStr = now.toLocaleTimeString('ar-EG', { 
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            
-            // Format date
-            const dateOptions = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            const dateStr = now.toLocaleDateString('ar-EG', dateOptions);
-            
-            // Update both screens
-            const timeElements = document.querySelectorAll('.current-time');
-            const dateElements = document.querySelectorAll('.current-date');
-            
-            timeElements.forEach(el => el.textContent = timeStr);
-            dateElements.forEach(el => el.textContent = dateStr);
-        }
-
-        // === Firebase Functions ===
+        // ==================== FIREBASE FUNCTIONS ====================
         async function initializeCounters() {
             try {
                 for (const dept of CONFIG.departments) {
@@ -868,12 +1409,16 @@
             
             isGeneratingTicket = true;
             const button = document.querySelector(`button[data-dept="${deptId}"]`);
+            if (!button) return;
+            
             const originalText = button.innerHTML;
             button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>جاري التوليد...';
             button.disabled = true;
             
             try {
                 const dept = CONFIG.departments.find(d => d.id === deptId);
+                if (!dept) throw new Error('Department not found');
+                
                 const ticketNumber = await getNextTicketNumber(deptId);
                 
                 const ticket = {
@@ -896,27 +1441,31 @@
                 
             } catch (error) {
                 console.error('Error generating ticket:', error);
-                alert(currentLanguage === 'ar' ? 'حدث خطأ في توليد التذكرة' : 'Error generating ticket');
+                showMessage('خطأ', 'حدث خطأ في توليد التذكرة', 'error');
             } finally {
                 isGeneratingTicket = false;
-                button.innerHTML = originalText;
-                button.disabled = false;
+                if (button) {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }
             }
         }
 
         function initFirebaseListeners() {
-            // Listen to all tickets for visitor screen
-            db.collection('tickets')
+            // Listen to all tickets
+            ticketsListener = db.collection('tickets')
                 .orderBy('createdAt', 'desc')
                 .limit(100)
                 .onSnapshot(snapshot => {
-                    const tickets = [];
+                    tickets = [];
                     snapshot.forEach(doc => {
                         tickets.push({ id: doc.id, ...doc.data() });
                     });
                     
-                    updateStats(tickets);
-                    updateRecentTickets(tickets);
+                    updateStats();
+                    updateRecentTickets();
+                    updateAdminStats();
+                    updateDepartmentCounters();
                 }, error => {
                     console.error('Error listening to tickets:', error);
                 });
@@ -955,19 +1504,40 @@
             });
         }
 
-        function updateStats(tickets) {
+        function updateStats() {
             const waitingCount = tickets.filter(t => t.status === 'waiting').length;
             const calledCount = tickets.filter(t => t.status === 'called').length;
             const totalCount = tickets.length;
             
-            document.getElementById('waitingCount').textContent = waitingCount;
-            document.getElementById('calledCount').textContent = calledCount;
-            document.getElementById('totalCount').textContent = totalCount;
+            const waitingEl = document.getElementById('waitingCount');
+            const calledEl = document.getElementById('calledCount');
+            const totalEl = document.getElementById('totalCount');
             
-            updateDepartmentStats(tickets);
+            if (waitingEl) waitingEl.textContent = waitingCount;
+            if (calledEl) calledEl.textContent = calledCount;
+            if (totalEl) totalEl.textContent = totalCount;
+            
+            updateDepartmentStats();
         }
 
-        function updateDepartmentStats(tickets = []) {
+        function updateAdminStats() {
+            const waiting = tickets.filter(t => t.status === 'waiting').length;
+            const called = tickets.filter(t => t.status === 'called').length;
+            const completed = tickets.filter(t => t.status === 'completed').length;
+            const total = tickets.length;
+            
+            const waitingEl = document.getElementById('statWaiting');
+            const calledEl = document.getElementById('statCalled');
+            const completedEl = document.getElementById('statCompleted');
+            const totalEl = document.getElementById('statTotal');
+            
+            if (waitingEl) waitingEl.textContent = waiting;
+            if (calledEl) calledEl.textContent = called;
+            if (completedEl) completedEl.textContent = completed;
+            if (totalEl) totalEl.textContent = total;
+        }
+
+        function updateDepartmentStats() {
             CONFIG.departments.forEach(dept => {
                 const waitingCount = tickets.filter(t => t.deptId === dept.id && t.status === 'waiting').length;
                 const waitingElement = document.querySelector(`.dept-waiting[data-dept="${dept.id}"]`);
@@ -977,37 +1547,47 @@
             });
         }
 
-        function updateRecentTickets(tickets) {
+        function updateDepartmentCounters() {
+            CONFIG.departments.forEach(dept => {
+                const lastTicket = tickets
+                    .filter(t => t.deptId === dept.id)
+                    .sort((a, b) => parseInt(b.number) - parseInt(a.number))[0];
+                
+                if (lastTicket) {
+                    const el = document.querySelector(`.dept-last-number[data-dept="${dept.id}"]`);
+                    if (el) el.textContent = lastTicket.number;
+                }
+            });
+        }
+
+        function updateRecentTickets() {
             recentTickets = tickets.slice(0, 10);
-            
             if (currentScreen === 'display') {
                 updateRecentCallsList();
             }
         }
 
+        // ==================== DISPLAY SCREEN FUNCTIONS ====================
         function updateCurrentCall() {
             const currentCallInfo = document.getElementById('currentCallInfo');
             const noCurrentCall = document.getElementById('noCurrentCall');
             const speakingIndicator = document.getElementById('speakingIndicator');
             
+            if (!currentCallInfo || !noCurrentCall || !speakingIndicator) return;
+            
             if (calledTickets.length > 0) {
                 const latestCalled = calledTickets[0];
                 const dept = CONFIG.departments.find(d => d.id === latestCalled.deptId) || CONFIG.departments[0];
                 
-                // Update display
                 document.getElementById('displayTicketNumber').textContent = latestCalled.number;
                 document.getElementById('displayDeptArabic').textContent = dept.nameAr;
                 document.getElementById('displayDeptEnglish').textContent = dept.nameEn;
                 document.getElementById('displayRoomArabic').textContent = dept.roomAr;
                 document.getElementById('displayRoomEnglish').textContent = dept.roomEn;
                 
-                // Show/hide elements
                 currentCallInfo.classList.remove('hidden');
                 noCurrentCall.classList.add('hidden');
                 speakingIndicator.classList.remove('hidden');
-                
-                // Update border color based on department
-                currentCallInfo.style.borderColor = dept.color;
             } else {
                 currentCallInfo.classList.add('hidden');
                 noCurrentCall.classList.remove('hidden');
@@ -1021,8 +1601,8 @@
 
         function updateRecentCallsList() {
             const recentCallsList = document.getElementById('recentCallsList');
+            if (!recentCallsList) return;
             
-            // Combine recent tickets and called tickets
             const allRecent = [...calledTickets, ...recentTickets]
                 .filter((ticket, index, self) => 
                     index === self.findIndex(t => t.id === ticket.id)
@@ -1058,22 +1638,449 @@
             }).join('');
         }
 
-        // === UI Functions ===
+        // ==================== ADMIN FUNCTIONS ====================
+        function checkSavedSession() {
+            const savedUser = localStorage.getItem('zahrani_employee');
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    if (user && user.username && EMPLOYEES[user.username]) {
+                        loginSuccess(user.username);
+                    }
+                } catch (e) {
+                    localStorage.removeItem('zahrani_employee');
+                }
+            }
+        }
+
+        function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorElement = document.getElementById('errorMessage');
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            
+            if (!username || !password) {
+                showError('يرجى إدخال اسم المستخدم وكلمة المرور');
+                return;
+            }
+            
+            loginText.classList.add('hidden');
+            loginSpinner.classList.remove('hidden');
+            loginBtn.disabled = true;
+            
+            setTimeout(() => {
+                if (EMPLOYEES[username] && EMPLOYEES[username].password === password) {
+                    loginSuccess(username);
+                } else {
+                    showError('اسم المستخدم أو كلمة المرور غير صحيحة');
+                }
+                
+                loginText.classList.remove('hidden');
+                loginSpinner.classList.add('hidden');
+                loginBtn.disabled = false;
+            }, 1000);
+        }
+
+        function loginSuccess(username) {
+            currentUser = {
+                username: username,
+                name: EMPLOYEES[username].name,
+                dept: EMPLOYEES[username].dept,
+                role: EMPLOYEES[username].role
+            };
+            
+            localStorage.setItem('zahrani_employee', JSON.stringify(currentUser));
+            
+            document.getElementById('welcomeMessage').textContent = `مرحباً بك، ${currentUser.name}`;
+            showScreen('admin-dashboard');
+            setupUserDepartment();
+        }
+
+        function setupUserDepartment() {
+            const deptSelect = document.getElementById('departmentSelect');
+            if (!deptSelect) return;
+            
+            if (currentUser.dept === 'all') {
+                deptSelect.disabled = false;
+            } else {
+                deptSelect.value = currentUser.dept;
+                deptSelect.disabled = true;
+                handleDepartmentChange();
+            }
+        }
+
+        function showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            if (errorElement && errorText) {
+                errorText.textContent = message;
+                errorElement.classList.add('show');
+                
+                setTimeout(() => {
+                    errorElement.classList.remove('show');
+                }, 5000);
+            }
+        }
+
+        function handleLogout() {
+            showConfirm('تسجيل الخروج', 'هل تريد تسجيل الخروج من النظام؟', () => {
+                if (ticketsListener) {
+                    ticketsListener();
+                }
+                
+                currentUser = null;
+                selectedDepartment = null;
+                currentTicket = null;
+                
+                localStorage.removeItem('zahrani_employee');
+                
+                document.getElementById('username').value = '';
+                document.getElementById('password').value = '';
+                document.getElementById('errorMessage').classList.remove('show');
+                
+                showScreen('admin');
+            });
+        }
+
+        function handleDepartmentChange() {
+            const deptId = document.getElementById('departmentSelect').value;
+            selectedDepartment = deptId;
+            
+            const callNextBtn = document.getElementById('callNextBtn');
+            if (callNextBtn) {
+                callNextBtn.disabled = !deptId;
+            }
+            
+            updateTicketsDisplay();
+        }
+
+        function updateTicketsDisplay() {
+            const tableBody = document.getElementById('queueTableBody');
+            const emptyMessage = document.getElementById('emptyQueueMessage');
+            
+            if (!tableBody || !emptyMessage) return;
+            
+            let filteredTickets = tickets;
+            if (selectedDepartment) {
+                filteredTickets = tickets.filter(t => t.deptId === selectedDepartment);
+            }
+            
+            if (filteredTickets.length === 0) {
+                tableBody.innerHTML = '';
+                emptyMessage.classList.remove('hidden');
+                return;
+            }
+            
+            emptyMessage.classList.add('hidden');
+            
+            filteredTickets.sort((a, b) => {
+                const statusOrder = { 'called': 0, 'waiting': 1, 'completed': 2 };
+                return statusOrder[a.status] - statusOrder[b.status];
+            });
+            
+            tableBody.innerHTML = filteredTickets.map(ticket => {
+                const dept = CONFIG.departments.find(d => d.id === ticket.deptId) || CONFIG.departments[0];
+                const time = ticket.createdAt ? new Date(ticket.createdAt.toDate()).toLocaleTimeString('ar-EG') : '--:--';
+                const statusText = getStatusText(ticket.status);
+                const statusClass = getStatusClass(ticket.status);
+                
+                return `
+                    <tr class="${ticket.id === (currentTicket?.id) ? 'bg-blue-50' : ''}">
+                        <td class="font-bold text-lg">${ticket.number}</td>
+                        <td>${dept.nameAr}</td>
+                        <td>${time}</td>
+                        <td>
+                            <span class="ticket-status ${statusClass}">${statusText}</span>
+                        </td>
+                        <td>
+                            ${ticket.status === 'waiting' ? `
+                                <button onclick="callTicket('${ticket.id}')" class="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600">
+                                    نداء
+                                </button>
+                            ` : ''}
+                            ${ticket.status === 'called' ? `
+                                <button onclick="completeTicket('${ticket.id}')" class="px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">
+                                    إكمال
+                                </button>
+                                <button onclick="cancelTicket('${ticket.id}')" class="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 mr-2">
+                                    إلغاء
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            updateCurrentTicketInfo();
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'waiting': 'في الانتظار',
+                'called': 'تم النداء',
+                'completed': 'مكتملة'
+            };
+            return statusMap[status] || status;
+        }
+
+        function getStatusClass(status) {
+            const classMap = {
+                'waiting': 'status-waiting',
+                'called': 'status-called',
+                'completed': 'status-completed'
+            };
+            return classMap[status] || 'status-waiting';
+        }
+
+        function updateCurrentTicketInfo() {
+            const infoElement = document.getElementById('currentTicketInfo');
+            const completeBtn = document.getElementById('completeTicketBtn');
+            const cancelBtn = document.getElementById('cancelTicketBtn');
+            
+            if (!infoElement || !completeBtn || !cancelBtn) return;
+            
+            if (currentTicket) {
+                const dept = CONFIG.departments.find(d => d.id === currentTicket.deptId) || CONFIG.departments[0];
+                infoElement.innerHTML = `
+                    <div class="text-2xl font-bold text-blue-600 mb-1">${currentTicket.number}</div>
+                    <div class="text-gray-700">${dept.nameAr}</div>
+                    <div class="text-sm text-gray-500">${getStatusText(currentTicket.status)}</div>
+                `;
+                
+                completeBtn.disabled = currentTicket.status !== 'called';
+                cancelBtn.disabled = currentTicket.status !== 'called';
+            } else {
+                infoElement.textContent = 'لا توجد تذكرة مختارة';
+                completeBtn.disabled = true;
+                cancelBtn.disabled = true;
+            }
+        }
+
+        async function callNextTicket() {
+            if (!selectedDepartment) {
+                showMessage('تحذير', 'يرجى اختيار القسم أولاً', 'warning');
+                return;
+            }
+            
+            const nextTicket = tickets
+                .filter(t => t.deptId === selectedDepartment && t.status === 'waiting')
+                .sort((a, b) => parseInt(a.number) - parseInt(b.number))[0];
+            
+            if (!nextTicket) {
+                showMessage('معلومة', 'لا توجد تذاكر في الانتظار لهذا القسم', 'info');
+                return;
+            }
+            
+            await callTicket(nextTicket.id);
+        }
+
+        async function callTicket(ticketId) {
+            try {
+                const ticketRef = db.collection('tickets').doc(ticketId);
+                await ticketRef.update({
+                    status: 'called',
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    calledBy: currentUser.name,
+                    calledAt: new Date().toISOString()
+                });
+                
+                currentTicket = tickets.find(t => t.id === ticketId);
+                if (currentTicket) {
+                    currentTicket.status = 'called';
+                }
+                
+                updateCurrentTicketInfo();
+                updateTicketsDisplay();
+                showTempMessage('تم نداء التذكرة بنجاح', 'success');
+            } catch (error) {
+                console.error('Error calling ticket:', error);
+                showTempMessage('حدث خطأ في نداء التذكرة', 'error');
+            }
+        }
+
+        async function completeCurrentTicket() {
+            if (!currentTicket || currentTicket.status !== 'called') {
+                showMessage('تحذير', 'يرجى اختيار تذكرة تم نداؤها', 'warning');
+                return;
+            }
+            
+            await completeTicket(currentTicket.id);
+        }
+
+        async function completeTicket(ticketId) {
+            try {
+                const ticketRef = db.collection('tickets').doc(ticketId);
+                await ticketRef.update({
+                    status: 'completed',
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    completedBy: currentUser.name,
+                    completedAt: new Date().toISOString()
+                });
+                
+                currentTicket = null;
+                updateCurrentTicketInfo();
+                updateTicketsDisplay();
+                showTempMessage('تم إكمال التذكرة بنجاح', 'success');
+            } catch (error) {
+                console.error('Error completing ticket:', error);
+                showTempMessage('حدث خطأ في إكمال التذكرة', 'error');
+            }
+        }
+
+        async function cancelCurrentTicket() {
+            if (!currentTicket || currentTicket.status !== 'called') {
+                showMessage('تحذير', 'يرجى اختيار تذكرة تم نداؤها', 'warning');
+                return;
+            }
+            
+            showConfirm('إلغاء التذكرة', 'هل أنت متأكد من إلغاء هذه التذكرة؟', async () => {
+                await cancelTicket(currentTicket.id);
+            });
+        }
+
+        async function cancelTicket(ticketId) {
+            try {
+                const ticketRef = db.collection('tickets').doc(ticketId);
+                await ticketRef.update({
+                    status: 'waiting',
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    cancelledBy: currentUser.name,
+                    cancelledAt: new Date().toISOString()
+                });
+                
+                currentTicket = null;
+                updateCurrentTicketInfo();
+                updateTicketsDisplay();
+                showTempMessage('تم إلغاء التذكرة بنجاح', 'success');
+            } catch (error) {
+                console.error('Error cancelling ticket:', error);
+                showTempMessage('حدث خطأ في إلغاء التذكرة', 'error');
+            }
+        }
+
+        async function resetQueue() {
+            showConfirm('إعادة ضبط الطابور', 'هل أنت متأكد من إعادة ضبط طابور الانتظار؟ هذا الإجراء سيمسح جميع التذاكر.', async () => {
+                try {
+                    const snapshot = await db.collection('tickets').get();
+                    const batch = db.batch();
+                    
+                    snapshot.docs.forEach(doc => {
+                        batch.delete(doc.ref);
+                    });
+                    
+                    await batch.commit();
+                    
+                    const countersBatch = db.batch();
+                    Object.keys(CONFIG.departments).forEach(deptId => {
+                        const counterRef = db.collection('counters').doc(deptId);
+                        countersBatch.set(counterRef, {
+                            lastNumber: 0,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    });
+                    
+                    await countersBatch.commit();
+                    
+                    currentTicket = null;
+                    updateCurrentTicketInfo();
+                    updateTicketsDisplay();
+                    showTempMessage('تم إعادة ضبط الطابور بنجاح', 'success');
+                } catch (error) {
+                    console.error('Error resetting queue:', error);
+                    showTempMessage('حدث خطأ في إعادة ضبط الطابور', 'error');
+                }
+            });
+        }
+
+        // ==================== UI FUNCTIONS ====================
         function showSuccessModal(ticketNumber, deptNameAr, deptNameEn) {
             document.getElementById('ticketNumber').textContent = ticketNumber;
             document.getElementById('ticketDept').textContent = 
                 `القسم: ${currentLanguage === 'ar' ? deptNameAr : deptNameEn}`;
-            document.getElementById('successModal').classList.remove('hidden');
-            document.getElementById('successModal').classList.add('flex');
+            document.getElementById('successModal').classList.add('active');
         }
 
         function closeSuccessModal() {
-            document.getElementById('successModal').classList.remove('flex');
-            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        function showConfirm(title, message, callback) {
+            document.getElementById('confirmTitle').textContent = title;
+            document.getElementById('confirmMessage').textContent = message;
+            pendingAction = callback;
+            document.getElementById('confirmModal').classList.add('active');
+        }
+
+        function confirmAction(confirmed) {
+            document.getElementById('confirmModal').classList.remove('active');
+            if (confirmed && pendingAction) {
+                pendingAction();
+            }
+            pendingAction = null;
+        }
+
+        function showMessage(title, message, type = 'info') {
+            const iconMap = {
+                'info': 'fa-info-circle',
+                'success': 'fa-check-circle',
+                'warning': 'fa-exclamation-triangle',
+                'error': 'fa-times-circle'
+            };
+            
+            const colorMap = {
+                'info': 'text-blue-500',
+                'success': 'text-green-500',
+                'warning': 'text-yellow-500',
+                'error': 'text-red-500'
+            };
+            
+            document.getElementById('messageTitle').textContent = title;
+            document.getElementById('messageText').textContent = message;
+            document.getElementById('messageIcon').className = `fas ${iconMap[type]} text-5xl ${colorMap[type]}`;
+            document.getElementById('messageModal').classList.add('active');
+        }
+
+        function closeMessageModal() {
+            document.getElementById('messageModal').classList.remove('active');
+        }
+
+        function showTempMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 10px;
+                font-weight: bold;
+                z-index: 10000;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                animation: slideIn 0.3s ease;
+                color: white;
+            `;
+            
+            messageEl.style.background = type === 'success' ? '#10b981' : '#ef4444';
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (messageEl.parentNode) {
+                        document.body.removeChild(messageEl);
+                    }
+                }, 300);
+            }, 3000);
         }
 
         function updateConnectionStatus() {
             const statusElement = document.getElementById('connectionStatus');
+            if (!statusElement) return;
+            
             const icon = statusElement.querySelector('i');
             const text = statusElement.querySelector('span');
             
@@ -1088,14 +2095,60 @@
             }
         }
 
-        // === Event Listeners ===
-        document.getElementById('languageToggle').addEventListener('click', () => {
-            currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
-            updateLanguage();
+        // ==================== EVENT LISTENERS ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            
+            // Language toggle
+            document.getElementById('languageToggle')?.addEventListener('click', () => {
+                currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+                updateLanguage();
+            });
+            
+            // Login button
+            document.getElementById('loginBtn')?.addEventListener('click', handleLogin);
+            
+            // Enter key in password field
+            document.getElementById('password')?.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+            
+            // Department selection
+            document.getElementById('departmentSelect')?.addEventListener('change', handleDepartmentChange);
+            
+            // Ticket control buttons
+            document.getElementById('callNextBtn')?.addEventListener('click', callNextTicket);
+            document.getElementById('completeTicketBtn')?.addEventListener('click', completeCurrentTicket);
+            document.getElementById('cancelTicketBtn')?.addEventListener('click', cancelCurrentTicket);
+            document.getElementById('resetQueueBtn')?.addEventListener('click', resetQueue);
+            
+            // Logout button
+            document.getElementById('logoutBtn')?.addEventListener('click', handleLogout);
+            
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            });
         });
 
-        // === Initialize on load ===
-        document.addEventListener('DOMContentLoaded', init);
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
