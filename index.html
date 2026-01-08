@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Zahrani Logistics - Queue System</title>
+    <title>العراقي للخدمات اللوجستية - نظام الطابور الذكي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -98,12 +98,24 @@
             to { transform: translateY(0); opacity: 1; }
         }
         
+        @keyframes slideInRight {
+            from { transform: translateX(50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInLeft {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
         @keyframes marquee {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
         
         .animate-slide-in { animation: slideIn 0.5s ease-out; }
+        .animate-slide-in-right { animation: slideInRight 0.5s ease-out; }
+        .animate-slide-in-left { animation: slideInLeft 0.5s ease-out; }
         .animate-marquee { animation: marquee 30s linear infinite; }
         
         /* Professional Button Styles */
@@ -169,11 +181,6 @@
             font-size: 24px;
             margin-bottom: 15px;
             color: white;
-        }
-        
-        /* Online Appointment */
-        .online-appointment {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         
         /* Custom Scrollbar */
@@ -251,6 +258,18 @@
             font-size: 3vw;
         }
         
+        .display-ticket-number {
+            font-size: 8vw;
+        }
+        
+        .display-ticket-department {
+            font-size: 2.5vw;
+        }
+        
+        .display-ticket-office {
+            font-size: 2vw;
+        }
+        
         @media (min-width: 1920px) {
             .display-current-call {
                 font-size: 480px;
@@ -262,6 +281,18 @@
             
             .display-room-name {
                 font-size: 57px;
+            }
+            
+            .display-ticket-number {
+                font-size: 150px;
+            }
+            
+            .display-ticket-department {
+                font-size: 48px;
+            }
+            
+            .display-ticket-office {
+                font-size: 38px;
             }
         }
         
@@ -290,6 +321,110 @@
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.2); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Logo Styles */
+        .logo-container {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid white;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-container img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+        
+        /* Waiting Ticket Styles */
+        .waiting-ticket-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .waiting-ticket-card:hover {
+            transform: translateX(10px);
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        }
+        
+        .ticket-number-badge {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Approved Ticket Styles */
+        .approved-ticket-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(21, 128, 61, 0.85) 100%);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid rgba(34, 197, 94, 0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .approved-ticket-card:hover {
+            transform: translateX(10px);
+            border-color: rgba(34, 197, 94, 0.8);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.2);
+        }
+        
+        .approved-badge {
+            background: rgba(255, 255, 255, 0.9);
+            color: #16a34a;
+            border-radius: 12px;
+            padding: 6px 12px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Display Layout */
+        .display-left-panel {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .display-right-panel {
+            width: 40%;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-left: 2px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Arabic Text Styles */
+        .arabic-text {
+            font-family: 'Cairo', sans-serif;
+            line-height: 1.8;
+        }
+        
+        .english-text {
+            font-family: 'Inter', sans-serif;
+            direction: ltr;
+            text-align: left;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -322,8 +457,8 @@
         // === System Configuration ===
         const CONFIG = {
             companyName: {
-                ar: "الزهراني للخدمات اللوجستية",
-                en: "Al-Zahrani Logistics"
+                ar: "العراقي للخدمات اللوجستية",
+                en: "Al-Iraqi Logistics Services"
             },
             systemName: {
                 ar: "نظام إدارة الطوابير الذكي",
@@ -342,7 +477,9 @@
                     roomEn: "Vehicles Office", 
                     color: "#3b82f6",
                     icon: "fa-solid fa-truck",
-                    iconColor: "#1d4ed8"
+                    iconColor: "#1d4ed8",
+                    categoryAr: "تعديل المركبات",
+                    categoryEn: "Vehicle Modification"
                 },
                 { 
                     id: 'finance', 
@@ -353,18 +490,22 @@
                     roomEn: "Finance Office", 
                     color: "#10b981",
                     icon: "fa-solid fa-money-bill-wave",
-                    iconColor: "#047857"
+                    iconColor: "#047857",
+                    categoryAr: "إدارة المالية",
+                    categoryEn: "Financial Management"
                 },
                 { 
                     id: 'supervisors', 
                     nameAr: "مدير التشغيل", 
                     nameEn: "Supervisors Department",
                     prefix: "S", 
-                    roomAr: "مدير التشغيل", 
+                    roomAr: "مكتب مدير التشغيل", 
                     roomEn: "Supervisors Office", 
                     color: "#8b5cf6",
                     icon: "fa-solid fa-user-tie",
-                    iconColor: "#7c3aed"
+                    iconColor: "#7c3aed",
+                    categoryAr: "إدارة العمليات",
+                    categoryEn: "Operations Management"
                 },
                 { 
                     id: 'ninja_sup', 
@@ -375,7 +516,9 @@
                     roomEn: "Ninja Supervisor Office", 
                     color: "#ec4899",
                     icon: "fa-solid fa-user-ninja",
-                    iconColor: "#be185d"
+                    iconColor: "#be185d",
+                    categoryAr: "إدارة المشاريع",
+                    categoryEn: "Project Management"
                 },
                 { 
                     id: 'kmart_ninja', 
@@ -386,7 +529,9 @@
                     roomEn: "K-Mart Office", 
                     color: "#f59e0b",
                     icon: "fa-solid fa-store",
-                    iconColor: "#d97706"
+                    iconColor: "#d97706",
+                    categoryAr: "إدارة المخازن",
+                    categoryEn: "Warehouse Management"
                 },
                 { 
                     id: 'hr', 
@@ -397,7 +542,9 @@
                     roomEn: "HR Office", 
                     color: "#ef4444",
                     icon: "fa-solid fa-users",
-                    iconColor: "#dc2626"
+                    iconColor: "#dc2626",
+                    categoryAr: "إدارة الموارد البشرية",
+                    categoryEn: "Human Resources Management"
                 },
                 { 
                     id: 'petroleum', 
@@ -408,7 +555,9 @@
                     roomEn: "Petroleum Office", 
                     color: "#06b6d4",
                     icon: "fa-solid fa-gas-pump",
-                    iconColor: "#0891b2"
+                    iconColor: "#0891b2",
+                    categoryAr: "إدارة البترول",
+                    categoryEn: "Petroleum Management"
                 },
                 { 
                     id: 'naqel_mgr', 
@@ -419,7 +568,9 @@
                     roomEn: "Naqel Project Office", 
                     color: "#8b5cf6",
                     icon: "fa-solid fa-truck-fast",
-                    iconColor: "#7c3aed"
+                    iconColor: "#7c3aed",
+                    categoryAr: "إدارة النقل",
+                    categoryEn: "Transport Management"
                 },
                 { 
                     id: 'ninja_mgr', 
@@ -430,7 +581,9 @@
                     roomEn: "Ninja Project Office", 
                     color: "#6366f1",
                     icon: "fa-solid fa-bolt",
-                    iconColor: "#4f46e5"
+                    iconColor: "#4f46e5",
+                    categoryAr: "إدارة المشاريع",
+                    categoryEn: "Project Management"
                 }
             ]
         };
@@ -438,7 +591,7 @@
         // === Language Data ===
         const LANGUAGES = {
             ar: {
-                welcome: "مرحباً بكم في شركة الزهراني",
+                welcome: "مرحباً بكم في شركة العراقي للخدمات اللوجستية",
                 selectDept: "اختر القسم المناسب لخدمتكم",
                 instructions: "تعليمات الاستخدام",
                 instruction1: "اختر القسم المناسب لخدمتك",
@@ -466,7 +619,7 @@
                 goBack: "العودة",
                 returnToKiosk: "العودة للكشك",
                 openDisplay: "فتح شاشة العرض",
-                welcomeMessage: "شركة الزهراني ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم",
+                welcomeMessage: "شركة العراقي للخدمات اللوجستية ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم",
                 systemMessage: "نظام إدارة الطابور الذكي ٢٠٢٥",
                 holdTicket: "يرجى الاحتفاظ برقم التذكرة والمتابعة",
                 allRights: "جميع الحقوق محفوظة",
@@ -518,10 +671,24 @@
                 proceedTo: "توجه إلى",
                 soundAnnouncement: "جاري النداء",
                 soundAnnouncementAr: "جاري النداء باللغة العربية",
-                soundAnnouncementEn: "جاري النداء باللغة الإنجليزية"
+                soundAnnouncementEn: "جاري النداء باللغة الإنجليزية",
+                waitingTickets: "التذاكر المنتظرة",
+                approvedTickets: "التذاكر المعتمدة",
+                ticketStatus: "حالة التذكرة",
+                category: "التصنيف",
+                office: "المكتب",
+                ticketQueue: "طابور التذاكر",
+                nextTicket: "التذكرة التالية",
+                yourTurn: "دورك الآن",
+                pleaseProceed: "يرجى التوجه إلى",
+                systemReady: "النظام جاهز للخدمة",
+                waitingForApproval: "بانتظار الموافقة",
+                approved: "معتمد",
+                inProgress: "قيد التنفيذ",
+                processing: "قيد المعالجة"
             },
             en: {
-                welcome: "Welcome to Al-Zahrani Company",
+                welcome: "Welcome to Al-Iraqi Logistics Services",
                 selectDept: "Select the appropriate department",
                 instructions: "Usage Instructions",
                 instruction1: "Select the appropriate department",
@@ -549,7 +716,7 @@
                 goBack: "Go Back",
                 returnToKiosk: "Return to Kiosk",
                 openDisplay: "Open Display Screen",
-                welcomeMessage: "Al-Zahrani Company welcomes you",
+                welcomeMessage: "Al-Iraqi Logistics Services welcomes you",
                 systemMessage: "Smart Queue Management System 2025",
                 holdTicket: "Please keep your ticket number",
                 allRights: "All rights reserved",
@@ -601,7 +768,21 @@
                 proceedTo: "Proceed to",
                 soundAnnouncement: "Announcement in progress",
                 soundAnnouncementAr: "Arabic announcement in progress",
-                soundAnnouncementEn: "English announcement in progress"
+                soundAnnouncementEn: "English announcement in progress",
+                waitingTickets: "Waiting Tickets",
+                approvedTickets: "Approved Tickets",
+                ticketStatus: "Ticket Status",
+                category: "Category",
+                office: "Office",
+                ticketQueue: "Ticket Queue",
+                nextTicket: "Next Ticket",
+                yourTurn: "Your Turn Now",
+                pleaseProceed: "Please proceed to",
+                systemReady: "System Ready for Service",
+                waitingForApproval: "Waiting for Approval",
+                approved: "Approved",
+                inProgress: "In Progress",
+                processing: "Processing"
             }
         };
 
@@ -729,12 +910,15 @@
                         deptPrefix: dept.prefix,
                         displayText: ticketNumber,
                         status: 'waiting',
+                        approved: false,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                         departmentNameAr: dept.nameAr,
                         departmentNameEn: dept.nameEn,
                         roomAr: dept.roomAr,
-                        roomEn: dept.roomEn
+                        roomEn: dept.roomEn,
+                        categoryAr: dept.categoryAr,
+                        categoryEn: dept.categoryEn
                     };
                     
                     await db.collection('tickets').doc(ticket.id).set(ticket);
@@ -777,12 +961,28 @@
                         departmentNameAr: dept.nameAr,
                         departmentNameEn: dept.nameEn,
                         roomAr: dept.roomAr,
-                        roomEn: dept.roomEn
+                        roomEn: dept.roomEn,
+                        categoryAr: dept.categoryAr,
+                        categoryEn: dept.categoryEn
                     });
                     
                     return ticket;
                 } catch (error) {
                     console.error('Error calling ticket:', error);
+                    throw error;
+                }
+            }
+
+            static async approveTicket(ticketId) {
+                try {
+                    await db.collection('tickets').doc(ticketId).update({
+                        approved: true,
+                        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    return true;
+                } catch (error) {
+                    console.error('Error approving ticket:', error);
                     throw error;
                 }
             }
@@ -880,7 +1080,6 @@
             const [adminError, setAdminError] = useState('');
             const [isGeneratingTicket, setIsGeneratingTicket] = useState(false);
             const [connectionStatus, setConnectionStatus] = useState('connecting');
-            const [soundAnnouncement, setSoundAnnouncement] = useState(null);
             const [showSoundIndicator, setShowSoundIndicator] = useState(false);
             const [currentAnnouncementLang, setCurrentAnnouncementLang] = useState('');
 
@@ -1049,6 +1248,15 @@
                 }
             };
 
+            // Approve a ticket
+            const handleApproveTicket = async (ticketId) => {
+                try {
+                    await FirebaseQueueManager.approveTicket(ticketId);
+                } catch (error) {
+                    console.error('Error approving ticket:', error);
+                }
+            };
+
             // Finish a ticket
             const handleFinishTicket = async (ticketId) => {
                 try {
@@ -1091,6 +1299,20 @@
             const getWaitingTickets = (deptId) => {
                 return tickets
                     .filter(t => t.deptId === deptId && t.status === 'waiting')
+                    .sort((a, b) => a.createdAt - b.createdAt);
+            };
+
+            // Get approved tickets for a department
+            const getApprovedTickets = (deptId) => {
+                return tickets
+                    .filter(t => t.deptId === deptId && t.status === 'waiting' && t.approved === true)
+                    .sort((a, b) => a.createdAt - b.createdAt);
+            };
+
+            // Get unapproved tickets for a department
+            const getUnapprovedTickets = (deptId) => {
+                return tickets
+                    .filter(t => t.deptId === deptId && t.status === 'waiting' && t.approved !== true)
                     .sort((a, b) => a.createdAt - b.createdAt);
             };
 
@@ -1219,8 +1441,8 @@
                             <div className="max-w-7xl mx-auto px-4 py-4">
                                 <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="bg-blue-600 text-white p-2 rounded-lg">
-                                            <i className="fas fa-truck text-2xl"></i>
+                                        <div className="logo-container">
+                                            <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Iraqi Logo" />
                                         </div>
                                         <div className={isRTL ? 'arabic' : 'english'}>
                                             <h1 className="text-xl font-bold text-gray-800">
@@ -1403,11 +1625,12 @@
                         {view === 'display' && (
                             <div className="tv-container mx-auto">
                                 <div className="h-full flex flex-col">
+                                    {/* Header */}
                                     <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-4">
                                         <div className="flex justify-between items-center">
                                             <div className="flex items-center gap-4">
-                                                <div className="bg-white p-2 rounded-lg">
-                                                    <i className="fas fa-truck text-2xl text-blue-600"></i>
+                                                <div className="logo-container">
+                                                    <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Iraqi Logo" />
                                                 </div>
                                                 <div>
                                                     <h1 className="text-2xl md:text-3xl font-bold arabic">
@@ -1429,8 +1652,10 @@
                                         </div>
                                     </div>
                                     
-                                    <div className="flex-1 flex p-4">
-                                        <div className="flex-1 flex flex-col items-center justify-center">
+                                    {/* Main Display Area */}
+                                    <div className="flex-1 flex">
+                                        {/* Left Panel - Current Call */}
+                                        <div className="display-left-panel">
                                             <div className="text-center space-y-8">
                                                 <div className="text-blue-400 text-2xl font-bold display-department-name">
                                                     {t.currentCall}
@@ -1468,8 +1693,8 @@
                                                                     <i className="fas fa-clock"></i>
                                                                 </div>
                                                                 <div className="space-y-2">
-                                                                    <div className="text-4xl text-gray-400 arabic">{t.waitingService}</div>
-                                                                    <div className="text-3xl text-gray-400 english">{t.waitingForService}</div>
+                                                                    <div className="text-4xl text-gray-400 arabic">{t.systemReady}</div>
+                                                                    <div className="text-3xl text-gray-400 english">{t.systemReady}</div>
                                                                 </div>
                                                             </div>
                                                         );
@@ -1478,45 +1703,129 @@
                                             </div>
                                         </div>
                                         
-                                        <div className="w-1/3 bg-black/30 backdrop-blur-sm p-4 rounded-l-2xl">
-                                            <h3 className="text-xl font-bold text-white mb-4 border-b border-blue-500 pb-2">
-                                                {t.recentCalls}
-                                            </h3>
-                                            <div className="space-y-3 overflow-y-auto h-[calc(100%-3rem)]">
-                                                {tickets
-                                                    .filter(t => t.status === 'called')
-                                                    .slice(0, 6)
-                                                    .map(ticket => {
-                                                        const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
-                                                        return (
-                                                            <div 
-                                                                key={ticket.id}
-                                                                className="bg-black/40 p-4 rounded-xl border-r-4"
-                                                                style={{ borderColor: dept?.color || '#3b82f6' }}
-                                                            >
-                                                                <div className="flex justify-between items-center">
-                                                                    <div className="text-3xl font-bold text-white">
-                                                                        {ticket.number}
+                                        {/* Right Panel - Waiting Tickets */}
+                                        <div className="display-right-panel">
+                                            <div className="h-full flex flex-col">
+                                                {/* Approved Tickets Section */}
+                                                <div className="mb-6">
+                                                    <h3 className="text-xl font-bold text-white mb-4 border-b border-green-500 pb-2 arabic">
+                                                        {t.approvedTickets}
+                                                    </h3>
+                                                    <div className="space-y-3 overflow-y-auto max-h-48">
+                                                        {(() => {
+                                                            const approvedTickets = tickets
+                                                                .filter(t => t.status === 'waiting' && t.approved === true)
+                                                                .slice(0, 3);
+                                                            
+                                                            if (approvedTickets.length > 0) {
+                                                                return approvedTickets.map((ticket, index) => {
+                                                                    const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
+                                                                    return (
+                                                                        <div 
+                                                                            key={ticket.id}
+                                                                            className="approved-ticket-card animate-slide-in-right"
+                                                                            style={{ animationDelay: `${index * 0.1}s` }}
+                                                                        >
+                                                                            <div className="flex justify-between items-start">
+                                                                                <div>
+                                                                                    <div className="text-white display-ticket-number mb-2">
+                                                                                        {ticket.number}
+                                                                                    </div>
+                                                                                    <div className="arabic-text text-white display-ticket-department mb-1">
+                                                                                        {ticket.categoryAr || dept?.categoryAr}
+                                                                                    </div>
+                                                                                    <div className="arabic-text text-gray-200 display-ticket-office">
+                                                                                        {ticket.roomAr}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="approved-badge">
+                                                                                    {t.approved}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    );
+                                                                });
+                                                            } else {
+                                                                return (
+                                                                    <div className="text-center py-4 text-gray-400">
+                                                                        <i className="fas fa-check-circle text-2xl mb-2"></i>
+                                                                        <div className="arabic-text">{t.noAppointments}</div>
                                                                     </div>
-                                                                    <i className={`${dept?.icon || 'fas fa-ticket-alt'} text-xl`}></i>
-                                                                </div>
-                                                                <div className="text-gray-300 text-sm mt-1">
-                                                                    {dept ? (language === 'ar' ? dept.nameAr : dept.nameEn) : ''}
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
+                                                                );
+                                                            }
+                                                        })()}
+                                                    </div>
+                                                </div>
+                                                
+                                                {/* Waiting Tickets Section */}
+                                                <div className="flex-1">
+                                                    <h3 className="text-xl font-bold text-white mb-4 border-b border-blue-500 pb-2 arabic">
+                                                        {t.waitingTickets}
+                                                    </h3>
+                                                    <div className="space-y-3 overflow-y-auto h-[calc(100%-3rem)]">
+                                                        {(() => {
+                                                            const waitingTickets = tickets
+                                                                .filter(t => t.status === 'waiting' && t.approved !== true)
+                                                                .slice(0, 5);
+                                                            
+                                                            if (waitingTickets.length > 0) {
+                                                                return waitingTickets.map((ticket, index) => {
+                                                                    const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
+                                                                    return (
+                                                                        <div 
+                                                                            key={ticket.id}
+                                                                            className="waiting-ticket-card animate-slide-in-left"
+                                                                            style={{ animationDelay: `${index * 0.1}s` }}
+                                                                        >
+                                                                            <div className="flex justify-between items-start">
+                                                                                <div>
+                                                                                    <div className="text-blue-800 display-ticket-number mb-2">
+                                                                                        {ticket.number}
+                                                                                    </div>
+                                                                                    <div className="arabic-text text-gray-800 display-ticket-department mb-1">
+                                                                                        {ticket.categoryAr || dept?.categoryAr}
+                                                                                    </div>
+                                                                                    <div className="arabic-text text-gray-600 display-ticket-office">
+                                                                                        {ticket.roomAr}
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div className="ticket-number-badge">
+                                                                                    {ticket.number}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div className="mt-3 pt-3 border-t border-gray-200">
+                                                                                <div className="text-sm text-gray-500 arabic-text">
+                                                                                    <i className="fas fa-clock mr-2"></i>
+                                                                                    {t.waitingForApproval}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    );
+                                                                });
+                                                            } else {
+                                                                return (
+                                                                    <div className="text-center py-8 text-gray-400">
+                                                                        <i className="fas fa-clock text-3xl mb-3"></i>
+                                                                        <div className="arabic-text text-xl mb-2">{t.noAppointments}</div>
+                                                                        <div className="text-sm arabic-text">{t.systemReady}</div>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                        })()}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div className="bg-gradient-to-r from-blue-800 to-blue-600 py-2 overflow-hidden">
-                                        <div className="animate-marquee whitespace-nowrap text-lg font-medium">
-                                            <span className="mx-8">{t.welcomeMessage}</span>
-                                            <span className="mx-8">•</span>
-                                            <span className="mx-8">{t.systemMessage}</span>
-                                            <span className="mx-8">•</span>
-                                            <span className="mx-8">{t.holdTicket}</span>
+                                    {/* Ticker */}
+                                    <div className="bg-gradient-to-r from-blue-800 to-blue-600 py-3 overflow-hidden">
+                                        <div className="animate-marquee whitespace-nowrap text-xl font-bold">
+                                            <span className="mx-12 arabic-text">{t.welcomeMessage}</span>
+                                            <span className="mx-12">•</span>
+                                            <span className="mx-12 arabic-text">{t.systemMessage}</span>
+                                            <span className="mx-12">•</span>
+                                            <span className="mx-12 arabic-text">{t.holdTicket}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1669,18 +1978,34 @@
                                                                     <div className="text-2xl font-bold text-gray-800">
                                                                         {ticket.number}
                                                                     </div>
+                                                                    {ticket.approved && (
+                                                                        <span className="approved-badge">
+                                                                            {t.approved}
+                                                                        </span>
+                                                                    )}
                                                                 </div>
                                                                 <div className="text-sm text-gray-500 mt-1">
                                                                     {formatTime(ticket.createdAt?.toDate?.() || new Date(ticket.createdAt))}
                                                                 </div>
                                                             </div>
-                                                            <button
-                                                                onClick={() => handleCallTicketWithSound(ticket)}
-                                                                className="btn-primary"
-                                                            >
-                                                                <i className="fas fa-bullhorn mr-2"></i>
-                                                                {t.call}
-                                                            </button>
+                                                            <div className="flex gap-2">
+                                                                {!ticket.approved && (
+                                                                    <button
+                                                                        onClick={() => handleApproveTicket(ticket.id)}
+                                                                        className="btn-success"
+                                                                    >
+                                                                        <i className="fas fa-check mr-2"></i>
+                                                                        {t.approved}
+                                                                    </button>
+                                                                )}
+                                                                <button
+                                                                    onClick={() => handleCallTicketWithSound(ticket)}
+                                                                    className="btn-primary"
+                                                                >
+                                                                    <i className="fas fa-bullhorn mr-2"></i>
+                                                                    {t.call}
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     ))}
                                                     {getWaitingTickets(activeDept).length === 0 && (
@@ -1746,7 +2071,9 @@
                             <div className="max-w-7xl mx-auto px-4">
                                 <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                                     <div className="flex items-center gap-3">
-                                        <i className="fas fa-truck text-2xl text-blue-300"></i>
+                                        <div className="logo-container" style={{ width: '60px', height: '60px' }}>
+                                            <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Iraqi Logo" />
+                                        </div>
                                         <div>
                                             <div className="font-bold">{CONFIG.companyName[language]}</div>
                                             <div className="text-sm text-gray-400">{CONFIG.systemName[language]}</div>
