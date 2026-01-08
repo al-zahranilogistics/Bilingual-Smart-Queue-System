@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>الزهراني للخدمات اللوجستية - نظام الطابور الذكي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
@@ -18,352 +18,423 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <style>
-        /* ===== إصلاح مشكلة التمرير ===== */
-        /* جعل الجسم الرئيسي والعناصر قابلة للتمرير عند الحاجة */
-        html, body, #root {
-            height: 100%;
-            overflow: hidden; /* منع التمرير العام */
-        }
-        
-        /* حاوية خاصة لكشك الزوار تكون قابلة للتمرير */
-        .scrollable-kiosk {
-            height: calc(100vh - 180px); /* احسب ارتفاع متبقي للرأس والتذييل */
-            overflow-y: auto; /* تمكين التمرير العمودي */
-            overflow-x: hidden;
-        }
-        
-        /* حاوية خاصة لشاشة العرض (TV) */
-        .scrollable-display-panel {
-            height: calc(100vh - 200px); /* ارتفاع متبقي للرأس والتذييل */
-            overflow-y: auto;
-        }
-        
-        /* حاوية خاصة للوحة تحكم الموظفين */
-        .scrollable-admin {
-            height: calc(100vh - 200px);
-            overflow-y: auto;
-        }
-        
-        /* إخفاء شريط التمرير مع الاحتفاظ بالقدرة على التمرير */
-        .scrollable-kiosk::-webkit-scrollbar,
-        .scrollable-display-panel::-webkit-scrollbar,
-        .scrollable-admin::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .scrollable-kiosk::-webkit-scrollbar-track,
-        .scrollable-display-panel::-webkit-scrollbar-track,
-        .scrollable-admin::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        
-        .scrollable-kiosk::-webkit-scrollbar-thumb,
-        .scrollable-display-panel::-webkit-scrollbar-thumb,
-        .scrollable-admin::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.5);
-            border-radius: 10px;
-        }
-        /* ===== نهاية إصلاح التمرير ===== */
-        
+        /* ===== تحسينات التصميم العام ===== */
         :root {
-            --screen-width: 1920px;
-            --screen-height: 1080px;
-            --primary-blue: #1e40af;
+            --primary-blue: #1e3a8a;
             --secondary-blue: #3b82f6;
             --accent-teal: #06b6d4;
             --success-green: #10b981;
             --warning-orange: #f59e0b;
             --danger-red: #ef4444;
+            --light-gray: #f8fafc;
+            --dark-gray: #1e293b;
         }
         
-        body { 
-            font-family: 'Cairo', 'Inter', sans-serif; 
-            margin: 0; 
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--light-gray);
             overflow-x: hidden;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
         }
         
-        .arabic { font-family: 'Cairo', sans-serif; }
-        .english { font-family: 'Inter', sans-serif; direction: ltr; text-align: left; }
-        
-        /* TV Landscape Mode */
-        .tv-container {
-            width: var(--screen-width);
-            height: var(--screen-height);
-            max-width: 100vw;
-            max-height: 100vh;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            overflow: hidden;
-            margin: 0 auto;
+        .arabic { 
+            font-family: 'Cairo', sans-serif; 
+            direction: rtl;
         }
         
-        @media (max-width: 1920px) {
-            .tv-container {
-                width: 100vw;
-                height: 56.25vw; /* 16:9 aspect ratio */
+        .english { 
+            font-family: 'Inter', sans-serif; 
+            direction: ltr;
+        }
+        
+        /* ===== تحسينات كشك الزوار للأجهزة المحمولة ===== */
+        @media (max-width: 768px) {
+            .mobile-optimized {
+                padding: 15px !important;
+            }
+            
+            .mobile-grid {
+                grid-template-columns: 1fr !important;
+                gap: 15px !important;
+            }
+            
+            .mobile-card {
+                padding: 15px !important;
+                margin-bottom: 10px !important;
+            }
+            
+            .mobile-text {
+                font-size: 16px !important;
+            }
+            
+            .mobile-title {
+                font-size: 20px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            .mobile-button {
+                padding: 12px 20px !important;
+                font-size: 16px !important;
+                width: 100% !important;
+            }
+            
+            .mobile-header {
+                flex-direction: column !important;
+                gap: 15px !important;
+                padding: 15px !important;
+            }
+            
+            .mobile-footer {
+                padding: 20px 15px !important;
+                text-align: center !important;
+            }
+            
+            .mobile-logo {
+                width: 70px !important;
+                height: 70px !important;
             }
         }
         
-        @media (max-aspect-ratio: 16/9) {
-            .tv-container {
-                height: 100vh;
-                width: 177.78vh;
-                max-width: 100vw;
-            }
+        /* ===== تحسينات التذكرة المنتظرة ===== */
+        .compact-ticket {
+            padding: 12px 15px !important;
+            margin: 8px 0 !important;
+            border-radius: 12px !important;
+            background: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(59, 130, 246, 0.2) !important;
+            transition: all 0.3s ease !important;
+            animation: slideUp 0.5s ease-out !important;
         }
         
-        .ticket-glow {
-            text-shadow: 
-                0 0 20px rgba(59, 130, 246, 0.7),
-                0 0 40px rgba(59, 130, 246, 0.5),
-                0 0 60px rgba(59, 130, 246, 0.3);
+        .compact-ticket:hover {
+            transform: translateX(-5px) !important;
+            background: white !important;
+            border-color: rgba(59, 130, 246, 0.4) !important;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.1) !important;
         }
         
-        .glow-border {
-            border: 3px solid;
-            border-image: linear-gradient(45deg, var(--secondary-blue), var(--accent-teal)) 1;
+        .compact-ticket-number {
+            font-size: 22px !important;
+            font-weight: 900 !important;
+            color: var(--secondary-blue) !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
         }
         
-        .neon-pulse {
-            animation: neonPulse 2s infinite alternate;
+        .compact-ticket-info {
+            font-size: 13px !important;
+            color: #64748b !important;
+            line-height: 1.4 !important;
         }
         
-        @keyframes neonPulse {
+        .ticket-badge {
+            padding: 4px 10px !important;
+            font-size: 11px !important;
+            border-radius: 20px !important;
+            font-weight: bold !important;
+        }
+        
+        .approved-badge {
+            background: linear-gradient(135deg, var(--success-green), #34d399) !important;
+            color: white !important;
+            animation: pulse 2s infinite !important;
+        }
+        
+        .waiting-badge {
+            background: linear-gradient(135deg, var(--warning-orange), #fbbf24) !important;
+            color: white !important;
+        }
+        
+        @keyframes slideUp {
             from {
-                box-shadow: 0 0 10px rgba(59, 130, 246, 0.4),
-                          0 0 20px rgba(59, 130, 246, 0.3),
-                          0 0 30px rgba(59, 130, 246, 0.2);
+                transform: translateY(20px);
+                opacity: 0;
             }
             to {
-                box-shadow: 0 0 15px rgba(59, 130, 246, 0.6),
-                          0 0 30px rgba(59, 130, 246, 0.4),
-                          0 0 45px rgba(59, 130, 246, 0.3);
+                transform: translateY(0);
+                opacity: 1;
             }
         }
         
-        @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
         }
         
-        @keyframes slideInRight {
-            from { transform: translateX(50px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        /* ===== تحسينات شاشة العرض الاحترافية ===== */
+        .professional-display {
+            width: 100vw !important;
+            height: 100vh !important;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            overflow: hidden !important;
+            position: relative !important;
         }
         
-        @keyframes slideInLeft {
-            from { transform: translateX(-50px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .display-header {
+            background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue)) !important;
+            padding: 20px 40px !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+            position: relative !important;
+            z-index: 10 !important;
         }
         
-        @keyframes marquee {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+        .current-call-container {
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding: 40px !important;
+            background: rgba(0, 0, 0, 0.2) !important;
         }
         
-        .animate-slide-in { animation: slideIn 0.5s ease-out; }
-        .animate-slide-in-right { animation: slideInRight 0.5s ease-out; }
-        .animate-slide-in-left { animation: slideInLeft 0.5s ease-out; }
-        .animate-marquee { animation: marquee 30s linear infinite; }
-        
-        /* Professional Button Styles */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            color: white;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: bold;
-            border: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        .current-ticket-number {
+            font-size: 35vw !important;
+            font-weight: 900 !important;
+            color: white !important;
+            text-shadow: 
+                0 0 40px rgba(59, 130, 246, 0.9),
+                0 0 80px rgba(59, 130, 246, 0.7),
+                0 0 120px rgba(59, 130, 246, 0.5) !important;
+            line-height: 1 !important;
+            margin: 0 !important;
+            animation: glow 3s infinite alternate !important;
         }
         
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        @keyframes glow {
+            from {
+                text-shadow: 
+                    0 0 30px rgba(59, 130, 246, 0.8),
+                    0 0 60px rgba(59, 130, 246, 0.6),
+                    0 0 90px rgba(59, 130, 246, 0.4) !important;
+            }
+            to {
+                text-shadow: 
+                    0 0 50px rgba(59, 130, 246, 1),
+                    0 0 100px rgba(59, 130, 246, 0.8),
+                    0 0 150px rgba(59, 130, 246, 0.6) !important;
+            }
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, var(--success-green), #34d399);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: bold;
-            border: none;
-            transition: all 0.3s ease;
+        .current-ticket-info {
+            text-align: center !important;
+            margin-top: 30px !important;
         }
         
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger-red), #f87171);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: bold;
-            border: none;
-            transition: all 0.3s ease;
+        .current-office {
+            font-size: 4vw !important;
+            color: #93c5fd !important;
+            font-weight: 700 !important;
+            margin-bottom: 10px !important;
         }
         
-        /* Card Styles */
-        .card {
-            background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e5e7eb;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .current-department {
+            font-size: 3vw !important;
+            color: #cbd5e1 !important;
+            font-weight: 600 !important;
         }
         
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        .tickets-sidebar {
+            width: 35% !important;
+            background: rgba(30, 41, 59, 0.8) !important;
+            backdrop-filter: blur(15px) !important;
+            border-left: 3px solid rgba(59, 130, 246, 0.4) !important;
+            padding: 25px !important;
+            overflow-y: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
         
-        /* Professional Icons */
-        .icon-wrapper {
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: white;
+        @media (max-width: 1024px) {
+            .tickets-sidebar {
+                width: 45% !important;
+            }
+            
+            .current-ticket-number {
+                font-size: 30vw !important;
+            }
         }
         
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        @media (max-width: 768px) {
+            .professional-display {
+                flex-direction: column !important;
+            }
+            
+            .tickets-sidebar {
+                width: 100% !important;
+                border-left: none !important;
+                border-top: 3px solid rgba(59, 130, 246, 0.4) !important;
+                height: 40% !important;
+            }
+            
+            .current-ticket-number {
+                font-size: 25vw !important;
+            }
+            
+            .current-office {
+                font-size: 5vw !important;
+            }
+            
+            .current-department {
+                font-size: 4vw !important;
+            }
         }
         
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 4px;
+        .tickets-section {
+            margin-bottom: 25px !important;
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
         
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
+        .section-title {
+            font-size: 1.5rem !important;
+            color: white !important;
+            margin-bottom: 15px !important;
+            padding-bottom: 10px !important;
+            border-bottom: 2px solid !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
         }
         
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+        .approved-title {
+            border-color: var(--success-green) !important;
         }
         
-        /* Loading Animation */
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+        .waiting-title {
+            border-color: var(--secondary-blue) !important;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .tickets-list {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            padding-right: 5px !important;
         }
         
-        /* Connection Status */
-        .connection-status {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            animation: slideIn 0.3s ease;
+        /* شريط التمرير المخصص */
+        .tickets-list::-webkit-scrollbar {
+            width: 6px !important;
         }
         
-        .connection-status.connected {
-            background: rgba(34, 197, 94, 0.1);
-            color: #16a34a;
-            border: 1px solid #86efac;
+        .tickets-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-radius: 10px !important;
         }
         
-        .connection-status.disconnected {
-            background: rgba(239, 68, 68, 0.1);
-            color: #dc2626;
-            border: 1px solid #fca5a5;
+        .tickets-list::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5) !important;
+            border-radius: 10px !important;
         }
         
-        /* Improved Display for TV Screens */
-        .display-current-call {
-            font-size: 25vw;
+        /* ===== التذكرة في شاشة العرض ===== */
+        .display-ticket {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
+            border-radius: 15px !important;
+            padding: 15px !important;
+            margin-bottom: 12px !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(10px) !important;
+            transition: all 0.3s ease !important;
+            animation: fadeIn 0.5s ease-out !important;
         }
         
-        .display-department-name {
-            font-size: 4vw;
+        .display-ticket:hover {
+            transform: translateX(-5px) !important;
+            border-color: rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
         }
         
-        .display-room-name {
-            font-size: 3vw;
+        .display-ticket.approved {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(21, 128, 61, 0.15)) !important;
+            border-color: rgba(34, 197, 94, 0.3) !important;
         }
         
         .display-ticket-number {
-            font-size: 8vw;
+            font-size: 2.5rem !important;
+            font-weight: 900 !important;
+            color: white !important;
+            text-align: center !important;
+            margin-bottom: 10px !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        .display-ticket-details {
+            text-align: center !important;
         }
         
         .display-ticket-department {
-            font-size: 2.5vw;
+            font-size: 1rem !important;
+            color: #cbd5e1 !important;
+            margin-bottom: 5px !important;
         }
         
         .display-ticket-office {
-            font-size: 2vw;
+            font-size: 0.9rem !important;
+            color: #94a3b8 !important;
         }
         
-        @media (min-width: 1920px) {
-            .display-current-call {
-                font-size: 480px;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
-            
-            .display-department-name {
-                font-size: 76px;
-            }
-            
-            .display-room-name {
-                font-size: 57px;
-            }
-            
-            .display-ticket-number {
-                font-size: 150px;
-            }
-            
-            .display-ticket-department {
-                font-size: 48px;
-            }
-            
-            .display-ticket-office {
-                font-size: 38px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
         
-        /* Sound Announcement Styles */
+        /* ===== التايمر المتحرك ===== */
+        .news-ticker {
+            background: linear-gradient(90deg, rgba(30, 58, 138, 0.9), rgba(59, 130, 246, 0.9)) !important;
+            padding: 15px 0 !important;
+            overflow: hidden !important;
+            position: relative !important;
+            white-space: nowrap !important;
+        }
+        
+        .ticker-content {
+            display: inline-block !important;
+            padding-left: 100% !important;
+            animation: ticker 40s linear infinite !important;
+            font-size: 1.2rem !important;
+            font-weight: bold !important;
+            color: white !important;
+        }
+        
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        /* ===== مؤشر الصوت ===== */
         .sound-indicator {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(59, 130, 246, 0.9);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 1000;
-            animation: slideIn 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue)) !important;
+            color: white !important;
+            padding: 15px 25px !important;
+            border-radius: 15px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 12px !important;
+            z-index: 9999 !important;
+            animation: slideIn 0.3s ease !important;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(10px) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
         }
         
         .sound-pulse {
-            animation: soundPulse 1.5s infinite;
+            animation: soundPulse 1.5s infinite !important;
         }
         
         @keyframes soundPulse {
@@ -372,142 +443,166 @@
             100% { transform: scale(1); opacity: 1; }
         }
         
-        /* Logo Styles */
+        @keyframes slideIn {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        /* ===== أزرار محسنة ===== */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue)) !important;
+            color: white !important;
+            padding: 12px 24px !important;
+            border-radius: 10px !important;
+            font-weight: bold !important;
+            border: none !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-green), #34d399) !important;
+            color: white !important;
+            padding: 10px 20px !important;
+            border-radius: 8px !important;
+            font-weight: bold !important;
+            border: none !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-red), #f87171) !important;
+            color: white !important;
+            padding: 10px 20px !important;
+            border-radius: 8px !important;
+            font-weight: bold !important;
+            border: none !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+        }
+        
+        /* ===== البطاقات ===== */
+        .card {
+            background: white !important;
+            border-radius: 15px !important;
+            padding: 20px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+            border: 1px solid #e5e7eb !important;
+            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px) !important;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
+        }
+        
+        /* ===== الشعار ===== */
         .logo-container {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 3px solid white;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 100px !important;
+            height: 100px !important;
+            border-radius: 50% !important;
+            overflow: hidden !important;
+            border: 3px solid white !important;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5) !important;
+            background: white !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
         
         .logo-container img {
-            width: 90%;
-            height: 90%;
-            object-fit: contain;
+            width: 90% !important;
+            height: 90% !important;
+            object-fit: contain !important;
         }
         
-        /* Waiting Ticket Styles */
-        .waiting-ticket-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 15px 0;
-            border: 2px solid rgba(59, 130, 246, 0.3);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+        /* ===== حالة الاتصال ===== */
+        .connection-status {
+            position: fixed !important;
+            top: 10px !important;
+            right: 10px !important;
+            z-index: 1000 !important;
+            padding: 8px 16px !important;
+            border-radius: 20px !important;
+            font-size: 12px !important;
+            font-weight: bold !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+            animation: slideIn 0.3s ease !important;
         }
         
-        .waiting-ticket-card:hover {
-            transform: translateX(10px);
-            border-color: rgba(59, 130, 246, 0.6);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+        .connection-status.connected {
+            background: rgba(34, 197, 94, 0.1) !important;
+            color: #16a34a !important;
+            border: 1px solid #86efac !important;
         }
         
-        .ticket-number-badge {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-            border-radius: 12px;
-            padding: 8px 16px;
-            font-weight: bold;
-            display: inline-block;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        .connection-status.disconnected {
+            background: rgba(239, 68, 68, 0.1) !important;
+            color: #dc2626 !important;
+            border: 1px solid #fca5a5 !important;
         }
         
-        /* Approved Ticket Styles */
-        .approved-ticket-card {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(21, 128, 61, 0.85) 100%);
-            border-radius: 20px;
-            padding: 20px;
-            margin: 15px 0;
-            border: 2px solid rgba(34, 197, 94, 0.5);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+        /* ===== شريط التحميل ===== */
+        .loading-spinner {
+            border: 4px solid #f3f3f3 !important;
+            border-top: 4px solid #3b82f6 !important;
+            border-radius: 50% !important;
+            width: 40px !important;
+            height: 40px !important;
+            animation: spin 1s linear infinite !important;
         }
         
-        .approved-ticket-card:hover {
-            transform: translateX(10px);
-            border-color: rgba(34, 197, 94, 0.8);
-            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.2);
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        .approved-badge {
-            background: rgba(255, 255, 255, 0.9);
-            color: #16a34a;
-            border-radius: 12px;
-            padding: 6px 12px;
-            font-weight: bold;
-            display: inline-block;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        /* ===== إخفاء شريط التمرير مع الاحتفاظ بالقدرة على التمرير ===== */
+        .scrollable-content {
+            overflow-y: auto !important;
+            scrollbar-width: thin !important;
+            scrollbar-color: rgba(59, 130, 246, 0.5) rgba(0, 0, 0, 0.1) !important;
         }
         
-        /* Display Layout */
-        .display-left-panel {
-            flex: 1;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .scrollable-content::-webkit-scrollbar {
+            width: 6px !important;
         }
         
-        .display-right-panel {
-            width: 40%;
-            padding: 30px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border-left: 2px solid rgba(59, 130, 246, 0.3);
+        .scrollable-content::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1) !important;
+            border-radius: 10px !important;
         }
         
-        /* Arabic Text Styles */
-        .arabic-text {
-            font-family: 'Cairo', sans-serif;
-            line-height: 1.8;
-        }
-        
-        .english-text {
-            font-family: 'Inter', sans-serif;
-            direction: ltr;
-            text-align: left;
-            line-height: 1.6;
-        }
-        
-        /* Department Grid Container */
-        .dept-grid-container {
-            max-height: 500px; /* ارتفاع أقصى للقائمة */
-            overflow-y: auto;
-            padding-right: 5px; /* مسافة لشريط التمرير */
-        }
-        
-        /* Admin Panel Fixes */
-        .admin-grid-container {
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        
-        /* Kiosk Header */
-        .kiosk-header {
-            height: 180px;
-            flex-shrink: 0;
-        }
-        
-        /* Kiosk Footer */
-        .kiosk-footer {
-            height: 80px;
-            flex-shrink: 0;
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5) !important;
+            border-radius: 10px !important;
         }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
     <div id="root"></div>
 
     <script type="text/babel">
-        // === Firebase Configuration ===
+        // === تهيئة Firebase ===
         const firebaseConfig = {
             apiKey: "AIzaSyA2WwSnB54y4Xf3p_WPFHeSf7QOGgi3rS8",
             authDomain: "zahrani-4bbf3.firebaseapp.com",
@@ -518,23 +613,122 @@
             appId: "1:76127187270:web:c0d8869fc61275da5ab547"
         };
 
-        // Initialize Firebase
         try {
             firebase.initializeApp(firebaseConfig);
+            console.log("✅ Firebase initialized successfully");
         } catch (error) {
-            console.log("Firebase already initialized");
+            console.log("⚠️ Firebase already initialized:", error);
         }
 
         const db = firebase.firestore();
         const realtimeDB = firebase.database();
         const auth = firebase.auth();
 
-        // === System Configuration ===
-        // تم التعديل: تغيير اسم الشركة من العراقي إلى الزهراني
+        // === نظام الصوت المحسن ===
+        class EnhancedSoundManager {
+            constructor() {
+                this.speechSynthesis = window.speechSynthesis;
+                this.isSpeaking = false;
+                this.voices = [];
+                this.loadVoices();
+            }
+
+            loadVoices() {
+                if (this.speechSynthesis) {
+                    const getVoices = () => {
+                        this.voices = this.speechSynthesis.getVoices();
+                        console.log('🎤 Available voices:', this.voices.length);
+                    };
+                    
+                    getVoices();
+                    this.speechSynthesis.onvoiceschanged = getVoices;
+                }
+            }
+
+            speak(text, lang = 'ar-SA') {
+                if (!this.speechSynthesis) {
+                    console.warn('⚠️ Speech synthesis not supported');
+                    return null;
+                }
+
+                this.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                
+                if (lang.startsWith('ar')) {
+                    utterance.rate = 0.85;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+                    
+                    const arabicVoice = this.voices.find(voice => 
+                        voice.lang.startsWith('ar') || 
+                        voice.name.toLowerCase().includes('arabic')
+                    );
+                    if (arabicVoice) {
+                        utterance.voice = arabicVoice;
+                    }
+                } else {
+                    utterance.rate = 0.9;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+                    
+                    const englishVoice = this.voices.find(voice => 
+                        voice.lang.startsWith('en') || 
+                        voice.name.toLowerCase().includes('english')
+                    );
+                    if (englishVoice) {
+                        utterance.voice = englishVoice;
+                    }
+                }
+                
+                this.speechSynthesis.speak(utterance);
+                this.isSpeaking = true;
+                
+                utterance.onend = () => {
+                    this.isSpeaking = false;
+                };
+                
+                utterance.onerror = (event) => {
+                    console.error('❌ Speech synthesis error:', event);
+                    this.isSpeaking = false;
+                };
+                
+                return utterance;
+            }
+
+            announceTicket(ticketNumber, roomAr, roomEn) {
+                const arabicText = `التذكرة رقم ${ticketNumber}، يرجى التوجه إلى ${roomAr}`;
+                const englishText = `Ticket number ${ticketNumber}, please proceed to ${roomEn}`;
+                
+                const arUtterance = this.speak(arabicText, 'ar-SA');
+                
+                if (arUtterance) {
+                    arUtterance.onend = () => {
+                        setTimeout(() => {
+                            this.speak(englishText, 'en-US');
+                        }, 1000);
+                    };
+                }
+                
+                return true;
+            }
+
+            stop() {
+                if (this.speechSynthesis) {
+                    this.speechSynthesis.cancel();
+                    this.isSpeaking = false;
+                }
+            }
+        }
+
+        const soundManager = new EnhancedSoundManager();
+
+        // === إعدادات النظام ===
         const CONFIG = {
             companyName: {
-                ar: "الزهراني للخدمات اللوجستية", // تعديل هنا
-                en: "Al-Zahrani Logistics Services" // تعديل هنا
+                ar: "الزهراني للخدمات اللوجستية",
+                en: "Al-Zahrani Logistics Services"
             },
             systemName: {
                 ar: "نظام إدارة الطوابير الذكي",
@@ -542,7 +736,6 @@
             },
             adminCode: "0906212",
             maxTicketNumber: 10000,
-            syncInterval: 2000,
             departments: [
                 { 
                     id: 'vehicles', 
@@ -584,32 +777,6 @@
                     categoryEn: "Operations Management"
                 },
                 { 
-                    id: 'ninja_sup', 
-                    nameAr: "مشرف نينجا", 
-                    nameEn: "Ninja Supervisor",
-                    prefix: "NS", 
-                    roomAr: "مكتب مشرف نينجا", 
-                    roomEn: "Ninja Supervisor Office", 
-                    color: "#ec4899",
-                    icon: "fa-solid fa-user-ninja",
-                    iconColor: "#be185d",
-                    categoryAr: "إدارة المشاريع",
-                    categoryEn: "Project Management"
-                },
-                { 
-                    id: 'kmart_ninja', 
-                    nameAr: "مشرف كيمارت", 
-                    nameEn: "K-Mart Department",
-                    prefix: "K", 
-                    roomAr: "مكتب كيمارت", 
-                    roomEn: "K-Mart Office", 
-                    color: "#f59e0b",
-                    icon: "fa-solid fa-store",
-                    iconColor: "#d97706",
-                    categoryAr: "إدارة المخازن",
-                    categoryEn: "Warehouse Management"
-                },
-                { 
                     id: 'hr', 
                     nameAr: "الموارد البشرية", 
                     nameEn: "Human Resources",
@@ -634,41 +801,14 @@
                     iconColor: "#0891b2",
                     categoryAr: "إدارة البترول",
                     categoryEn: "Petroleum Management"
-                },
-                { 
-                    id: 'naqel_mgr', 
-                    nameAr: "مدير تشغيل فلو و ناقل", 
-                    nameEn: "Naqel Project",
-                    prefix: "ON", 
-                    roomAr: "مكتب مدير التشغيل", 
-                    roomEn: "Naqel Project Office", 
-                    color: "#8b5cf6",
-                    icon: "fa-solid fa-truck-fast",
-                    iconColor: "#7c3aed",
-                    categoryAr: "إدارة النقل",
-                    categoryEn: "Transport Management"
-                },
-                { 
-                    id: 'ninja_mgr', 
-                    nameAr: "مشروع نينجا", 
-                    nameEn: "Ninja Project",
-                    prefix: "PN", 
-                    roomAr: "مكتب مشروع نينجا", 
-                    roomEn: "Ninja Project Office", 
-                    color: "#6366f1",
-                    icon: "fa-solid fa-bolt",
-                    iconColor: "#4f46e5",
-                    categoryAr: "إدارة المشاريع",
-                    categoryEn: "Project Management"
                 }
             ]
         };
 
-        // === Language Data ===
-        // تم التعديل: تغيير اسم الشركة في النصوص الترحيبية
+        // === بيانات اللغات ===
         const LANGUAGES = {
             ar: {
-                welcome: "مرحباً بكم في شركة الزهراني للخدمات اللوجستية", // تعديل هنا
+                welcome: "مرحباً بكم في شركة الزهراني للخدمات اللوجستية",
                 selectDept: "اختر القسم المناسب لخدمتكم",
                 instructions: "تعليمات الاستخدام",
                 instruction1: "اختر القسم المناسب لخدمتك",
@@ -696,7 +836,7 @@
                 goBack: "العودة",
                 returnToKiosk: "العودة للكشك",
                 openDisplay: "فتح شاشة العرض",
-                welcomeMessage: "شركة الزهراني للخدمات اللوجستية ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم", // تعديل هنا
+                welcomeMessage: "شركة الزهراني للخدمات اللوجستية ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم",
                 systemMessage: "نظام إدارة الطابور الذكي ٢٠٢٥",
                 holdTicket: "يرجى الاحتفاظ برقم التذكرة والمتابعة",
                 allRights: "جميع الحقوق محفوظة",
@@ -704,38 +844,6 @@
                 visitorKiosk: "كشك الزوار",
                 adminPanel: "لوحة التحكم",
                 displayScreen: "شاشة العرض",
-                onlineAppointment: "حجز موعد أونلاين",
-                bookAppointment: "حجز موعد",
-                selectDate: "اختر التاريخ",
-                selectTime: "اختر الوقت",
-                name: "الاسم",
-                phone: "رقم الهاتف",
-                bookNow: "احجز الآن",
-                appointmentBooked: "تم حجز الموعد بنجاح",
-                appointmentInfo: "معلومات الحجز",
-                appointmentDate: "تاريخ الموعد",
-                appointmentTime: "وقت الموعد",
-                appointmentNumber: "رقم الموعد",
-                close: "إغلاق",
-                cancel: "إلغاء",
-                today: "اليوم",
-                tomorrow: "غداً",
-                noAppointments: "لا توجد مواعيد",
-                appointments: "المواعيد",
-                walkIn: "حجز مباشر",
-                online: "أونلاين",
-                syncStatus: "حالة المزامنة",
-                synced: "مزامن",
-                syncing: "جارٍ المزامنة...",
-                syncError: "خطأ في المزامنة",
-                currentView: "العرض الحالي",
-                visitorView: "واجهة الزوار",
-                displayView: "شاشة العرض",
-                adminView: "لوحة التحكم",
-                appointmentsList: "قائمة المواعيد",
-                nextAppointments: "المواعيد القادمة",
-                totalAppointments: "إجمالي المواعيد",
-                todayAppointments: "مواعيد اليوم",
                 generatingTicket: "جارٍ توليد التذكرة...",
                 connectionStatus: "حالة الاتصال",
                 connected: "متصل",
@@ -746,7 +854,6 @@
                 generateTicket: "توليد تذكرة",
                 waitingForService: "بانتظار الخدمة",
                 proceedTo: "توجه إلى",
-                soundAnnouncement: "جاري النداء",
                 soundAnnouncementAr: "جاري النداء باللغة العربية",
                 soundAnnouncementEn: "جاري النداء باللغة الإنجليزية",
                 waitingTickets: "التذاكر المنتظرة",
@@ -765,7 +872,7 @@
                 processing: "قيد المعالجة"
             },
             en: {
-                welcome: "Welcome to Al-Zahrani Logistics Services", // تعديل هنا
+                welcome: "Welcome to Al-Zahrani Logistics Services",
                 selectDept: "Select the appropriate department",
                 instructions: "Usage Instructions",
                 instruction1: "Select the appropriate department",
@@ -793,7 +900,7 @@
                 goBack: "Go Back",
                 returnToKiosk: "Return to Kiosk",
                 openDisplay: "Open Display Screen",
-                welcomeMessage: "Al-Zahrani Logistics Services welcomes you", // تعديل هنا
+                welcomeMessage: "Al-Zahrani Logistics Services welcomes you",
                 systemMessage: "Smart Queue Management System 2025",
                 holdTicket: "Please keep your ticket number",
                 allRights: "All rights reserved",
@@ -801,38 +908,6 @@
                 visitorKiosk: "Visitor Kiosk",
                 adminPanel: "Control Panel",
                 displayScreen: "Display Screen",
-                onlineAppointment: "Online Appointment",
-                bookAppointment: "Book Appointment",
-                selectDate: "Select Date",
-                selectTime: "Select Time",
-                name: "Name",
-                phone: "Phone Number",
-                bookNow: "Book Now",
-                appointmentBooked: "Appointment Booked Successfully",
-                appointmentInfo: "Appointment Information",
-                appointmentDate: "Appointment Date",
-                appointmentTime: "Appointment Time",
-                appointmentNumber: "Appointment Number",
-                close: "Close",
-                cancel: "Cancel",
-                today: "Today",
-                tomorrow: "Tomorrow",
-                noAppointments: "No Appointments",
-                appointments: "Appointments",
-                walkIn: "Walk-in",
-                online: "Online",
-                syncStatus: "Sync Status",
-                synced: "Synced",
-                syncing: "Syncing...",
-                syncError: "Sync Error",
-                currentView: "Current View",
-                visitorView: "Visitor Interface",
-                displayView: "Display Screen",
-                adminView: "Control Panel",
-                appointmentsList: "Appointments List",
-                nextAppointments: "Upcoming Appointments",
-                totalAppointments: "Total Appointments",
-                todayAppointments: "Today's Appointments",
                 generatingTicket: "Generating ticket...",
                 connectionStatus: "Connection Status",
                 connected: "Connected",
@@ -843,7 +918,6 @@
                 generateTicket: "Generate Ticket",
                 waitingForService: "Waiting for service",
                 proceedTo: "Proceed to",
-                soundAnnouncement: "Announcement in progress",
                 soundAnnouncementAr: "Arabic announcement in progress",
                 soundAnnouncementEn: "English announcement in progress",
                 waitingTickets: "Waiting Tickets",
@@ -863,64 +937,7 @@
             }
         };
 
-        const { useState, useEffect, useMemo, useRef } = React;
-
-        // === Enhanced Sound Announcement Function ===
-        function speakAnnouncement(ticketNumber, roomAr, roomEn, language = 'ar') {
-            if ('speechSynthesis' in window) {
-                // Cancel any ongoing speech
-                speechSynthesis.cancel();
-                
-                let text = '';
-                
-                if (language === 'ar') {
-                    text = `التذكرة رقم ${ticketNumber}، يرجى التوجه إلى ${roomAr}`;
-                } else {
-                    text = `Ticket number ${ticketNumber}, please proceed to ${roomEn}`;
-                }
-                
-                const utterance = new SpeechSynthesisUtterance(text);
-                
-                // Configure voice settings
-                if (language === 'ar') {
-                    utterance.lang = 'ar-SA';
-                    utterance.rate = 0.9;
-                    utterance.pitch = 1.0;
-                    utterance.volume = 1.0;
-                    
-                    // Try to find Arabic voice
-                    const voices = speechSynthesis.getVoices();
-                    const arabicVoice = voices.find(voice => 
-                        voice.lang.startsWith('ar') || voice.name.includes('Arabic')
-                    );
-                    if (arabicVoice) {
-                        utterance.voice = arabicVoice;
-                    }
-                } else {
-                    utterance.lang = 'en-US';
-                    utterance.rate = 0.9;
-                    utterance.pitch = 1.0;
-                    utterance.volume = 1.0;
-                    
-                    // Try to find English voice
-                    const voices = speechSynthesis.getVoices();
-                    const englishVoice = voices.find(voice => 
-                        voice.lang.startsWith('en') || voice.name.includes('English')
-                    );
-                    if (englishVoice) {
-                        utterance.voice = englishVoice;
-                    }
-                }
-                
-                // Speak the announcement
-                speechSynthesis.speak(utterance);
-                
-                return utterance;
-            }
-            return null;
-        }
-
-        // === Firebase Queue Manager ===
+        // === مدير طابور Firebase ===
         class FirebaseQueueManager {
             static async initializeDepartmentCounters() {
                 try {
@@ -937,7 +954,7 @@
                     }
                     return true;
                 } catch (error) {
-                    console.error('Error initializing counters:', error);
+                    console.error('❌ Error initializing counters:', error);
                     return false;
                 }
             }
@@ -968,7 +985,7 @@
                     
                     return result.toString();
                 } catch (error) {
-                    console.error('Error getting ticket number:', error);
+                    console.error('❌ Error getting ticket number:', error);
                     throw error;
                 }
             }
@@ -1008,7 +1025,7 @@
                     
                     return ticket;
                 } catch (error) {
-                    console.error('Error adding ticket:', error);
+                    console.error('❌ Error adding ticket:', error);
                     throw error;
                 }
             }
@@ -1045,7 +1062,7 @@
                     
                     return ticket;
                 } catch (error) {
-                    console.error('Error calling ticket:', error);
+                    console.error('❌ Error calling ticket:', error);
                     throw error;
                 }
             }
@@ -1057,9 +1074,16 @@
                         approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
+                    
+                    // إرسال إشعار إلى Real-time Database للتحديث الفوري
+                    await realtimeDB.ref(`ticketUpdates/${ticketId}`).set({
+                        action: 'approved',
+                        timestamp: Date.now()
+                    });
+                    
                     return true;
                 } catch (error) {
-                    console.error('Error approving ticket:', error);
+                    console.error('❌ Error approving ticket:', error);
                     throw error;
                 }
             }
@@ -1071,9 +1095,15 @@
                         finishedAt: firebase.firestore.FieldValue.serverTimestamp(),
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
+                    
+                    await realtimeDB.ref(`ticketUpdates/${ticketId}`).set({
+                        action: 'finished',
+                        timestamp: Date.now()
+                    });
+                    
                     return true;
                 } catch (error) {
-                    console.error('Error finishing ticket:', error);
+                    console.error('❌ Error finishing ticket:', error);
                     throw error;
                 }
             }
@@ -1081,7 +1111,7 @@
             static subscribeToTickets(callback) {
                 return db.collection('tickets')
                     .orderBy('createdAt', 'desc')
-                    .limit(100)
+                    .limit(50)
                     .onSnapshot(snapshot => {
                         const tickets = [];
                         snapshot.forEach(doc => {
@@ -1089,7 +1119,7 @@
                         });
                         callback(tickets);
                     }, error => {
-                        console.error('Error subscribing to tickets:', error);
+                        console.error('❌ Error subscribing to tickets:', error);
                     });
             }
 
@@ -1097,7 +1127,15 @@
                 return realtimeDB.ref('currentCalls').on('value', snapshot => {
                     callback(snapshot.val() || {});
                 }, error => {
-                    console.error('Error subscribing to current calls:', error);
+                    console.error('❌ Error subscribing to current calls:', error);
+                });
+            }
+
+            static subscribeToTicketUpdates(callback) {
+                return realtimeDB.ref('ticketUpdates').on('child_added', snapshot => {
+                    callback(snapshot.val());
+                }, error => {
+                    console.error('❌ Error subscribing to ticket updates:', error);
                 });
             }
 
@@ -1122,7 +1160,7 @@
                         lastNumber: lastNumber
                     };
                 } catch (error) {
-                    console.error('Error getting department stats:', error);
+                    console.error('❌ Error getting department stats:', error);
                     return { waitingCount: 0, calledCount: 0, lastNumber: 0 };
                 }
             }
@@ -1135,13 +1173,15 @@
                     }
                     return stats;
                 } catch (error) {
-                    console.error('Error getting all stats:', error);
+                    console.error('❌ Error getting all stats:', error);
                     return {};
                 }
             }
         }
 
-        // === Main Application Component ===
+        // === التطبيق الرئيسي ===
+        const { useState, useEffect, useMemo, useRef } = React;
+
         function App() {
             const [view, setView] = useState('kiosk');
             const [language, setLanguage] = useState('ar');
@@ -1159,13 +1199,15 @@
             const [connectionStatus, setConnectionStatus] = useState('connecting');
             const [showSoundIndicator, setShowSoundIndicator] = useState(false);
             const [currentAnnouncementLang, setCurrentAnnouncementLang] = useState('');
+            const [isSoundPlaying, setIsSoundPlaying] = useState(false);
+            const [ticketUpdates, setTicketUpdates] = useState([]);
 
             const t = LANGUAGES[language];
             const isRTL = language === 'ar';
 
-            // Initialize Firebase
+            // تهيئة النظام
             useEffect(() => {
-                const initialize = async () => {
+                const initializeSystem = async () => {
                     try {
                         setConnectionStatus('connecting');
                         await FirebaseQueueManager.initializeDepartmentCounters();
@@ -1174,24 +1216,19 @@
                         setDepartmentStats(stats);
                         
                         setConnectionStatus('connected');
+                        
+                        if ('speechSynthesis' in window) {
+                            console.log('✅ Speech synthesis available');
+                        }
                     } catch (error) {
-                        console.error('Initialization error:', error);
+                        console.error('❌ Initialization error:', error);
                         setConnectionStatus('error');
                     }
                 };
                 
-                initialize();
+                initializeSystem();
                 
-                // Initialize speech synthesis voices
-                if ('speechSynthesis' in window) {
-                    speechSynthesis.onvoiceschanged = () => {
-                        console.log('Voices loaded:', speechSynthesis.getVoices().length);
-                    };
-                }
-            }, []);
-
-            // Subscribe to real-time updates
-            useEffect(() => {
+                // الاشتراك في التحديثات
                 const unsubscribeTickets = FirebaseQueueManager.subscribeToTickets((newTickets) => {
                     setTickets(newTickets);
                 });
@@ -1200,42 +1237,36 @@
                     setCurrentCalls(calls);
                 });
                 
+                const unsubscribeUpdates = FirebaseQueueManager.subscribeToTicketUpdates((update) => {
+                    setTicketUpdates(prev => [...prev, update]);
+                });
+                
+                // تحديث الإحصائيات دورياً
                 const statsInterval = setInterval(async () => {
                     const stats = await FirebaseQueueManager.getAllStats();
                     setDepartmentStats(stats);
-                }, 10000);
+                }, 5000);
                 
-                return () => {
-                    unsubscribeTickets();
-                    unsubscribeCalls();
-                    clearInterval(statsInterval);
-                };
-            }, []);
-
-            // Update current time
-            useEffect(() => {
-                const timer = setInterval(() => {
+                // تحديث الوقت
+                const timeInterval = setInterval(() => {
                     setCurrentTime(new Date());
                 }, 1000);
-                return () => clearInterval(timer);
-            }, []);
-
-            // Monitor online status
-            useEffect(() => {
-                const handleOnline = () => setIsOnline(true);
-                const handleOffline = () => setIsOnline(false);
+                
+                // مراقبة حالة الشبكة
+                const handleOnline = () => {
+                    setIsOnline(true);
+                    setConnectionStatus('connected');
+                };
+                
+                const handleOffline = () => {
+                    setIsOnline(false);
+                    setConnectionStatus('disconnected');
+                };
                 
                 window.addEventListener('online', handleOnline);
                 window.addEventListener('offline', handleOffline);
                 
-                return () => {
-                    window.removeEventListener('online', handleOnline);
-                    window.removeEventListener('offline', handleOffline);
-                };
-            }, []);
-
-            // Handle view from URL
-            useEffect(() => {
+                // التحقق من معلمة العرض في الرابط
                 const urlParams = new URLSearchParams(window.location.search);
                 const requestedView = urlParams.get('view');
                 
@@ -1244,54 +1275,49 @@
                 } else if (requestedView === 'admin') {
                     setShowAdminLogin(true);
                 }
+                
+                return () => {
+                    unsubscribeTickets();
+                    unsubscribeCalls();
+                    unsubscribeUpdates();
+                    clearInterval(statsInterval);
+                    clearInterval(timeInterval);
+                    window.removeEventListener('online', handleOnline);
+                    window.removeEventListener('offline', handleOffline);
+                    soundManager.stop();
+                };
             }, []);
 
-            // Handle sound announcements
+            // التعامل مع نداء التذكرة بالصوت
             const handleCallTicketWithSound = async (ticket) => {
                 try {
                     const updatedTicket = await FirebaseQueueManager.callTicket(ticket.id);
                     const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
                     
-                    // Arabic announcement
-                    setCurrentAnnouncementLang('ar');
                     setShowSoundIndicator(true);
-                    const arUtterance = speakAnnouncement(
-                        updatedTicket.number, 
-                        updatedTicket.roomAr, 
-                        updatedTicket.roomEn, 
-                        'ar'
+                    setIsSoundPlaying(true);
+                    
+                    setCurrentAnnouncementLang('ar');
+                    soundManager.announceTicket(
+                        updatedTicket.number,
+                        dept?.roomAr || updatedTicket.roomAr,
+                        dept?.roomEn || updatedTicket.roomEn
                     );
                     
-                    // Wait for Arabic announcement to finish, then play English
-                    if (arUtterance) {
-                        arUtterance.onend = () => {
-                            setTimeout(() => {
-                                setCurrentAnnouncementLang('en');
-                                const enUtterance = speakAnnouncement(
-                                    updatedTicket.number, 
-                                    updatedTicket.roomAr, 
-                                    updatedTicket.roomEn, 
-                                    'en'
-                                );
-                                
-                                if (enUtterance) {
-                                    enUtterance.onend = () => {
-                                        setTimeout(() => {
-                                            setShowSoundIndicator(false);
-                                        }, 1000);
-                                    };
-                                }
-                            }, 1000);
-                        };
-                    }
+                    setTimeout(() => {
+                        setIsSoundPlaying(false);
+                        if (!soundManager.isSpeaking) {
+                            setShowSoundIndicator(false);
+                        }
+                    }, 8000);
                     
                 } catch (error) {
-                    console.error('Error calling ticket:', error);
+                    console.error('❌ Error calling ticket:', error);
                     alert(language === 'ar' ? 'حدث خطأ في نداء التذكرة' : 'Error calling ticket');
                 }
             };
 
-            // Generate a new ticket
+            // توليد تذكرة جديدة
             const handleGenerateTicket = async (deptId) => {
                 if (!isOnline) {
                     alert(language === 'ar' ? 'لا يوجد اتصال بالإنترنت' : 'No internet connection');
@@ -1309,7 +1335,6 @@
                     });
                     
                     setSuccessTicket(ticket);
-                    setTimeout(() => setSuccessTicket(null), 5000);
                     
                     const stats = await FirebaseQueueManager.getDepartmentStats(deptId);
                     setDepartmentStats(prev => ({
@@ -1317,33 +1342,35 @@
                         [deptId]: stats
                     }));
                     
+                    setTimeout(() => setSuccessTicket(null), 5000);
+                    
                 } catch (error) {
-                    console.error('Error generating ticket:', error);
+                    console.error('❌ Error generating ticket:', error);
                     alert(language === 'ar' ? 'حدث خطأ في توليد التذكرة' : 'Error generating ticket');
                 } finally {
                     setIsGeneratingTicket(false);
                 }
             };
 
-            // Approve a ticket
+            // الموافقة على تذكرة (تتحرك للأعلى في القائمة)
             const handleApproveTicket = async (ticketId) => {
                 try {
                     await FirebaseQueueManager.approveTicket(ticketId);
                 } catch (error) {
-                    console.error('Error approving ticket:', error);
+                    console.error('❌ Error approving ticket:', error);
                 }
             };
 
-            // Finish a ticket
+            // إنهاء تذكرة
             const handleFinishTicket = async (ticketId) => {
                 try {
                     await FirebaseQueueManager.finishTicket(ticketId);
                 } catch (error) {
-                    console.error('Error finishing ticket:', error);
+                    console.error('❌ Error finishing ticket:', error);
                 }
             };
 
-            // Admin login
+            // تسجيل دخول المدير
             const handleAdminLogin = () => {
                 if (adminCode === CONFIG.adminCode) {
                     setView('admin');
@@ -1355,11 +1382,12 @@
                 }
             };
 
-            // Format time
+            // وظائف التنسيق
             const formatTime = (date) => {
                 return date.toLocaleTimeString(isRTL ? 'ar-SA' : 'en-US', {
                     hour: '2-digit',
-                    minute: '2-digit'
+                    minute: '2-digit',
+                    second: '2-digit'
                 });
             };
 
@@ -1372,35 +1400,7 @@
                 });
             };
 
-            // Get waiting tickets for a department
-            const getWaitingTickets = (deptId) => {
-                return tickets
-                    .filter(t => t.deptId === deptId && t.status === 'waiting')
-                    .sort((a, b) => a.createdAt - b.createdAt);
-            };
-
-            // Get approved tickets for a department
-            const getApprovedTickets = (deptId) => {
-                return tickets
-                    .filter(t => t.deptId === deptId && t.status === 'waiting' && t.approved === true)
-                    .sort((a, b) => a.createdAt - b.createdAt);
-            };
-
-            // Get unapproved tickets for a department
-            const getUnapprovedTickets = (deptId) => {
-                return tickets
-                    .filter(t => t.deptId === deptId && t.status === 'waiting' && t.approved !== true)
-                    .sort((a, b) => a.createdAt - b.createdAt);
-            };
-
-            // Get called tickets for a department
-            const getCalledTickets = (deptId) => {
-                return tickets
-                    .filter(t => t.deptId === deptId && t.status === 'called')
-                    .sort((a, b) => b.calledAt - a.calledAt);
-            };
-
-            // Get current call for display
+            // الحصول على النداء الحالي للعرض
             const getCurrentCallForDisplay = () => {
                 const calls = Object.values(currentCalls);
                 if (calls.length === 0) return null;
@@ -1412,25 +1412,708 @@
                 return mostRecent;
             };
 
+            // الحصول على التذاكر المعتمدة (ترتيب تصاعدي - الأحدث أولاً)
+            const getApprovedTickets = () => {
+                return tickets
+                    .filter(t => t.status === 'waiting' && t.approved === true)
+                    .sort((a, b) => {
+                        // الأحدث أولاً (أعلى قائمة)
+                        const timeA = a.approvedAt?.toDate?.() || new Date(a.approvedAt || 0);
+                        const timeB = b.approvedAt?.toDate?.() || new Date(b.approvedAt || 0);
+                        return timeB - timeA;
+                    })
+                    .slice(0, 5);
+            };
+
+            // الحصول على التذاكر المنتظرة (غير المعتمدة)
+            const getWaitingTickets = () => {
+                return tickets
+                    .filter(t => t.status === 'waiting' && t.approved !== true)
+                    .sort((a, b) => {
+                        // الأقدم أولاً
+                        const timeA = a.createdAt?.toDate?.() || new Date(a.createdAt || 0);
+                        const timeB = b.createdAt?.toDate?.() || new Date(b.createdAt || 0);
+                        return timeA - timeB;
+                    })
+                    .slice(0, 5);
+            };
+
+            // ===== مكونات العرض =====
+            
+            // كشك الزوار المحسن للأجهزة المحمولة
+            const renderVisitorKiosk = () => (
+                <div className="min-h-screen bg-gradient-to-b from-blue-50 to-gray-100">
+                    {/* الهيدر */}
+                    <header className="mobile-header bg-white shadow-lg">
+                        <div className="max-w-7xl mx-auto px-4 py-4">
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="mobile-logo logo-container">
+                                        <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo" />
+                                    </div>
+                                    <div className={isRTL ? 'arabic' : 'english'}>
+                                        <h1 className="mobile-text font-bold text-gray-800">
+                                            {CONFIG.companyName[language]}
+                                        </h1>
+                                        <p className="text-sm text-blue-600">
+                                            {CONFIG.systemName[language]}
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div className="text-center">
+                                    <div className="flex items-center gap-2 justify-center mb-1">
+                                        <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500 animate-pulse'}`}></div>
+                                        <span className="text-sm text-gray-600">
+                                            {isOnline ? t.connected : t.disconnected}
+                                        </span>
+                                    </div>
+                                    <div className="text-xs text-gray-500">
+                                        {tickets.filter(t => t.status === 'waiting').length} {t.waiting}
+                                    </div>
+                                </div>
+                                
+                                <div className="flex flex-wrap justify-center items-center gap-2">
+                                    <button
+                                        onClick={() => setLanguage(lang => lang === 'ar' ? 'en' : 'ar')}
+                                        className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-2"
+                                    >
+                                        <span className={`font-medium ${language === 'ar' ? 'text-blue-600' : 'text-gray-600'}`}>
+                                            {language === 'ar' ? 'ع' : 'EN'}
+                                        </span>
+                                        <i className="fas fa-globe text-gray-500"></i>
+                                    </button>
+                                    
+                                    <a
+                                        href="?view=display"
+                                        target="_blank"
+                                        className="mobile-button btn-primary"
+                                    >
+                                        <i className="fas fa-tv mr-2"></i>
+                                        {t.openDisplay}
+                                    </a>
+                                    
+                                    <button
+                                        onClick={() => setShowAdminLogin(true)}
+                                        className="mobile-button bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition"
+                                    >
+                                        <i className="fas fa-cog mr-2"></i>
+                                        {t.employeeLogin}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* المحتوى الرئيسي */}
+                    <main className="mobile-optimized max-w-7xl mx-auto px-4 py-6">
+                        <div className="text-center mb-8">
+                            <h1 className="mobile-title font-bold text-gray-800 mb-3">
+                                {t.welcome}
+                            </h1>
+                            <p className="mobile-text text-gray-600">
+                                {t.selectDept}
+                            </p>
+                        </div>
+                        
+                        {/* الإحصائيات */}
+                        <div className="mobile-grid grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div className="mobile-card card text-center">
+                                <div className="text-3xl font-bold text-blue-600">
+                                    {tickets.filter(t => t.status === 'waiting').length}
+                                </div>
+                                <div className="text-gray-600">{t.waitingList}</div>
+                            </div>
+                            <div className="mobile-card card text-center">
+                                <div className="text-3xl font-bold text-green-600">
+                                    {tickets.filter(t => t.status === 'called').length}
+                                </div>
+                                <div className="text-gray-600">{t.calledTickets}</div>
+                            </div>
+                            <div className="mobile-card card text-center">
+                                <div className="text-3xl font-bold text-purple-600">
+                                    {tickets.length}
+                                </div>
+                                <div className="text-gray-600">{t.totalAppointments}</div>
+                            </div>
+                        </div>
+                        
+                        {/* الأقسام - قابلة للتمرير */}
+                        <div className="scrollable-content" style={{ maxHeight: '500px' }}>
+                            <div className="mobile-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                                {CONFIG.departments.map(dept => {
+                                    const waitingCount = tickets.filter(t => 
+                                        t.deptId === dept.id && t.status === 'waiting'
+                                    ).length;
+                                    
+                                    const stats = departmentStats[dept.id] || { lastNumber: 0, waitingCount: 0 };
+                                    
+                                    return (
+                                        <button
+                                            key={dept.id}
+                                            onClick={() => handleGenerateTicket(dept.id)}
+                                            disabled={isGeneratingTicket || !isOnline}
+                                            className={`mobile-card card hover:border-blue-300 text-left transition-all ${isGeneratingTicket ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        >
+                                            <div className="flex flex-col items-center text-center">
+                                                <div 
+                                                    className="w-16 h-16 rounded-xl flex items-center justify-center mb-4"
+                                                    style={{ backgroundColor: dept.color }}
+                                                >
+                                                    <i className={`${dept.icon} text-2xl text-white`}></i>
+                                                </div>
+                                                <h3 className="mobile-text font-bold text-gray-800 mb-2">
+                                                    {language === 'ar' ? dept.nameAr : dept.nameEn}
+                                                </h3>
+                                                <div className="text-sm text-gray-500 mb-3">
+                                                    {language === 'ar' ? dept.roomAr : dept.roomEn}
+                                                </div>
+                                                <div className="mt-2">
+                                                    <div className="text-2xl font-bold text-gray-700">
+                                                        {stats.lastNumber || 0}
+                                                    </div>
+                                                    <div className="text-xs text-gray-500">{t.lastNumber}</div>
+                                                    {waitingCount > 0 && (
+                                                        <div className="mt-2 text-sm text-blue-600">
+                                                            {waitingCount} {t.waiting}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="mt-4 w-full">
+                                                    <button 
+                                                        className={`mobile-button btn-primary ${isGeneratingTicket ? 'opacity-50' : ''}`}
+                                                        disabled={isGeneratingTicket || !isOnline}
+                                                    >
+                                                        {isGeneratingTicket ? (
+                                                            <>
+                                                                <i className="fas fa-spinner fa-spin mr-2"></i>
+                                                                {t.generatingTicket}
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <i className="fas fa-ticket-alt mr-2"></i>
+                                                                {t.generateTicket}
+                                                            </>
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        
+                        {/* التعليمات */}
+                        <div className="mobile-card card bg-blue-50 border-blue-100">
+                            <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i className="fas fa-info-circle text-blue-500"></i>
+                                {t.instructions}
+                            </h3>
+                            <ol className={`space-y-3 text-gray-700 ${isRTL ? 'list-decimal pr-5' : 'list-decimal pl-5'}`}>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-blue-600 font-bold">1.</span>
+                                    <span>{t.instruction1}</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-blue-600 font-bold">2.</span>
+                                    <span>{t.instruction2}</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-blue-600 font-bold">3.</span>
+                                    <span>{t.instruction3}</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-blue-600 font-bold">4.</span>
+                                    <span>{t.instruction4}</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <span className="text-blue-600 font-bold">5.</span>
+                                    <span>{t.instruction5}</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </main>
+
+                    {/* الفوتر */}
+                    <footer className="mobile-footer bg-gray-800 text-white py-6">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="logo-container" style={{ width: '60px', height: '60px' }}>
+                                        <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo" />
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="font-bold">{CONFIG.companyName[language]}</div>
+                                        <div className="text-sm text-gray-400">{CONFIG.systemName[language]}</div>
+                                    </div>
+                                </div>
+                                
+                                <div className="text-center text-gray-300">
+                                    <div>© 2025 {t.allRights}</div>
+                                    <div className="text-sm mt-1">
+                                        {t.techSupport}: {CONFIG.adminCode}
+                                    </div>
+                                </div>
+                                
+                                <div className="flex flex-wrap justify-center gap-4">
+                                    <a href="?view=kiosk" className="text-gray-300 hover:text-white">
+                                        {t.visitorKiosk}
+                                    </a>
+                                    <a href="?view=display" target="_blank" className="text-gray-300 hover:text-white">
+                                        {t.displayScreen}
+                                    </a>
+                                    <a href="?view=admin" className="text-gray-300 hover:text-white">
+                                        {t.adminPanel}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+
+            // شاشة العرض الاحترافية
+            const renderProfessionalDisplay = () => {
+                const currentCall = getCurrentCallForDisplay();
+                const approvedTickets = getApprovedTickets();
+                const waitingTickets = getWaitingTickets();
+                
+                return (
+                    <div className="professional-display">
+                        {/* مؤشر الصوت */}
+                        {showSoundIndicator && (
+                            <div className="sound-indicator">
+                                <i className={`fas fa-volume-up sound-pulse ${currentAnnouncementLang === 'ar' ? 'text-green-400' : 'text-blue-400'}`}></i>
+                                <span className="text-lg font-bold">
+                                    {currentAnnouncementLang === 'ar' ? t.soundAnnouncementAr : t.soundAnnouncementEn}
+                                </span>
+                            </div>
+                        )}
+                        
+                        {/* الهيدر */}
+                        <div className="display-header">
+                            <div className="flex justify-between items-center">
+                                <div className="flex items-center gap-6">
+                                    <div className="logo-container">
+                                        <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo" />
+                                    </div>
+                                    <div>
+                                        <h1 className="text-3xl font-bold arabic">
+                                            {CONFIG.companyName.ar}
+                                        </h1>
+                                        <h1 className="text-2xl font-bold english">
+                                            {CONFIG.companyName.en}
+                                        </h1>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="text-4xl font-mono font-bold">
+                                        {formatTime(currentTime)}
+                                    </div>
+                                    <div className="text-lg opacity-80">
+                                        {formatDate(currentTime)}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* المحتوى الرئيسي */}
+                        <div className="flex-1 flex" style={{ height: 'calc(100vh - 130px)' }}>
+                            {/* الجزء الأيسر - النداء الحالي */}
+                            <div className="current-call-container">
+                                <div className="text-center">
+                                    <div className="text-blue-400 text-4xl font-bold mb-8">
+                                        {t.currentCall}
+                                    </div>
+                                    
+                                    {currentCall ? (
+                                        <>
+                                            <div className="current-ticket-number">
+                                                {currentCall.ticketNumber}
+                                            </div>
+                                            
+                                            <div className="current-ticket-info">
+                                                <div className="current-office arabic">
+                                                    {currentCall.roomAr || "مكتب الخدمة"}
+                                                </div>
+                                                <div className="current-office english">
+                                                    {currentCall.roomEn || "Service Office"}
+                                                </div>
+                                                <div className="current-department arabic">
+                                                    {currentCall.categoryAr || "إدارة الخدمات"}
+                                                </div>
+                                                <div className="current-department english">
+                                                    {currentCall.categoryEn || "Service Management"}
+                                                </div>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="space-y-8">
+                                            <div className="text-[20vw] opacity-20 text-blue-500">
+                                                <i className="fas fa-clock"></i>
+                                            </div>
+                                            <div className="space-y-4">
+                                                <div className="text-5xl text-gray-400 arabic">{t.systemReady}</div>
+                                                <div className="text-4xl text-gray-400 english">{t.systemReady}</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                            
+                            {/* الجزء الأيمن - التذاكر */}
+                            <div className="tickets-sidebar">
+                                {/* التذاكر المعتمدة */}
+                                <div className="tickets-section">
+                                    <h3 className="section-title approved-title">
+                                        <i className="fas fa-check-circle"></i>
+                                        {t.approvedTickets}
+                                    </h3>
+                                    <div className="tickets-list">
+                                        {approvedTickets.length > 0 ? (
+                                            approvedTickets.map((ticket, index) => {
+                                                const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
+                                                return (
+                                                    <div 
+                                                        key={ticket.id}
+                                                        className="display-ticket approved"
+                                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                                    >
+                                                        <div className="display-ticket-number">
+                                                            {ticket.number}
+                                                        </div>
+                                                        <div className="display-ticket-details">
+                                                            <div className="display-ticket-department arabic">
+                                                                {ticket.categoryAr || dept?.categoryAr}
+                                                            </div>
+                                                            <div className="display-ticket-office arabic">
+                                                                {ticket.roomAr}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="text-center py-8 text-gray-400">
+                                                <i className="fas fa-check-circle text-3xl mb-3"></i>
+                                                <div className="arabic text-xl">{t.noAppointments}</div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                
+                                {/* التذاكر المنتظرة */}
+                                <div className="tickets-section">
+                                    <h3 className="section-title waiting-title">
+                                        <i className="fas fa-clock"></i>
+                                        {t.waitingTickets}
+                                    </h3>
+                                    <div className="tickets-list">
+                                        {waitingTickets.length > 0 ? (
+                                            waitingTickets.map((ticket, index) => {
+                                                const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
+                                                return (
+                                                    <div 
+                                                        key={ticket.id}
+                                                        className="display-ticket"
+                                                        style={{ animationDelay: `${index * 0.1}s` }}
+                                                    >
+                                                        <div className="display-ticket-number">
+                                                            {ticket.number}
+                                                        </div>
+                                                        <div className="display-ticket-details">
+                                                            <div className="display-ticket-department arabic">
+                                                                {ticket.categoryAr || dept?.categoryAr}
+                                                            </div>
+                                                            <div className="display-ticket-office arabic">
+                                                                {ticket.roomAr}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="text-center py-8 text-gray-400">
+                                                <i className="fas fa-clock text-3xl mb-3"></i>
+                                                <div className="arabic text-xl">{t.noAppointments}</div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* التايمر المتحرك */}
+                        <div className="news-ticker">
+                            <div className="ticker-content arabic">
+                                {t.welcomeMessage} • {t.systemMessage} • {t.holdTicket} •
+                                {t.welcomeMessage} • {t.systemMessage} • {t.holdTicket}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // لوحة تحكم الموظفين
+            const renderAdminPanel = () => (
+                <div className="min-h-screen bg-gray-50">
+                    <div className="max-w-7xl mx-auto px-4 py-8">
+                        {!activeDept ? (
+                            <div className="space-y-8">
+                                <div className="text-center">
+                                    <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                                        {t.controlPanel}
+                                    </h1>
+                                    <p className="text-gray-600">{t.selectDeptControl}</p>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="card text-center">
+                                        <div className="text-3xl font-bold text-blue-600">
+                                            {tickets.filter(t => t.status === 'waiting').length}
+                                        </div>
+                                        <div className="text-gray-600">{t.waitingList}</div>
+                                    </div>
+                                    <div className="card text-center">
+                                        <div className="text-3xl font-bold text-green-600">
+                                            {tickets.filter(t => t.status === 'called').length}
+                                        </div>
+                                        <div className="text-gray-600">{t.calledTickets}</div>
+                                    </div>
+                                    <div className="card text-center">
+                                        <div className="text-3xl font-bold text-purple-600">
+                                            {tickets.length}
+                                        </div>
+                                        <div className="text-gray-600">{t.appointments}</div>
+                                    </div>
+                                </div>
+                                
+                                <div className="admin-grid-container">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {CONFIG.departments.map(dept => {
+                                            const waitingCount = tickets.filter(t => 
+                                                t.deptId === dept.id && t.status === 'waiting'
+                                            ).length;
+                                            const stats = departmentStats[dept.id] || { lastNumber: 0 };
+                                            
+                                            return (
+                                                <button
+                                                    key={dept.id}
+                                                    onClick={() => setActiveDept(dept.id)}
+                                                    className="card hover:border-blue-300"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <div 
+                                                            className="w-14 h-14 rounded-xl flex items-center justify-center"
+                                                            style={{ backgroundColor: dept.color }}
+                                                        >
+                                                            <i className={`${dept.icon} text-xl text-white`}></i>
+                                                        </div>
+                                                        <div className="text-left flex-1">
+                                                            <h3 className="font-bold text-gray-800">
+                                                                {language === 'ar' ? dept.nameAr : dept.nameEn}
+                                                            </h3>
+                                                            <p className="text-sm text-gray-500">
+                                                                {language === 'ar' ? dept.roomAr : dept.roomEn}
+                                                            </p>
+                                                            <div className="mt-2">
+                                                                <div className="flex justify-between items-center">
+                                                                    <span className="text-gray-600">{t.waiting}:</span>
+                                                                    <span className="text-xl font-bold" style={{ color: dept.color }}>
+                                                                        {waitingCount}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex justify-between items-center mt-1">
+                                                                    <span className="text-gray-600">{t.lastNumber}:</span>
+                                                                    <span className="text-lg font-bold">
+                                                                        {stats.lastNumber || 0}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                                
+                                <div className="flex justify-center gap-4 pb-8">
+                                    <a
+                                        href="?view=kiosk"
+                                        className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
+                                    >
+                                        {t.returnToKiosk}
+                                    </a>
+                                    <a
+                                        href="?view=display"
+                                        target="_blank"
+                                        className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
+                                    >
+                                        {t.openDisplay}
+                                    </a>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="card bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+                                    <div className="flex justify-between items-center">
+                                        <div className="flex items-center gap-4">
+                                            <button
+                                                onClick={() => setActiveDept(null)}
+                                                className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition"
+                                            >
+                                                <i className="fas fa-arrow-left text-xl"></i>
+                                            </button>
+                                            <div>
+                                                <h2 className="text-2xl font-bold">
+                                                    {language === 'ar' ? 
+                                                        CONFIG.departments.find(d => d.id === activeDept)?.nameAr :
+                                                        CONFIG.departments.find(d => d.id === activeDept)?.nameEn}
+                                                </h2>
+                                                <p className="opacity-90">
+                                                    {language === 'ar' ? 
+                                                        CONFIG.departments.find(d => d.id === activeDept)?.roomAr :
+                                                        CONFIG.departments.find(d => d.id === activeDept)?.roomEn}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-3xl font-bold">
+                                                {(departmentStats[activeDept]?.lastNumber || 0)}
+                                            </div>
+                                            <div className="text-sm opacity-80">{t.lastNumber}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    {/* التذاكر المنتظرة */}
+                                    <div className="card">
+                                        <h3 className="text-xl font-bold text-gray-800 mb-4">
+                                            {t.waitingList} ({tickets.filter(t => t.deptId === activeDept && t.status === 'waiting').length})
+                                        </h3>
+                                        <div className="space-y-3 max-h-96 overflow-y-auto">
+                                            {tickets
+                                                .filter(t => t.deptId === activeDept && t.status === 'waiting')
+                                                .sort((a, b) => a.createdAt - b.createdAt)
+                                                .map(ticket => (
+                                                    <div key={ticket.id} className="compact-ticket">
+                                                        <div className="flex justify-between items-center">
+                                                            <div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="compact-ticket-number">
+                                                                        {ticket.number}
+                                                                    </div>
+                                                                    {ticket.approved ? (
+                                                                        <span className="ticket-badge approved-badge">
+                                                                            {t.approved}
+                                                                        </span>
+                                                                    ) : (
+                                                                        <span className="ticket-badge waiting-badge">
+                                                                            {t.waiting}
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                <div className="compact-ticket-info">
+                                                                    {formatTime(ticket.createdAt?.toDate?.() || new Date(ticket.createdAt))}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex gap-2">
+                                                                {!ticket.approved && (
+                                                                    <button
+                                                                        onClick={() => handleApproveTicket(ticket.id)}
+                                                                        className="btn-success"
+                                                                    >
+                                                                        <i className="fas fa-check mr-2"></i>
+                                                                        {t.approved}
+                                                                    </button>
+                                                                )}
+                                                                <button
+                                                                    onClick={() => handleCallTicketWithSound(ticket)}
+                                                                    className="btn-primary"
+                                                                >
+                                                                    <i className="fas fa-bullhorn mr-2"></i>
+                                                                    {t.call}
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            
+                                            {tickets.filter(t => t.deptId === activeDept && t.status === 'waiting').length === 0 && (
+                                                <div className="text-center py-4 text-gray-500">
+                                                    <i className="fas fa-clock text-2xl mb-2"></i>
+                                                    <div>{language === 'ar' ? 'لا توجد تذاكر في الانتظار' : 'No tickets waiting'}</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* التذاكر المنداء عليها */}
+                                    <div className="card">
+                                        <h3 className="text-xl font-bold text-gray-800 mb-4">
+                                            {t.calledTickets} ({tickets.filter(t => t.deptId === activeDept && t.status === 'called').length})
+                                        </h3>
+                                        <div className="space-y-3 max-h-96 overflow-y-auto">
+                                            {tickets
+                                                .filter(t => t.deptId === activeDept && t.status === 'called')
+                                                .sort((a, b) => (b.calledAt || 0) - (a.calledAt || 0))
+                                                .map(ticket => (
+                                                    <div key={ticket.id} className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+                                                        <div className="text-center mb-4">
+                                                            <div className="text-3xl font-bold text-gray-800">
+                                                                {ticket.number}
+                                                            </div>
+                                                            <div className="text-sm text-gray-500">
+                                                                {formatTime(ticket.calledAt?.toDate?.() || new Date(ticket.calledAt))}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => handleCallTicketWithSound(ticket)}
+                                                                className="btn-success flex-1"
+                                                            >
+                                                                <i className="fas fa-redo mr-2"></i>
+                                                                {t.recall}
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleFinishTicket(ticket.id)}
+                                                                className="btn-danger flex-1"
+                                                            >
+                                                                <i className="fas fa-check mr-2"></i>
+                                                                {t.finish}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            
+                                            {tickets.filter(t => t.deptId === activeDept && t.status === 'called').length === 0 && (
+                                                <div className="text-center py-4 text-gray-500">
+                                                    <i className="fas fa-bullhorn text-2xl mb-2"></i>
+                                                    <div>{language === 'ar' ? 'لا توجد تذاكر مناداة' : 'No tickets called'}</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+
+            // ===== التطبيق الرئيسي =====
             return (
                 <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
-                    {/* Sound Announcement Indicator */}
-                    {showSoundIndicator && (
-                        <div className="sound-indicator">
-                            <i className={`fas fa-volume-up sound-pulse ${currentAnnouncementLang === 'ar' ? 'text-green-400' : 'text-blue-400'}`}></i>
-                            <span>
-                                {currentAnnouncementLang === 'ar' ? t.soundAnnouncementAr : t.soundAnnouncementEn}
-                            </span>
-                        </div>
-                    )}
-
-                    {/* Connection Status Indicator */}
+                    {/* حالة الاتصال */}
                     <div className={`connection-status ${isOnline ? 'connected' : 'disconnected'}`}>
                         <i className={`fas fa-${isOnline ? 'wifi' : 'wifi-slash'}`}></i>
                         <span>{isOnline ? t.connected : t.disconnected}</span>
                     </div>
 
-                    {/* Admin Login Modal */}
+                    {/* نافذة تسجيل دخول المدير */}
                     {showAdminLogin && (
                         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
                             <div className="card max-w-md w-full">
@@ -1481,12 +2164,14 @@
                         </div>
                     )}
 
-                    {/* Success Ticket Modal */}
+                    {/* نافذة نجاح توليد التذكرة */}
                     {successTicket && (
                         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
                             <div className="card max-w-md w-full bg-gradient-to-br from-blue-50 to-white">
                                 <div className="text-center space-y-6">
-                                    <i className="fas fa-ticket-alt text-5xl text-blue-500"></i>
+                                    <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mx-auto">
+                                        <i className="fas fa-ticket-alt text-3xl text-blue-500"></i>
+                                    </div>
                                     <div>
                                         <h3 className="text-2xl font-bold text-gray-800">{t.ticketGenerated}</h3>
                                         <div className="text-6xl font-black text-blue-600 mt-4 tracking-wider">
@@ -1512,685 +2197,16 @@
                         </div>
                     )}
 
-                    {/* Header for all views except display */}
-                    {view !== 'display' && (
-                        <header className="kiosk-header bg-white shadow-md">
-                            <div className="max-w-7xl mx-auto px-4 py-4">
-                                <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="logo-container">
-                                            <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo" />
-                                        </div>
-                                        <div className={isRTL ? 'arabic' : 'english'}>
-                                            <h1 className="text-xl font-bold text-gray-800">
-                                                {CONFIG.companyName[language]}
-                                            </h1>
-                                            <p className="text-sm text-blue-600">
-                                                {CONFIG.systemName[language]}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="text-center">
-                                        <div className="flex items-center gap-2 justify-center mb-1">
-                                            <div className={`w-3 h-3 rounded-full ${isOnline ? 'bg-green-500' : 'bg-red-500 animate-pulse'}`}></div>
-                                            <span className="text-sm text-gray-600">
-                                                {isOnline ? t.connected : t.disconnected}
-                                            </span>
-                                        </div>
-                                        <div className="text-xs text-gray-500">
-                                            {tickets.filter(t => t.status === 'waiting').length} {t.waiting}
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        <button
-                                            onClick={() => setLanguage(lang => lang === 'ar' ? 'en' : 'ar')}
-                                            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-2"
-                                        >
-                                            <span className={`font-medium ${language === 'ar' ? 'text-blue-600' : 'text-gray-600'}`}>
-                                                {language === 'ar' ? 'ع' : 'EN'}
-                                            </span>
-                                            <i className="fas fa-globe text-gray-500"></i>
-                                        </button>
-                                        
-                                        <a
-                                            href="?view=kiosk"
-                                            className={`px-4 py-2 rounded-lg font-medium transition ${view === 'kiosk' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                                        >
-                                            <i className="fas fa-user mr-2"></i>
-                                            {t.visitorKiosk}
-                                        </a>
-                                        
-                                        <a
-                                            href="?view=display"
-                                            target="_blank"
-                                            className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
-                                        >
-                                            <i className="fas fa-tv mr-2"></i>
-                                            {t.openDisplay}
-                                        </a>
-                                        
-                                        <button
-                                            onClick={() => setShowAdminLogin(true)}
-                                            className={`px-4 py-2 rounded-lg font-medium transition ${view === 'admin' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                                        >
-                                            <i className="fas fa-cog mr-2"></i>
-                                            {t.employeeLogin}
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </header>
-                    )}
-
-                    {/* Main Content */}
-                    <main className="flex-1">
-                        {/* Visitor Kiosk */}
-                        {view === 'kiosk' && (
-                            <div className="max-w-7xl mx-auto px-4 py-4">
-                                <div className="text-center mb-6">
-                                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
-                                        {t.welcome}
-                                    </h1>
-                                    <p className="text-gray-600 text-lg">
-                                        {t.selectDept}
-                                    </p>
-                                </div>
-                                
-                                {/* قسم الأقسام - قابل للتمرير */}
-                                <div className="dept-grid-container scrollable-kiosk">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-                                        {CONFIG.departments.map(dept => {
-                                            const waitingCount = tickets.filter(t => 
-                                                t.deptId === dept.id && t.status === 'waiting'
-                                            ).length;
-                                            
-                                            const stats = departmentStats[dept.id] || { lastNumber: 0, waitingCount: 0 };
-                                            
-                                            return (
-                                                <button
-                                                    key={dept.id}
-                                                    onClick={() => handleGenerateTicket(dept.id)}
-                                                    disabled={isGeneratingTicket || !isOnline}
-                                                    className={`card hover:border-blue-300 text-left transition-all ${isGeneratingTicket ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                >
-                                                    <div className="flex flex-col items-center text-center">
-                                                        <div 
-                                                            className="icon-wrapper"
-                                                            style={{ backgroundColor: dept.color }}
-                                                        >
-                                                            <i className={dept.icon}></i>
-                                                        </div>
-                                                        <h3 className="text-lg font-bold text-gray-800 mb-2">
-                                                            {language === 'ar' ? dept.nameAr : dept.nameEn}
-                                                        </h3>
-                                                        <div className="text-sm text-gray-500 mb-3">
-                                                            {language === 'ar' ? dept.roomAr : dept.roomEn}
-                                                        </div>
-                                                        <div className="mt-2">
-                                                            <div className="text-2xl font-bold text-gray-700">
-                                                                {stats.lastNumber || 0}
-                                                            </div>
-                                                            <div className="text-xs text-gray-500">{t.lastNumber}</div>
-                                                            {waitingCount > 0 && (
-                                                                <div className="mt-2 text-sm text-blue-600">
-                                                                    {waitingCount} {t.waiting}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        <div className="mt-4">
-                                                            <button 
-                                                                className={`btn-primary ${isGeneratingTicket ? 'opacity-50' : ''}`}
-                                                                disabled={isGeneratingTicket || !isOnline}
-                                                            >
-                                                                {isGeneratingTicket ? (
-                                                                    <>
-                                                                        <i className="fas fa-spinner fa-spin mr-2"></i>
-                                                                        {t.generatingTicket}
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <i className="fas fa-ticket-alt mr-2"></i>
-                                                                        {t.generateTicket}
-                                                                    </>
-                                                                )}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                                
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                    <div className="card text-center">
-                                        <div className="text-3xl font-bold text-blue-600">
-                                            {tickets.filter(t => t.status === 'waiting').length}
-                                        </div>
-                                        <div className="text-gray-600">{t.waitingList}</div>
-                                    </div>
-                                    <div className="card text-center">
-                                        <div className="text-3xl font-bold text-green-600">
-                                            {tickets.filter(t => t.status === 'called').length}
-                                        </div>
-                                        <div className="text-gray-600">{t.calledTickets}</div>
-                                    </div>
-                                    <div className="card text-center">
-                                        <div className="text-3xl font-bold text-purple-600">
-                                            {tickets.length}
-                                        </div>
-                                        <div className="text-gray-600">{t.totalAppointments}</div>
-                                    </div>
-                                </div>
-                                
-                                <div className="card bg-blue-50 border-blue-100">
-                                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                        <i className="fas fa-info-circle text-blue-500"></i>
-                                        {t.instructions}
-                                    </h3>
-                                    <ol className={`space-y-2 text-gray-700 ${isRTL ? 'list-decimal pr-5' : 'list-decimal pl-5'}`}>
-                                        <li>{t.instruction1}</li>
-                                        <li>{t.instruction2}</li>
-                                        <li>{t.instruction3}</li>
-                                        <li>{t.instruction4}</li>
-                                        <li>{t.instruction5}</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Display Screen (TV Mode) */}
-                        {view === 'display' && (
-                            <div className="tv-container mx-auto">
-                                <div className="h-full flex flex-col">
-                                    {/* Header */}
-                                    <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white p-4">
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center gap-4">
-                                                <div className="logo-container">
-                                                    <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo" />
-                                                </div>
-                                                <div>
-                                                    <h1 className="text-2xl md:text-3xl font-bold arabic">
-                                                        {CONFIG.companyName.ar}
-                                                    </h1>
-                                                    <h1 className="text-xl md:text-2xl font-bold english">
-                                                        {CONFIG.companyName.en}
-                                                    </h1>
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className="text-3xl md:text-4xl font-mono font-bold">
-                                                    {formatTime(currentTime)}
-                                                </div>
-                                                <div className="text-sm opacity-80">
-                                                    {formatDate(currentTime)}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Main Display Area */}
-                                    <div className="flex-1 flex">
-                                        {/* Left Panel - Current Call */}
-                                        <div className="display-left-panel">
-                                            <div className="text-center space-y-8">
-                                                <div className="text-blue-400 text-2xl font-bold display-department-name">
-                                                    {t.currentCall}
-                                                </div>
-                                                
-                                                {(() => {
-                                                    const currentCall = getCurrentCallForDisplay();
-                                                    if (currentCall) {
-                                                        const dept = CONFIG.departments.find(d => d.id === Object.keys(currentCalls).find(key => currentCalls[key] === currentCall));
-                                                        return (
-                                                            <>
-                                                                <div className="relative">
-                                                                    <div className="font-black text-white ticket-glow display-current-call">
-                                                                        {currentCall.ticketNumber}
-                                                                    </div>
-                                                                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-20" style={{ fontSize: '40%' }}>
-                                                                        <i className={dept?.icon}></i>
-                                                                    </div>
-                                                                </div>
-                                                                
-                                                                <div className="space-y-2">
-                                                                    <div className="font-bold text-blue-300 arabic display-room-name">
-                                                                        {dept?.roomAr || currentCall.roomAr}
-                                                                    </div>
-                                                                    <div className="font-bold text-blue-300 english display-room-name">
-                                                                        {dept?.roomEn || currentCall.roomEn}
-                                                                    </div>
-                                                                </div>
-                                                            </>
-                                                        );
-                                                    } else {
-                                                        return (
-                                                            <div className="space-y-6">
-                                                                <div className="text-[15vw] opacity-30">
-                                                                    <i className="fas fa-clock"></i>
-                                                                </div>
-                                                                <div className="space-y-2">
-                                                                    <div className="text-4xl text-gray-400 arabic">{t.systemReady}</div>
-                                                                    <div className="text-3xl text-gray-400 english">{t.systemReady}</div>
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    }
-                                                })()}
-                                            </div>
-                                        </div>
-                                        
-                                        {/* Right Panel - Waiting Tickets */}
-                                        <div className="display-right-panel scrollable-display-panel">
-                                            <div className="h-full flex flex-col">
-                                                {/* Approved Tickets Section */}
-                                                <div className="mb-6">
-                                                    <h3 className="text-xl font-bold text-white mb-4 border-b border-green-500 pb-2 arabic">
-                                                        {t.approvedTickets}
-                                                    </h3>
-                                                    <div className="space-y-3">
-                                                        {(() => {
-                                                            const approvedTickets = tickets
-                                                                .filter(t => t.status === 'waiting' && t.approved === true)
-                                                                .slice(0, 3);
-                                                            
-                                                            if (approvedTickets.length > 0) {
-                                                                return approvedTickets.map((ticket, index) => {
-                                                                    const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
-                                                                    return (
-                                                                        <div 
-                                                                            key={ticket.id}
-                                                                            className="approved-ticket-card animate-slide-in-right"
-                                                                            style={{ animationDelay: `${index * 0.1}s` }}
-                                                                        >
-                                                                            <div className="flex justify-between items-start">
-                                                                                <div>
-                                                                                    <div className="text-white display-ticket-number mb-2">
-                                                                                        {ticket.number}
-                                                                                    </div>
-                                                                                    <div className="arabic-text text-white display-ticket-department mb-1">
-                                                                                        {ticket.categoryAr || dept?.categoryAr}
-                                                                                    </div>
-                                                                                    <div className="arabic-text text-gray-200 display-ticket-office">
-                                                                                        {ticket.roomAr}
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div className="approved-badge">
-                                                                                    {t.approved}
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    );
-                                                                });
-                                                            } else {
-                                                                return (
-                                                                    <div className="text-center py-4 text-gray-400">
-                                                                        <i className="fas fa-check-circle text-2xl mb-2"></i>
-                                                                        <div className="arabic-text">{t.noAppointments}</div>
-                                                                    </div>
-                                                                );
-                                                            }
-                                                        })()}
-                                                    </div>
-                                                </div>
-                                                
-                                                {/* Waiting Tickets Section */}
-                                                <div className="flex-1">
-                                                    <h3 className="text-xl font-bold text-white mb-4 border-b border-blue-500 pb-2 arabic">
-                                                        {t.waitingTickets}
-                                                    </h3>
-                                                    <div className="space-y-3">
-                                                        {(() => {
-                                                            const waitingTickets = tickets
-                                                                .filter(t => t.status === 'waiting' && t.approved !== true)
-                                                                .slice(0, 5);
-                                                            
-                                                            if (waitingTickets.length > 0) {
-                                                                return waitingTickets.map((ticket, index) => {
-                                                                    const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
-                                                                    return (
-                                                                        <div 
-                                                                            key={ticket.id}
-                                                                            className="waiting-ticket-card animate-slide-in-left"
-                                                                            style={{ animationDelay: `${index * 0.1}s` }}
-                                                                        >
-                                                                            <div className="flex justify-between items-start">
-                                                                                <div>
-                                                                                    <div className="text-blue-800 display-ticket-number mb-2">
-                                                                                        {ticket.number}
-                                                                                    </div>
-                                                                                    <div className="arabic-text text-gray-800 display-ticket-department mb-1">
-                                                                                        {ticket.categoryAr || dept?.categoryAr}
-                                                                                    </div>
-                                                                                    <div className="arabic-text text-gray-600 display-ticket-office">
-                                                                                        {ticket.roomAr}
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div className="ticket-number-badge">
-                                                                                    {ticket.number}
-                                                                                </div>
-                                                                            </div>
-                                                                            <div className="mt-3 pt-3 border-t border-gray-200">
-                                                                                <div className="text-sm text-gray-500 arabic-text">
-                                                                                    <i className="fas fa-clock mr-2"></i>
-                                                                                    {t.waitingForApproval}
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    );
-                                                                });
-                                                            } else {
-                                                                return (
-                                                                    <div className="text-center py-8 text-gray-400">
-                                                                        <i className="fas fa-clock text-3xl mb-3"></i>
-                                                                        <div className="arabic-text text-xl mb-2">{t.noAppointments}</div>
-                                                                        <div className="text-sm arabic-text">{t.systemReady}</div>
-                                                                    </div>
-                                                                );
-                                                            }
-                                                        })()}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Ticker */}
-                                    <div className="bg-gradient-to-r from-blue-800 to-blue-600 py-3 overflow-hidden">
-                                        <div className="animate-marquee whitespace-nowrap text-xl font-bold">
-                                            <span className="mx-12 arabic-text">{t.welcomeMessage}</span>
-                                            <span className="mx-12">•</span>
-                                            <span className="mx-12 arabic-text">{t.systemMessage}</span>
-                                            <span className="mx-12">•</span>
-                                            <span className="mx-12 arabic-text">{t.holdTicket}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Admin Panel */}
-                        {view === 'admin' && (
-                            <div className="max-w-7xl mx-auto px-4 py-4 scrollable-admin">
-                                {!activeDept ? (
-                                    <div className="space-y-8">
-                                        <div className="text-center">
-                                            <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                                                {t.controlPanel}
-                                            </h1>
-                                            <p className="text-gray-600">{t.selectDeptControl}</p>
-                                        </div>
-                                        
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                            <div className="card text-center">
-                                                <div className="text-3xl font-bold text-blue-600">
-                                                    {tickets.filter(t => t.status === 'waiting').length}
-                                                </div>
-                                                <div className="text-gray-600">{t.waitingList}</div>
-                                                <div className="mt-2 text-sm">
-                                                    <span className="text-blue-500">{tickets.filter(t => t.type === 'walk-in').length} {t.walkIn}</span>
-                                                </div>
-                                            </div>
-                                            <div className="card text-center">
-                                                <div className="text-3xl font-bold text-green-600">
-                                                    {tickets.filter(t => t.status === 'called').length}
-                                                </div>
-                                                <div className="text-gray-600">{t.calledTickets}</div>
-                                            </div>
-                                            <div className="card text-center">
-                                                <div className="text-3xl font-bold text-purple-600">
-                                                    {tickets.length}
-                                                </div>
-                                                <div className="text-gray-600">{t.appointments}</div>
-                                            </div>
-                                        </div>
-                                        
-                                        {/* قسم الأقسام في لوحة التحكم - قابل للتمرير */}
-                                        <div className="admin-grid-container">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                                {CONFIG.departments.map(dept => {
-                                                    const waitingCount = tickets.filter(t => 
-                                                        t.deptId === dept.id && t.status === 'waiting'
-                                                    ).length;
-                                                    const stats = departmentStats[dept.id] || { lastNumber: 0 };
-                                                    
-                                                    return (
-                                                        <button
-                                                            key={dept.id}
-                                                            onClick={() => setActiveDept(dept.id)}
-                                                            className="card hover:border-blue-300"
-                                                        >
-                                                            <div className="flex items-center gap-4">
-                                                                <div 
-                                                                    className="icon-wrapper"
-                                                                    style={{ backgroundColor: dept.color }}
-                                                                >
-                                                                    <i className={dept.icon}></i>
-                                                                </div>
-                                                                <div className="text-left flex-1">
-                                                                    <h3 className="font-bold text-gray-800">
-                                                                        {language === 'ar' ? dept.nameAr : dept.nameEn}
-                                                                    </h3>
-                                                                    <p className="text-sm text-gray-500">
-                                                                        {language === 'ar' ? dept.roomAr : dept.roomEn}
-                                                                    </p>
-                                                                    <div className="mt-2">
-                                                                        <div className="flex justify-between items-center">
-                                                                            <span className="text-gray-600">{t.waiting}:</span>
-                                                                            <span className="text-xl font-bold" style={{ color: dept.color }}>
-                                                                                {waitingCount}
-                                                                            </span>
-                                                                        </div>
-                                                                        <div className="flex justify-between items-center mt-1">
-                                                                            <span className="text-gray-600">{t.lastNumber}:</span>
-                                                                            <span className="text-lg font-bold">
-                                                                                {stats.lastNumber || 0}
-                                                                            </span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="flex justify-center gap-4 pb-8">
-                                            <a
-                                                href="?view=kiosk"
-                                                className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
-                                            >
-                                                {t.returnToKiosk}
-                                            </a>
-                                            <a
-                                                href="?view=display"
-                                                target="_blank"
-                                                className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition"
-                                            >
-                                                {t.openDisplay}
-                                            </a>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-6">
-                                        <div className="card bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-                                            <div className="flex justify-between items-center">
-                                                <div className="flex items-center gap-4">
-                                                    <button
-                                                        onClick={() => setActiveDept(null)}
-                                                        className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition"
-                                                    >
-                                                        <i className="fas fa-arrow-left"></i>
-                                                    </button>
-                                                    <div>
-                                                        <h2 className="text-2xl font-bold">
-                                                            {language === 'ar' ? 
-                                                                CONFIG.departments.find(d => d.id === activeDept)?.nameAr :
-                                                                CONFIG.departments.find(d => d.id === activeDept)?.nameEn}
-                                                        </h2>
-                                                        <p className="opacity-90">
-                                                            {language === 'ar' ? 
-                                                                CONFIG.departments.find(d => d.id === activeDept)?.roomAr :
-                                                                CONFIG.departments.find(d => d.id === activeDept)?.roomEn}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="text-center">
-                                                    <div className="text-3xl font-bold">
-                                                        {(departmentStats[activeDept]?.lastNumber || 0)}
-                                                    </div>
-                                                    <div className="text-sm opacity-80">{t.lastNumber}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                            <div className="card">
-                                                <h3 className="text-xl font-bold text-gray-800 mb-4">
-                                                    {t.waitingList} ({getWaitingTickets(activeDept).length})
-                                                </h3>
-                                                <div className="space-y-3 max-h-96 overflow-y-auto">
-                                                    {getWaitingTickets(activeDept).map(ticket => (
-                                                        <div key={ticket.id} className="flex justify-between items-center p-3 rounded-lg border bg-gray-50">
-                                                            <div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className="text-2xl font-bold text-gray-800">
-                                                                        {ticket.number}
-                                                                    </div>
-                                                                    {ticket.approved && (
-                                                                        <span className="approved-badge">
-                                                                            {t.approved}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                                <div className="text-sm text-gray-500 mt-1">
-                                                                    {formatTime(ticket.createdAt?.toDate?.() || new Date(ticket.createdAt))}
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex gap-2">
-                                                                {!ticket.approved && (
-                                                                    <button
-                                                                        onClick={() => handleApproveTicket(ticket.id)}
-                                                                        className="btn-success"
-                                                                    >
-                                                                        <i className="fas fa-check mr-2"></i>
-                                                                        {t.approved}
-                                                                    </button>
-                                                                )}
-                                                                <button
-                                                                    onClick={() => handleCallTicketWithSound(ticket)}
-                                                                    className="btn-primary"
-                                                                >
-                                                                    <i className="fas fa-bullhorn mr-2"></i>
-                                                                    {t.call}
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    {getWaitingTickets(activeDept).length === 0 && (
-                                                        <div className="text-center py-4 text-gray-500">
-                                                            <i className="fas fa-clock text-2xl mb-2"></i>
-                                                            <div>{language === 'ar' ? 'لا توجد تذاكر في الانتظار' : 'No tickets waiting'}</div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            
-                                            <div className="card">
-                                                <h3 className="text-xl font-bold text-gray-800 mb-4">
-                                                    {t.calledTickets} ({getCalledTickets(activeDept).length})
-                                                </h3>
-                                                <div className="space-y-3 max-h-96 overflow-y-auto">
-                                                    {getCalledTickets(activeDept).map(ticket => (
-                                                        <div key={ticket.id} className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                                                            <div className="text-center mb-4">
-                                                                <div className="text-3xl font-bold text-gray-800">
-                                                                    {ticket.number}
-                                                                </div>
-                                                                <div className="text-sm text-gray-500">
-                                                                    {formatTime(ticket.calledAt?.toDate?.() || new Date(ticket.calledAt))}
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex gap-2">
-                                                                <button
-                                                                    onClick={() => handleCallTicketWithSound(ticket)}
-                                                                    className="btn-success flex-1"
-                                                                >
-                                                                    <i className="fas fa-redo mr-2"></i>
-                                                                    {t.recall}
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => handleFinishTicket(ticket.id)}
-                                                                    className="btn-danger flex-1"
-                                                                >
-                                                                    <i className="fas fa-check mr-2"></i>
-                                                                    {t.finish}
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                    {getCalledTickets(activeDept).length === 0 && (
-                                                        <div className="text-center py-4 text-gray-500">
-                                                            <i className="fas fa-bullhorn text-2xl mb-2"></i>
-                                                            <div>{language === 'ar' ? 'لا توجد تذاكر مناداة' : 'No tickets called'}</div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </main>
-
-                    {/* Footer */}
-                    {view !== 'display' && (
-                        <footer className="kiosk-footer bg-gray-800 text-white py-4">
-                            <div className="max-w-7xl mx-auto px-4">
-                                <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="logo-container" style={{ width: '60px', height: '60px' }}>
-                                            <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo" />
-                                        </div>
-                                        <div>
-                                            <div className="font-bold">{CONFIG.companyName[language]}</div>
-                                            <div className="text-sm text-gray-400">{CONFIG.systemName[language]}</div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="text-center text-gray-300">
-                                        <div>© 2025 {t.allRights}</div>
-                                        <div className="text-sm mt-1">
-                                            {t.techSupport}: {CONFIG.adminCode}
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="flex flex-wrap gap-4">
-                                        <a href="?view=kiosk" className="text-gray-300 hover:text-white">
-                                            {t.visitorKiosk}
-                                        </a>
-                                        <a href="?view=display" target="_blank" className="text-gray-300 hover:text-white">
-                                            {t.displayScreen}
-                                        </a>
-                                        <a href="?view=admin" className="text-gray-300 hover:text-white">
-                                            {t.adminPanel}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </footer>
-                    )}
+                    {/* العرض الحالي */}
+                    {view === 'kiosk' && renderVisitorKiosk()}
+                    {view === 'display' && renderProfessionalDisplay()}
+                    {view === 'admin' && renderAdminPanel()}
                 </div>
             );
         }
 
-        // Initialize the app
-        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+        // تصيير التطبيق
+        ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
 </html>
