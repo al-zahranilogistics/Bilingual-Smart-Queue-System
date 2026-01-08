@@ -167,8 +167,8 @@
             50% { opacity: 0.8; }
         }
         
-        /* ===== تحسينات شاشة العرض الاحترافية ===== */
-        .professional-display {
+        /* ===== تحسينات شاشة العرض المحسنة ===== */
+        .display-container {
             width: 100vw !important;
             height: 100vh !important;
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
@@ -178,10 +178,11 @@
         
         .display-header {
             background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue)) !important;
-            padding: 20px 40px !important;
+            padding: 15px 30px !important;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
             position: relative !important;
             z-index: 10 !important;
+            height: 80px !important;
         }
         
         .current-call-container {
@@ -190,18 +191,20 @@
             flex-direction: column !important;
             justify-content: center !important;
             align-items: center !important;
-            padding: 40px !important;
+            padding: 20px !important;
             background: rgba(0, 0, 0, 0.2) !important;
+            height: calc(100vh - 80px - 50px) !important;
         }
         
+        /* ===== تقليل حجم أرقام التذاكر في الشاشة ===== */
         .current-ticket-number {
-            font-size: 35vw !important;
+            font-size: 18vw !important; /* تم التصغير من 35vw */
             font-weight: 900 !important;
             color: white !important;
             text-shadow: 
-                0 0 40px rgba(59, 130, 246, 0.9),
-                0 0 80px rgba(59, 130, 246, 0.7),
-                0 0 120px rgba(59, 130, 246, 0.5) !important;
+                0 0 30px rgba(59, 130, 246, 0.9),
+                0 0 60px rgba(59, 130, 246, 0.7),
+                0 0 90px rgba(59, 130, 246, 0.5) !important;
             line-height: 1 !important;
             margin: 0 !important;
             animation: glow 3s infinite alternate !important;
@@ -210,67 +213,78 @@
         @keyframes glow {
             from {
                 text-shadow: 
-                    0 0 30px rgba(59, 130, 246, 0.8),
-                    0 0 60px rgba(59, 130, 246, 0.6),
-                    0 0 90px rgba(59, 130, 246, 0.4) !important;
+                    0 0 20px rgba(59, 130, 246, 0.8),
+                    0 0 40px rgba(59, 130, 246, 0.6),
+                    0 0 60px rgba(59, 130, 246, 0.4) !important;
             }
             to {
                 text-shadow: 
-                    0 0 50px rgba(59, 130, 246, 1),
-                    0 0 100px rgba(59, 130, 246, 0.8),
-                    0 0 150px rgba(59, 130, 246, 0.6) !important;
+                    0 0 30px rgba(59, 130, 246, 1),
+                    0 0 60px rgba(59, 130, 246, 0.8),
+                    0 0 90px rgba(59, 130, 246, 0.6) !important;
             }
         }
         
         .current-ticket-info {
             text-align: center !important;
-            margin-top: 30px !important;
+            margin-top: 20px !important;
         }
         
+        /* ===== تقليل حجم النصوص في الشاشة ===== */
         .current-office {
-            font-size: 4vw !important;
+            font-size: 2.5vw !important; /* تم التصغير من 4vw */
             color: #93c5fd !important;
             font-weight: 700 !important;
-            margin-bottom: 10px !important;
+            margin-bottom: 8px !important;
         }
         
         .current-department {
-            font-size: 3vw !important;
+            font-size: 2vw !important; /* تم التصغير من 3vw */
             color: #cbd5e1 !important;
             font-weight: 600 !important;
         }
         
+        /* ===== تقليل حجم الشريط الجانبي ===== */
         .tickets-sidebar {
-            width: 35% !important;
-            background: rgba(30, 41, 59, 0.8) !important;
-            backdrop-filter: blur(15px) !important;
-            border-left: 3px solid rgba(59, 130, 246, 0.4) !important;
-            padding: 25px !important;
+            width: 32% !important; /* تم التصغير من 35% */
+            background: rgba(30, 41, 59, 0.85) !important;
+            backdrop-filter: blur(12px) !important;
+            border-left: 2px solid rgba(59, 130, 246, 0.4) !important;
+            padding: 20px !important;
             overflow-y: auto !important;
             display: flex !important;
             flex-direction: column !important;
+            height: calc(100vh - 80px - 50px) !important;
         }
         
         @media (max-width: 1024px) {
             .tickets-sidebar {
-                width: 45% !important;
+                width: 40% !important;
             }
             
             .current-ticket-number {
-                font-size: 30vw !important;
+                font-size: 22vw !important;
+            }
+            
+            .current-office {
+                font-size: 3.5vw !important;
+            }
+            
+            .current-department {
+                font-size: 2.8vw !important;
             }
         }
         
         @media (max-width: 768px) {
-            .professional-display {
+            .display-container {
                 flex-direction: column !important;
             }
             
             .tickets-sidebar {
                 width: 100% !important;
                 border-left: none !important;
-                border-top: 3px solid rgba(59, 130, 246, 0.4) !important;
-                height: 40% !important;
+                border-top: 2px solid rgba(59, 130, 246, 0.4) !important;
+                height: 45% !important;
             }
             
             .current-ticket-number {
@@ -278,30 +292,59 @@
             }
             
             .current-office {
-                font-size: 5vw !important;
+                font-size: 4vw !important;
             }
             
             .current-department {
-                font-size: 4vw !important;
+                font-size: 3.2vw !important;
+            }
+            
+            .display-header {
+                padding: 12px 20px !important;
+                height: 70px !important;
+            }
+            
+            .current-call-container {
+                height: calc(100vh - 70px - 45% - 50px) !important;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .display-header {
+                padding: 10px 15px !important;
+                height: 60px !important;
+            }
+            
+            .current-call-container {
+                padding: 10px !important;
+            }
+            
+            .current-ticket-number {
+                font-size: 20vw !important;
+            }
+            
+            .tickets-sidebar {
+                padding: 15px !important;
             }
         }
         
         .tickets-section {
-            margin-bottom: 25px !important;
+            margin-bottom: 20px !important;
             flex: 1 !important;
             display: flex !important;
             flex-direction: column !important;
         }
         
+        /* ===== تقليل حجم عناوين الأقسام ===== */
         .section-title {
-            font-size: 1.5rem !important;
+            font-size: 1.2rem !important; /* تم التصغير من 1.5rem */
             color: white !important;
-            margin-bottom: 15px !important;
-            padding-bottom: 10px !important;
+            margin-bottom: 12px !important;
+            padding-bottom: 8px !important;
             border-bottom: 2px solid !important;
             display: flex !important;
             align-items: center !important;
-            gap: 10px !important;
+            gap: 8px !important;
         }
         
         .approved-title {
@@ -320,35 +363,35 @@
         
         /* شريط التمرير المخصص */
         .tickets-list::-webkit-scrollbar {
-            width: 6px !important;
+            width: 5px !important; /* تم التصغير من 6px */
         }
         
         .tickets-list::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.05) !important;
-            border-radius: 10px !important;
+            border-radius: 8px !important;
         }
         
         .tickets-list::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.5) !important;
-            border-radius: 10px !important;
+            background: rgba(59, 130, 246, 0.4) !important; /* تم التخفيف */
+            border-radius: 8px !important;
         }
         
-        /* ===== التذكرة في شاشة العرض ===== */
+        /* ===== التذكرة في شاشة العرض (مصغرة) ===== */
         .display-ticket {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
-            border-radius: 15px !important;
-            padding: 15px !important;
-            margin-bottom: 12px !important;
+            border-radius: 12px !important; /* تم التصغير من 15px */
+            padding: 12px !important; /* تم التصغير من 15px */
+            margin-bottom: 10px !important; /* تم التصغير من 12px */
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            backdrop-filter: blur(10px) !important;
+            backdrop-filter: blur(8px) !important; /* تم التصغير من 10px */
             transition: all 0.3s ease !important;
             animation: fadeIn 0.5s ease-out !important;
         }
         
         .display-ticket:hover {
-            transform: translateX(-5px) !important;
+            transform: translateX(-3px) !important; /* تم التصغير من 5px */
             border-color: rgba(59, 130, 246, 0.3) !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2) !important; /* تم التصغير */
         }
         
         .display-ticket.approved {
@@ -356,34 +399,36 @@
             border-color: rgba(34, 197, 94, 0.3) !important;
         }
         
+        /* ===== تقليل حجم أرقام التذاكر في الشريط الجانبي ===== */
         .display-ticket-number {
-            font-size: 2.5rem !important;
+            font-size: 1.8rem !important; /* تم التصغير من 2.5rem */
             font-weight: 900 !important;
             color: white !important;
             text-align: center !important;
-            margin-bottom: 10px !important;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+            margin-bottom: 8px !important; /* تم التصغير من 10px */
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important; /* تم التصغير */
         }
         
         .display-ticket-details {
             text-align: center !important;
         }
         
+        /* ===== تقليل حجم نصوص التذاكر ===== */
         .display-ticket-department {
-            font-size: 1rem !important;
+            font-size: 0.9rem !important; /* تم التصغير من 1rem */
             color: #cbd5e1 !important;
-            margin-bottom: 5px !important;
+            margin-bottom: 4px !important; /* تم التصغير من 5px */
         }
         
         .display-ticket-office {
-            font-size: 0.9rem !important;
+            font-size: 0.8rem !important; /* تم التصغير من 0.9rem */
             color: #94a3b8 !important;
         }
         
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(8px); /* تم التصغير من 10px */
             }
             to {
                 opacity: 1;
@@ -394,17 +439,18 @@
         /* ===== التايمر المتحرك ===== */
         .news-ticker {
             background: linear-gradient(90deg, rgba(30, 58, 138, 0.9), rgba(59, 130, 246, 0.9)) !important;
-            padding: 15px 0 !important;
+            padding: 10px 0 !important; /* تم التصغير من 15px */
             overflow: hidden !important;
             position: relative !important;
             white-space: nowrap !important;
+            height: 50px !important;
         }
         
         .ticker-content {
             display: inline-block !important;
             padding-left: 100% !important;
             animation: ticker 40s linear infinite !important;
-            font-size: 1.2rem !important;
+            font-size: 1rem !important; /* تم التصغير من 1.2rem */
             font-weight: bold !important;
             color: white !important;
         }
@@ -421,16 +467,16 @@
             right: 20px !important;
             background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue)) !important;
             color: white !important;
-            padding: 15px 25px !important;
-            border-radius: 15px !important;
+            padding: 12px 20px !important; /* تم التصغير */
+            border-radius: 12px !important; /* تم التصغير */
             display: flex !important;
             align-items: center !important;
-            gap: 12px !important;
+            gap: 10px !important; /* تم التصغير */
             z-index: 9999 !important;
             animation: slideIn 0.3s ease !important;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3) !important;
-            backdrop-filter: blur(10px) !important;
-            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important; /* تم التصغير */
+            backdrop-filter: blur(8px) !important; /* تم التصغير */
+            border: 1px solid rgba(255, 255, 255, 0.2) !important; /* تم التصغير */
         }
         
         .sound-pulse {
@@ -439,13 +485,13 @@
         
         @keyframes soundPulse {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.7; }
+            50% { transform: scale(1.15); opacity: 0.7; } /* تم التصغير من 1.2 */
             100% { transform: scale(1); opacity: 1; }
         }
         
         @keyframes slideIn {
             from {
-                transform: translateY(100px);
+                transform: translateY(80px); /* تم التصغير من 100px */
                 opacity: 0;
             }
             to {
@@ -458,29 +504,29 @@
         .btn-primary {
             background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue)) !important;
             color: white !important;
-            padding: 12px 24px !important;
-            border-radius: 10px !important;
+            padding: 10px 20px !important; /* تم التصغير */
+            border-radius: 8px !important; /* تم التصغير */
             font-weight: bold !important;
             border: none !important;
             transition: all 0.3s ease !important;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+            box-shadow: 0 3px 12px rgba(59, 130, 246, 0.3) !important; /* تم التصغير */
             cursor: pointer !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 8px !important;
+            gap: 6px !important; /* تم التصغير */
         }
         
         .btn-primary:hover {
             transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4) !important; /* تم التصغير */
         }
         
         .btn-success {
             background: linear-gradient(135deg, var(--success-green), #34d399) !important;
             color: white !important;
-            padding: 10px 20px !important;
-            border-radius: 8px !important;
+            padding: 8px 16px !important; /* تم التصغير */
+            border-radius: 6px !important; /* تم التصغير */
             font-weight: bold !important;
             border: none !important;
             transition: all 0.3s ease !important;
@@ -490,8 +536,8 @@
         .btn-danger {
             background: linear-gradient(135deg, var(--danger-red), #f87171) !important;
             color: white !important;
-            padding: 10px 20px !important;
-            border-radius: 8px !important;
+            padding: 8px 16px !important; /* تم التصغير */
+            border-radius: 6px !important; /* تم التصغير */
             font-weight: bold !important;
             border: none !important;
             transition: all 0.3s ease !important;
@@ -501,26 +547,26 @@
         /* ===== البطاقات ===== */
         .card {
             background: white !important;
-            border-radius: 15px !important;
-            padding: 20px !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+            border-radius: 12px !important; /* تم التصغير من 15px */
+            padding: 16px !important; /* تم التصغير من 20px */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08) !important; /* تم التصغير */
             border: 1px solid #e5e7eb !important;
             transition: transform 0.3s ease, box-shadow 0.3s ease !important;
         }
         
         .card:hover {
-            transform: translateY(-5px) !important;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12) !important;
+            transform: translateY(-3px) !important; /* تم التصغير من 5px */
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12) !important; /* تم التصغير */
         }
         
         /* ===== الشعار ===== */
         .logo-container {
-            width: 100px !important;
-            height: 100px !important;
+            width: 80px !important; /* تم التصغير من 100px */
+            height: 80px !important; /* تم التصغير من 100px */
             border-radius: 50% !important;
             overflow: hidden !important;
-            border: 3px solid white !important;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5) !important;
+            border: 2px solid white !important; /* تم التصغير من 3px */
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5) !important; /* تم التصغير */
             background: white !important;
             display: flex !important;
             align-items: center !important;
@@ -528,24 +574,24 @@
         }
         
         .logo-container img {
-            width: 90% !important;
-            height: 90% !important;
+            width: 85% !important; /* تم التصغير من 90% */
+            height: 85% !important; /* تم التصغير من 90% */
             object-fit: contain !important;
         }
         
         /* ===== حالة الاتصال ===== */
         .connection-status {
             position: fixed !important;
-            top: 10px !important;
-            right: 10px !important;
+            top: 8px !important; /* تم التصغير من 10px */
+            right: 8px !important; /* تم التصغير من 10px */
             z-index: 1000 !important;
-            padding: 8px 16px !important;
-            border-radius: 20px !important;
-            font-size: 12px !important;
+            padding: 6px 12px !important; /* تم التصغير */
+            border-radius: 16px !important; /* تم التصغير من 20px */
+            font-size: 11px !important; /* تم التصغير من 12px */
             font-weight: bold !important;
             display: flex !important;
             align-items: center !important;
-            gap: 6px !important;
+            gap: 4px !important; /* تم التصغير من 6px */
             animation: slideIn 0.3s ease !important;
         }
         
@@ -563,11 +609,11 @@
         
         /* ===== شريط التحميل ===== */
         .loading-spinner {
-            border: 4px solid #f3f3f3 !important;
-            border-top: 4px solid #3b82f6 !important;
+            border: 3px solid #f3f3f3 !important; /* تم التصغير من 4px */
+            border-top: 3px solid #3b82f6 !important; /* تم التصغير من 4px */
             border-radius: 50% !important;
-            width: 40px !important;
-            height: 40px !important;
+            width: 32px !important; /* تم التصغير من 40px */
+            height: 32px !important; /* تم التصغير من 40px */
             animation: spin 1s linear infinite !important;
         }
         
@@ -580,21 +626,21 @@
         .scrollable-content {
             overflow-y: auto !important;
             scrollbar-width: thin !important;
-            scrollbar-color: rgba(59, 130, 246, 0.5) rgba(0, 0, 0, 0.1) !important;
+            scrollbar-color: rgba(59, 130, 246, 0.4) rgba(0, 0, 0, 0.1) !important; /* تم التخفيف */
         }
         
         .scrollable-content::-webkit-scrollbar {
-            width: 6px !important;
+            width: 5px !important; /* تم التصغير من 6px */
         }
         
         .scrollable-content::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.1) !important;
-            border-radius: 10px !important;
+            border-radius: 8px !important; /* تم التصغير من 10px */
         }
         
         .scrollable-content::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.5) !important;
-            border-radius: 10px !important;
+            background: rgba(59, 130, 246, 0.4) !important; /* تم التخفيف */
+            border-radius: 8px !important; /* تم التصغير من 10px */
         }
     </style>
 </head>
@@ -701,14 +747,33 @@
                 const arabicText = `التذكرة رقم ${ticketNumber}، يرجى التوجه إلى ${roomAr}`;
                 const englishText = `Ticket number ${ticketNumber}, please proceed to ${roomEn}`;
                 
-                const arUtterance = this.speak(arabicText, 'ar-SA');
+                console.log('🔊 Playing announcement:', { ticketNumber, roomAr, roomEn });
                 
-                if (arUtterance) {
-                    arUtterance.onend = () => {
-                        setTimeout(() => {
-                            this.speak(englishText, 'en-US');
-                        }, 1000);
-                    };
+                // إرسال إشعار صوتي إلى قاعدة البيانات ليتم تشغيله على الشاشة
+                realtimeDB.ref('audioAnnouncements').push({
+                    ticketNumber,
+                    roomAr,
+                    roomEn,
+                    timestamp: Date.now()
+                });
+                
+                // تشغيل الصوت محلياً فقط إذا كنا في شاشة العرض
+                const urlParams = new URLSearchParams(window.location.search);
+                const isDisplayScreen = urlParams.get('view') === 'display';
+                
+                if (isDisplayScreen) {
+                    console.log('🔊 Display screen detected, playing audio locally');
+                    const arUtterance = this.speak(arabicText, 'ar-SA');
+                    
+                    if (arUtterance) {
+                        arUtterance.onend = () => {
+                            setTimeout(() => {
+                                this.speak(englishText, 'en-US');
+                            }, 1000);
+                        };
+                    }
+                } else {
+                    console.log('🔊 Not a display screen, audio will be played on display screen');
                 }
                 
                 return true;
@@ -1060,6 +1125,15 @@
                         categoryEn: dept.categoryEn
                     });
                     
+                    // إرسال إشعار صوتي ليتم تشغيله على شاشة العرض
+                    await realtimeDB.ref('audioAnnouncements').push({
+                        ticketNumber: ticket.number,
+                        roomAr: dept.roomAr,
+                        roomEn: dept.roomEn,
+                        timestamp: Date.now(),
+                        action: 'call'
+                    });
+                    
                     return ticket;
                 } catch (error) {
                     console.error('❌ Error calling ticket:', error);
@@ -1139,6 +1213,14 @@
                 });
             }
 
+            static subscribeToAudioAnnouncements(callback) {
+                return realtimeDB.ref('audioAnnouncements').on('child_added', snapshot => {
+                    callback(snapshot.val());
+                }, error => {
+                    console.error('❌ Error subscribing to audio announcements:', error);
+                });
+            }
+
             static async getDepartmentStats(deptId) {
                 try {
                     const waitingQuery = await db.collection('tickets')
@@ -1201,6 +1283,7 @@
             const [currentAnnouncementLang, setCurrentAnnouncementLang] = useState('');
             const [isSoundPlaying, setIsSoundPlaying] = useState(false);
             const [ticketUpdates, setTicketUpdates] = useState([]);
+            const [audioAnnouncements, setAudioAnnouncements] = useState([]);
 
             const t = LANGUAGES[language];
             const isRTL = language === 'ar';
@@ -1239,6 +1322,35 @@
                 
                 const unsubscribeUpdates = FirebaseQueueManager.subscribeToTicketUpdates((update) => {
                     setTicketUpdates(prev => [...prev, update]);
+                });
+                
+                // الاشتراك في الإعلانات الصوتية
+                const unsubscribeAudio = FirebaseQueueManager.subscribeToAudioAnnouncements((announcement) => {
+                    setAudioAnnouncements(prev => [...prev, announcement]);
+                    
+                    // إذا كنا في شاشة العرض، قم بتشغيل الصوت
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const isDisplayScreen = urlParams.get('view') === 'display';
+                    
+                    if (isDisplayScreen && announcement.action === 'call') {
+                        console.log('🔊 Display screen: Playing received audio announcement');
+                        setShowSoundIndicator(true);
+                        setIsSoundPlaying(true);
+                        
+                        setCurrentAnnouncementLang('ar');
+                        soundManager.announceTicket(
+                            announcement.ticketNumber,
+                            announcement.roomAr,
+                            announcement.roomEn
+                        );
+                        
+                        setTimeout(() => {
+                            setIsSoundPlaying(false);
+                            if (!soundManager.isSpeaking) {
+                                setShowSoundIndicator(false);
+                            }
+                        }, 8000);
+                    }
                 });
                 
                 // تحديث الإحصائيات دورياً
@@ -1280,6 +1392,7 @@
                     unsubscribeTickets();
                     unsubscribeCalls();
                     unsubscribeUpdates();
+                    unsubscribeAudio();
                     clearInterval(statsInterval);
                     clearInterval(timeInterval);
                     window.removeEventListener('online', handleOnline);
@@ -1294,22 +1407,32 @@
                     const updatedTicket = await FirebaseQueueManager.callTicket(ticket.id);
                     const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
                     
-                    setShowSoundIndicator(true);
-                    setIsSoundPlaying(true);
+                    console.log('🎫 Ticket called:', updatedTicket.number);
                     
-                    setCurrentAnnouncementLang('ar');
-                    soundManager.announceTicket(
-                        updatedTicket.number,
-                        dept?.roomAr || updatedTicket.roomAr,
-                        dept?.roomEn || updatedTicket.roomEn
-                    );
+                    // إذا كنا في لوحة التحكم، لا نشغل الصوت محلياً
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const isAdminPanel = urlParams.get('view') === 'admin' || view === 'admin';
                     
-                    setTimeout(() => {
-                        setIsSoundPlaying(false);
-                        if (!soundManager.isSpeaking) {
-                            setShowSoundIndicator(false);
-                        }
-                    }, 8000);
+                    if (!isAdminPanel) {
+                        setShowSoundIndicator(true);
+                        setIsSoundPlaying(true);
+                        
+                        setCurrentAnnouncementLang('ar');
+                        soundManager.announceTicket(
+                            updatedTicket.number,
+                            dept?.roomAr || updatedTicket.roomAr,
+                            dept?.roomEn || updatedTicket.roomEn
+                        );
+                        
+                        setTimeout(() => {
+                            setIsSoundPlaying(false);
+                            if (!soundManager.isSpeaking) {
+                                setShowSoundIndicator(false);
+                            }
+                        }, 8000);
+                    } else {
+                        console.log('🔇 Admin panel: Audio will be played on display screen only');
+                    }
                     
                 } catch (error) {
                     console.error('❌ Error calling ticket:', error);
@@ -1673,14 +1796,14 @@
                 </div>
             );
 
-            // شاشة العرض الاحترافية
+            // شاشة العرض المحسنة والمصغرة
             const renderProfessionalDisplay = () => {
                 const currentCall = getCurrentCallForDisplay();
                 const approvedTickets = getApprovedTickets();
                 const waitingTickets = getWaitingTickets();
                 
                 return (
-                    <div className="professional-display">
+                    <div className="display-container">
                         {/* مؤشر الصوت */}
                         {showSoundIndicator && (
                             <div className="sound-indicator">
@@ -1694,24 +1817,24 @@
                         {/* الهيدر */}
                         <div className="display-header">
                             <div className="flex justify-between items-center">
-                                <div className="flex items-center gap-6">
+                                <div className="flex items-center gap-4">
                                     <div className="logo-container">
                                         <img src="https://i.ibb.co/1GHY3whz/bsxB90Z.png" alt="Al-Zahrani Logo" />
                                     </div>
                                     <div>
-                                        <h1 className="text-3xl font-bold arabic">
+                                        <h1 className="text-2xl font-bold arabic">
                                             {CONFIG.companyName.ar}
                                         </h1>
-                                        <h1 className="text-2xl font-bold english">
+                                        <h1 className="text-xl font-bold english">
                                             {CONFIG.companyName.en}
                                         </h1>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-4xl font-mono font-bold">
+                                    <div className="text-3xl font-mono font-bold">
                                         {formatTime(currentTime)}
                                     </div>
-                                    <div className="text-lg opacity-80">
+                                    <div className="text-md opacity-80">
                                         {formatDate(currentTime)}
                                     </div>
                                 </div>
@@ -1719,11 +1842,11 @@
                         </div>
                         
                         {/* المحتوى الرئيسي */}
-                        <div className="flex-1 flex" style={{ height: 'calc(100vh - 130px)' }}>
+                        <div className="flex-1 flex" style={{ height: 'calc(100vh - 80px - 50px)' }}>
                             {/* الجزء الأيسر - النداء الحالي */}
                             <div className="current-call-container">
                                 <div className="text-center">
-                                    <div className="text-blue-400 text-4xl font-bold mb-8">
+                                    <div className="text-blue-400 text-3xl font-bold mb-6">
                                         {t.currentCall}
                                     </div>
                                     
@@ -1749,13 +1872,13 @@
                                             </div>
                                         </>
                                     ) : (
-                                        <div className="space-y-8">
-                                            <div className="text-[20vw] opacity-20 text-blue-500">
+                                        <div className="space-y-6">
+                                            <div className="text-[15vw] opacity-20 text-blue-500">
                                                 <i className="fas fa-clock"></i>
                                             </div>
                                             <div className="space-y-4">
-                                                <div className="text-5xl text-gray-400 arabic">{t.systemReady}</div>
-                                                <div className="text-4xl text-gray-400 english">{t.systemReady}</div>
+                                                <div className="text-4xl text-gray-400 arabic">{t.systemReady}</div>
+                                                <div className="text-3xl text-gray-400 english">{t.systemReady}</div>
                                             </div>
                                         </div>
                                     )}
@@ -1795,9 +1918,9 @@
                                                 );
                                             })
                                         ) : (
-                                            <div className="text-center py-8 text-gray-400">
-                                                <i className="fas fa-check-circle text-3xl mb-3"></i>
-                                                <div className="arabic text-xl">{t.noAppointments}</div>
+                                            <div className="text-center py-6 text-gray-400">
+                                                <i className="fas fa-check-circle text-2xl mb-2"></i>
+                                                <div className="arabic text-lg">{t.noAppointments}</div>
                                             </div>
                                         )}
                                     </div>
@@ -1834,9 +1957,9 @@
                                                 );
                                             })
                                         ) : (
-                                            <div className="text-center py-8 text-gray-400">
-                                                <i className="fas fa-clock text-3xl mb-3"></i>
-                                                <div className="arabic text-xl">{t.noAppointments}</div>
+                                            <div className="text-center py-6 text-gray-400">
+                                                <i className="fas fa-clock text-2xl mb-2"></i>
+                                                <div className="arabic text-lg">{t.noAppointments}</div>
                                             </div>
                                         )}
                                     </div>
