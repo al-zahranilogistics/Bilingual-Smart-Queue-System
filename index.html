@@ -1102,7 +1102,9 @@
                 appointmentNote: "يرجى الحضور قبل الموعد بـ 10 دقائق",
                 // إضافة جديدة
                 appointmentNotice: "حجز مسبق: يوم {date} الساعة {time}",
-                hasAppointment: "حجز مسبق"
+                hasAppointment: "حجز مسبق",
+                // إضافة زر الرجوع
+                backToDepartments: "الرجوع إلى الأقسام"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Logistics Services",
@@ -1194,7 +1196,9 @@
                 appointmentNote: "Please arrive 10 minutes before your appointment",
                 // إضافة جديدة
                 appointmentNotice: "Pre-booked: {date} at {time}",
-                hasAppointment: "Pre-booked"
+                hasAppointment: "Pre-booked",
+                // إضافة زر الرجوع
+                backToDepartments: "Back to Departments"
             }
         };
 
@@ -1208,7 +1212,7 @@
                         
                         if (!doc.exists) {
                             await counterRef.set({
-                                lastNumber: 0,
+                                lastNumber: 0, // تغيير من 0 بدلاً من 1 للبداية من الصفر
                                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
                         }
@@ -1226,13 +1230,13 @@
                     
                     const result = await db.runTransaction(async (transaction) => {
                         const counterDoc = await transaction.get(counterRef);
-                        let newNumber = 1;
+                        let newNumber = 1; // البدء من 1
                         
                         if (counterDoc.exists) {
                             const data = counterDoc.data();
                             newNumber = (data.lastNumber || 0) + 1;
                             if (newNumber > CONFIG.maxTicketNumber) {
-                                newNumber = 1;
+                                newNumber = 1; // إعادة الدوران للبداية
                             }
                         }
                         
@@ -1247,6 +1251,20 @@
                     return result.toString();
                 } catch (error) {
                     console.error('❌ Error getting ticket number:', error);
+                    throw error;
+                }
+            }
+
+            static async resetDepartmentCounter(deptId) {
+                try {
+                    const counterRef = db.collection('counters').doc(deptId);
+                    await counterRef.set({
+                        lastNumber: 0, // إعادة التعيين إلى الصفر
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    return true;
+                } catch (error) {
+                    console.error('❌ Error resetting counter:', error);
                     throw error;
                 }
             }
@@ -2706,15 +2724,33 @@
                             </div>
                         ) : (
                             <div className="space-y-6">
+                                {/* زر الرجوع المضافة */}
+                                <div className="flex justify-between items-center mb-4">
+                                    <button
+                                        onClick={() => setActiveDept(null)}
+                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                    >
+                                        <i className="fas fa-arrow-left"></i>
+                                        <span>{t.backToDepartments}</span>
+                                    </button>
+                                    
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold">
+                                            {(departmentStats[activeDept]?.lastNumber || 0)}
+                                        </div>
+                                        <div className="text-sm text-gray-600">{t.lastNumber}</div>
+                                    </div>
+                                </div>
+                                
                                 <div className="card bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-4">
-                                            <button
-                                                onClick={() => setActiveDept(null)}
-                                                className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition"
+                                            <div 
+                                                className="w-16 h-16 rounded-xl flex items-center justify-center"
+                                                style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
                                             >
-                                                <i className="fas fa-arrow-left text-xl"></i>
-                                            </button>
+                                                <i className={`${CONFIG.departments.find(d => d.id === activeDept)?.icon} text-2xl text-white`}></i>
+                                            </div>
                                             <div>
                                                 <h2 className="text-2xl font-bold">
                                                     {language === 'ar' ? 
@@ -2727,12 +2763,6 @@
                                                         CONFIG.departments.find(d => d.id === activeDept)?.roomEn}
                                                 </p>
                                             </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-3xl font-bold">
-                                                {(departmentStats[activeDept]?.lastNumber || 0)}
-                                            </div>
-                                            <div className="text-sm opacity-80">{t.lastNumber}</div>
                                         </div>
                                     </div>
                                 </div>
