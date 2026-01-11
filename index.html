@@ -151,6 +151,12 @@
             color: white !important;
         }
         
+        .appointment-badge {
+            background: linear-gradient(135deg, #8b5cf6, #a78bfa) !important;
+            color: white !important;
+            animation: pulse 2s infinite !important;
+        }
+        
         @keyframes slideUp {
             from {
                 transform: translateY(20px);
@@ -719,6 +725,21 @@
             animation: shake 0.5s ease-in-out !important;
         }
         
+        /* ===== إضافة جديدة: إشعار الحجز المسبق ===== */
+        .appointment-notice {
+            background: linear-gradient(135deg, #f3e8ff, #e9d5ff) !important;
+            border: 1px solid #a855f7 !important;
+            color: #7c3aed !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            margin-top: 6px !important;
+            font-size: 12px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            animation: fadeIn 0.5s ease-out !important;
+        }
+        
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
@@ -1078,7 +1099,10 @@
                 appointmentSuccess: "تم حجز موعدك بنجاح",
                 appointmentNumber: "رقم الموعد",
                 appointmentDetails: "تفاصيل الموعد",
-                appointmentNote: "يرجى الحضور قبل الموعد بـ 10 دقائق"
+                appointmentNote: "يرجى الحضور قبل الموعد بـ 10 دقائق",
+                // إضافة جديدة
+                appointmentNotice: "حجز مسبق: يوم {date} الساعة {time}",
+                hasAppointment: "حجز مسبق"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Logistics Services",
@@ -1167,7 +1191,10 @@
                 appointmentSuccess: "Your appointment has been booked successfully",
                 appointmentNumber: "Appointment Number",
                 appointmentDetails: "Appointment Details",
-                appointmentNote: "Please arrive 10 minutes before your appointment"
+                appointmentNote: "Please arrive 10 minutes before your appointment",
+                // إضافة جديدة
+                appointmentNotice: "Pre-booked: {date} at {time}",
+                hasAppointment: "Pre-booked"
             }
         };
 
@@ -1552,6 +1579,37 @@
             const isValidWorkingTime = (time) => {
                 const hour = parseInt(time.split(':')[0]);
                 return hour >= CONFIG.workHours.start && hour < CONFIG.workHours.end;
+            };
+
+            // تنسيق التاريخ للعرض
+            const formatDateForDisplay = (dateString) => {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+            month: 'long',
+                    day: 'numeric'
+                });
+            };
+
+            // تنسيق الوقت للعرض
+            const formatTimeForDisplay = (timeString) => {
+                if (!timeString) return '';
+                return timeString;
+            };
+
+            // الحصول على نص إشعار الحجز المسبق
+            const getAppointmentNoticeText = (ticket) => {
+                if (ticket.type === 'appointment' && ticket.appointmentDate && ticket.appointmentTime) {
+                    const formattedDate = formatDateForDisplay(ticket.appointmentDate);
+                    const formattedTime = formatTimeForDisplay(ticket.appointmentTime);
+                    
+                    return language === 'ar' 
+                        ? `حجز مسبق: يوم ${formattedDate} الساعة ${formattedTime}`
+                        : `Pre-booked: ${formattedDate} at ${formattedTime}`;
+                }
+                return '';
             };
 
             // تهيئة النظام
@@ -2689,56 +2747,71 @@
                                             {tickets
                                                 .filter(t => t.deptId === activeDept && t.status === 'waiting')
                                                 .sort((a, b) => a.createdAt - b.createdAt)
-                                                .map(ticket => (
-                                                    <div key={ticket.id} className="compact-ticket">
-                                                        <div className="flex justify-between items-center">
-                                                            <div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className="compact-ticket-number">
-                                                                        {ticket.number}
+                                                .map(ticket => {
+                                                    const appointmentNotice = getAppointmentNoticeText(ticket);
+                                                    
+                                                    return (
+                                                        <div key={ticket.id} className="compact-ticket">
+                                                            <div className="flex justify-between items-center">
+                                                                <div>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="compact-ticket-number">
+                                                                            {ticket.number}
+                                                                        </div>
+                                                                        {ticket.approved ? (
+                                                                            <span className="ticket-badge approved-badge">
+                                                                                {t.approved}
+                                                                            </span>
+                                                                        ) : ticket.type === 'appointment' ? (
+                                                                            <span className="ticket-badge appointment-badge">
+                                                                                {t.hasAppointment}
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span className="ticket-badge waiting-badge">
+                                                                                {t.waiting}
+                                                                            </span>
+                                                                        )}
                                                                     </div>
-                                                                    {ticket.approved ? (
-                                                                        <span className="ticket-badge approved-badge">
-                                                                            {t.approved}
-                                                                        </span>
-                                                                    ) : (
-                                                                        <span className="ticket-badge waiting-badge">
-                                                                            {t.waiting}
-                                                                        </span>
+                                                                    <div className="compact-ticket-info">
+                                                                        {formatTime(ticket.createdAt?.toDate?.() || new Date(ticket.createdAt))}
+                                                                    </div>
+                                                                    {/* إضافة إشعار الحجز المسبق */}
+                                                                    {appointmentNotice && (
+                                                                        <div className="appointment-notice">
+                                                                            <i className="fas fa-calendar-check text-xs"></i>
+                                                                            <span>{appointmentNotice}</span>
+                                                                        </div>
                                                                     )}
                                                                 </div>
-                                                                <div className="compact-ticket-info">
-                                                                    {formatTime(ticket.createdAt?.toDate?.() || new Date(ticket.createdAt))}
+                                                                <div className="flex gap-2">
+                                                                    {!ticket.approved && (
+                                                                        <button
+                                                                            onClick={() => handleApproveTicket(ticket.id)}
+                                                                            className="btn-success"
+                                                                        >
+                                                                            <i className="fas fa-check mr-2"></i>
+                                                                            {t.approved}
+                                                                        </button>
+                                                                    )}
+                                                                    <button
+                                                                        onClick={() => handleCallTicketWithSound(ticket)}
+                                                                        className="btn-primary"
+                                                                    >
+                                                                        <i className="fas fa-bullhorn mr-2"></i>
+                                                                        {t.call}
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => openDeleteConfirmation(ticket)}
+                                                                        className="btn-danger"
+                                                                    >
+                                                                        <i className="fas fa-trash mr-2"></i>
+                                                                        {t.delete}
+                                                                    </button>
                                                                 </div>
                                                             </div>
-                                                            <div className="flex gap-2">
-                                                                {!ticket.approved && (
-                                                                    <button
-                                                                        onClick={() => handleApproveTicket(ticket.id)}
-                                                                        className="btn-success"
-                                                                    >
-                                                                        <i className="fas fa-check mr-2"></i>
-                                                                        {t.approved}
-                                                                    </button>
-                                                                )}
-                                                                <button
-                                                                    onClick={() => handleCallTicketWithSound(ticket)}
-                                                                    className="btn-primary"
-                                                                >
-                                                                    <i className="fas fa-bullhorn mr-2"></i>
-                                                                    {t.call}
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => openDeleteConfirmation(ticket)}
-                                                                    className="btn-danger"
-                                                                >
-                                                                    <i className="fas fa-trash mr-2"></i>
-                                                                    {t.delete}
-                                                                </button>
-                                                            </div>
                                                         </div>
-                                                    </div>
-                                                ))}
+                                                    );
+                                                })}
                                             
                                             {tickets.filter(t => t.deptId === activeDept && t.status === 'waiting').length === 0 && (
                                                 <div className="text-center py-4 text-gray-500">
@@ -2758,34 +2831,45 @@
                                             {tickets
                                                 .filter(t => t.deptId === activeDept && t.status === 'called')
                                                 .sort((a, b) => (b.calledAt || 0) - (a.calledAt || 0))
-                                                .map(ticket => (
-                                                    <div key={ticket.id} className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-                                                        <div className="text-center mb-4">
-                                                            <div className="text-3xl font-bold text-gray-800">
-                                                                {ticket.number}
+                                                .map(ticket => {
+                                                    const appointmentNotice = getAppointmentNoticeText(ticket);
+                                                    
+                                                    return (
+                                                        <div key={ticket.id} className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
+                                                            <div className="text-center mb-4">
+                                                                <div className="text-3xl font-bold text-gray-800">
+                                                                    {ticket.number}
+                                                                </div>
+                                                                <div className="text-sm text-gray-500">
+                                                                    {formatTime(ticket.calledAt?.toDate?.() || new Date(ticket.calledAt))}
+                                                                </div>
+                                                                {/* إضافة إشعار الحجز المسبق */}
+                                                                {appointmentNotice && (
+                                                                    <div className="appointment-notice mt-2">
+                                                                        <i className="fas fa-calendar-check text-xs"></i>
+                                                                        <span>{appointmentNotice}</span>
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                            <div className="text-sm text-gray-500">
-                                                                {formatTime(ticket.calledAt?.toDate?.() || new Date(ticket.calledAt))}
+                                                            <div className="flex gap-2">
+                                                                <button
+                                                                    onClick={() => handleCallTicketWithSound(ticket)}
+                                                                    className="btn-success flex-1"
+                                                                >
+                                                                    <i className="fas fa-redo mr-2"></i>
+                                                                    {t.recall}
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleFinishTicket(ticket.id)}
+                                                                    className="btn-danger flex-1"
+                                                                >
+                                                                    <i className="fas fa-check mr-2"></i>
+                                                                    {t.finish}
+                                                                </button>
                                                             </div>
                                                         </div>
-                                                        <div className="flex gap-2">
-                                                            <button
-                                                                onClick={() => handleCallTicketWithSound(ticket)}
-                                                                className="btn-success flex-1"
-                                                            >
-                                                                <i className="fas fa-redo mr-2"></i>
-                                                                {t.recall}
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleFinishTicket(ticket.id)}
-                                                                className="btn-danger flex-1"
-                                                            >
-                                                                <i className="fas fa-check mr-2"></i>
-                                                                {t.finish}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                                    );
+                                                })}
                                             
                                             {tickets.filter(t => t.deptId === activeDept && t.status === 'called').length === 0 && (
                                                 <div className="text-center py-4 text-gray-500">
