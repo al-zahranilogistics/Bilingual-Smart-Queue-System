@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>الزهراني للخدمات اللوجستية - نظام التذاكر الذكي</title>
+    <title>الزهراني للخدمات اللوجستية - نظام الطابور الذكي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -899,7 +899,7 @@
                 en: "Al-Zahrani Logistics Services"
             },
             systemName: {
-                ar: "نظام إدارة التذاكر الذكي",
+                ar: "نظام إدارة الطوابير الذكي",
                 en: "Smart Queue Management System"
             },
             adminCode: "0906212",
@@ -943,15 +943,15 @@
                 },
                 { 
                     id: 'supervisors', 
-                    nameAr: "مشرف نينجا", 
+                    nameAr: "مدير التشغيل", 
                     nameEn: "Supervisors Department",
                     prefix: "S", 
-                    roomAr: "مكتب اشراف نينجا", 
+                    roomAr: "مكتب مدير التشغيل", 
                     roomEn: "Supervisors Office", 
                     color: "#8b5cf6",
                     icon: "fa-solid fa-user-tie",
                     iconColor: "#7c3aed",
-                    categoryAr: "إدارة اشراف نينجا",
+                    categoryAr: "إدارة العمليات",
                     categoryEn: "Operations Management"
                 },
                 { 
@@ -969,15 +969,15 @@
                 },
                 { 
                     id: 'petroleum', 
-                    nameAr: "مشرف كيمارت", 
+                    nameAr: "قسم البترول", 
                     nameEn: "Petroleum Department",
                     prefix: "P", 
-                    roomAr: "مكتب مشرف كيمارت", 
+                    roomAr: "مكتب البترول", 
                     roomEn: "Petroleum Office", 
                     color: "#06b6d4",
                     icon: "fa-solid fa-gas-pump",
                     iconColor: "#0891b2",
-                    categoryAr: "إدارة تشغيل كيمارت",
+                    categoryAr: "إدارة البترول",
                     categoryEn: "Petroleum Management"
                 },
                 // الأقسام الجديدة
@@ -1048,7 +1048,7 @@
                 returnToKiosk: "العودة للكشك",
                 openDisplay: "فتح شاشة العرض",
                 welcomeMessage: "شركة الزهراني للخدمات اللوجستية ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم",
-                systemMessage: "نظام إدارة التذاكر الذكي 2026",
+                systemMessage: "نظام إدارة الطابور الذكي ٢٠٢٥",
                 holdTicket: "يرجى الاحتفاظ برقم التذكرة والمتابعة",
                 allRights: "جميع الحقوق محفوظة",
                 techSupport: "رقم الدعم الفني",
@@ -1102,9 +1102,7 @@
                 appointmentNote: "يرجى الحضور قبل الموعد بـ 10 دقائق",
                 // إضافة جديدة
                 appointmentNotice: "حجز مسبق: يوم {date} الساعة {time}",
-                hasAppointment: "حجز مسبق",
-                // إضافة زر الرجوع
-                backToDepartments: "الرجوع إلى الأقسام"
+                hasAppointment: "حجز مسبق"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Logistics Services",
@@ -1196,9 +1194,7 @@
                 appointmentNote: "Please arrive 10 minutes before your appointment",
                 // إضافة جديدة
                 appointmentNotice: "Pre-booked: {date} at {time}",
-                hasAppointment: "Pre-booked",
-                // إضافة زر الرجوع
-                backToDepartments: "Back to Departments"
+                hasAppointment: "Pre-booked"
             }
         };
 
@@ -1212,7 +1208,7 @@
                         
                         if (!doc.exists) {
                             await counterRef.set({
-                                lastNumber: 0, // تغيير من 0 بدلاً من 1 للبداية من الصفر
+                                lastNumber: 0,
                                 updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                             });
                         }
@@ -1230,13 +1226,13 @@
                     
                     const result = await db.runTransaction(async (transaction) => {
                         const counterDoc = await transaction.get(counterRef);
-                        let newNumber = 1; // البدء من 1
+                        let newNumber = 1;
                         
                         if (counterDoc.exists) {
                             const data = counterDoc.data();
                             newNumber = (data.lastNumber || 0) + 1;
                             if (newNumber > CONFIG.maxTicketNumber) {
-                                newNumber = 1; // إعادة الدوران للبداية
+                                newNumber = 1;
                             }
                         }
                         
@@ -1251,20 +1247,6 @@
                     return result.toString();
                 } catch (error) {
                     console.error('❌ Error getting ticket number:', error);
-                    throw error;
-                }
-            }
-
-            static async resetDepartmentCounter(deptId) {
-                try {
-                    const counterRef = db.collection('counters').doc(deptId);
-                    await counterRef.set({
-                        lastNumber: 0, // إعادة التعيين إلى الصفر
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    return true;
-                } catch (error) {
-                    console.error('❌ Error resetting counter:', error);
                     throw error;
                 }
             }
@@ -2724,33 +2706,15 @@
                             </div>
                         ) : (
                             <div className="space-y-6">
-                                {/* زر الرجوع المضافة */}
-                                <div className="flex justify-between items-center mb-4">
-                                    <button
-                                        onClick={() => setActiveDept(null)}
-                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                                    >
-                                        <i className="fas fa-arrow-left"></i>
-                                        <span>{t.backToDepartments}</span>
-                                    </button>
-                                    
-                                    <div className="text-center">
-                                        <div className="text-2xl font-bold">
-                                            {(departmentStats[activeDept]?.lastNumber || 0)}
-                                        </div>
-                                        <div className="text-sm text-gray-600">{t.lastNumber}</div>
-                                    </div>
-                                </div>
-                                
                                 <div className="card bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-4">
-                                            <div 
-                                                className="w-16 h-16 rounded-xl flex items-center justify-center"
-                                                style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
+                                            <button
+                                                onClick={() => setActiveDept(null)}
+                                                className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition"
                                             >
-                                                <i className={`${CONFIG.departments.find(d => d.id === activeDept)?.icon} text-2xl text-white`}></i>
-                                            </div>
+                                                <i className="fas fa-arrow-left text-xl"></i>
+                                            </button>
                                             <div>
                                                 <h2 className="text-2xl font-bold">
                                                     {language === 'ar' ? 
@@ -2763,6 +2727,12 @@
                                                         CONFIG.departments.find(d => d.id === activeDept)?.roomEn}
                                                 </p>
                                             </div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-3xl font-bold">
+                                                {(departmentStats[activeDept]?.lastNumber || 0)}
+                                            </div>
+                                            <div className="text-sm opacity-80">{t.lastNumber}</div>
                                         </div>
                                     </div>
                                 </div>
