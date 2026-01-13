@@ -214,12 +214,62 @@
             margin-bottom: 20px !important;
             position: relative !important;
             border: 3px solid rgba(59, 130, 246, 0.3) !important;
+            background: #000 !important;
         }
         
         .video-container video {
             width: 100% !important;
             height: 100% !important;
             object-fit: cover !important;
+        }
+        
+        .video-placeholder {
+            width: 100% !important;
+            height: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+            color: white !important;
+            text-align: center !important;
+            padding: 20px !important;
+        }
+        
+        .video-placeholder i {
+            font-size: 4rem !important;
+            margin-bottom: 20px !important;
+            color: #3b82f6 !important;
+            opacity: 0.7 !important;
+        }
+        
+        .video-placeholder h3 {
+            font-size: 1.5rem !important;
+            margin-bottom: 10px !important;
+            font-weight: bold !important;
+        }
+        
+        .video-placeholder p {
+            font-size: 1rem !important;
+            opacity: 0.8 !important;
+            margin-bottom: 15px !important;
+        }
+        
+        .video-upload-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+            color: white !important;
+            border: none !important;
+            padding: 10px 20px !important;
+            border-radius: 8px !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+            margin-top: 10px !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .video-upload-btn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4) !important;
         }
         
         .current-call-section {
@@ -1010,6 +1060,25 @@
                 messageEn: "Working hours: 10 AM to 6 PM | Working days: Saturday to Thursday"
             },
             
+            // روابط الفيديو البديلة
+            videoSources: [
+                {
+                    name: "فيديو 1 - عرض مؤسسي",
+                    url: "https://drive.google.com/uc?export=download&id=1BoxWzM6ZOUZb0dBdDY8u4wuUMSCnD0He",
+                    type: "video/mp4"
+                },
+                {
+                    name: "فيديو 2 - إعلان الشركة",
+                    url: "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-luxury-resort-swimming-pool-2671-large.mp4",
+                    type: "video/mp4"
+                },
+                {
+                    name: "فيديو 3 - الخدمات اللوجستية",
+                    url: "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-trucks-driving-on-a-highway-2670-large.mp4",
+                    type: "video/mp4"
+                }
+            ],
+            
             departments: [
                 { 
                     id: 'vehicles', 
@@ -1206,7 +1275,13 @@
                 cannotCallFuture: "لا يمكن نداء هذه التذكرة الآن",
                 futureAppointment: "موعد مستقبلي",
                 appointmentTimeNotYet: "لم يحن وقت الموعد بعد",
-                noAppointments: "لا توجد تذاكر حالياً"
+                noAppointments: "لا توجد تذاكر حالياً",
+                videoPlaceholderTitle: "فيديو الشركة",
+                videoPlaceholderText: "ستظهر هنا فيديو تعريفي للشركة",
+                uploadVideo: "رفع فيديو",
+                changeVideo: "تغيير الفيديو",
+                noVideoAvailable: "لا يوجد فيديو متاح",
+                selectVideoSource: "اختر مصدر الفيديو"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Logistics Services",
@@ -1306,7 +1381,13 @@
                 cannotCallFuture: "Cannot call this ticket now",
                 futureAppointment: "Future appointment",
                 appointmentTimeNotYet: "Appointment time has not arrived yet",
-                noAppointments: "No tickets currently"
+                noAppointments: "No tickets currently",
+                videoPlaceholderTitle: "Company Video",
+                videoPlaceholderText: "Company promotional video will appear here",
+                uploadVideo: "Upload Video",
+                changeVideo: "Change Video",
+                noVideoAvailable: "No video available",
+                selectVideoSource: "Select Video Source"
             }
         };
 
@@ -1689,6 +1770,11 @@
             const [isBookingAppointment, setIsBookingAppointment] = useState(false);
             const [showResetConfirm, setShowResetConfirm] = useState(false);
             const [isResetting, setIsResetting] = useState(false);
+            
+            // حالة الفيديو
+            const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+            const [videoError, setVideoError] = useState(false);
+            const videoRef = useRef(null);
 
             const t = LANGUAGES[language];
             const isRTL = language === 'ar';
@@ -1771,6 +1857,39 @@
                 const thirtyMinutesBefore = new Date(appointmentDateTime.getTime() - 30 * 60000);
                 
                 return now >= thirtyMinutesBefore;
+            };
+
+            // تغيير الفيديو
+            const changeVideo = (index) => {
+                setCurrentVideoIndex(index);
+                setVideoError(false);
+                
+                if (videoRef.current) {
+                    videoRef.current.load();
+                    videoRef.current.play().catch(e => {
+                        console.log('⚠️ Video autoplay prevented:', e);
+                    });
+                }
+            };
+
+            // التعامل مع خطأ الفيديو
+            const handleVideoError = () => {
+                console.error('❌ Video failed to load');
+                setVideoError(true);
+                
+                // المحاولة التلقائية للفيديو التالي
+                const nextIndex = (currentVideoIndex + 1) % CONFIG.videoSources.length;
+                if (nextIndex !== currentVideoIndex) {
+                    setTimeout(() => {
+                        changeVideo(nextIndex);
+                    }, 2000);
+                }
+            };
+
+            // تحميل الفيديو بنجاح
+            const handleVideoLoaded = () => {
+                console.log('✅ Video loaded successfully');
+                setVideoError(false);
             };
 
             // تهيئة النظام
@@ -1873,6 +1992,14 @@
                     setShowAdminLogin(true);
                 }
                 
+                // تبديل الفيديو تلقائياً كل 30 ثانية
+                const videoRotationInterval = setInterval(() => {
+                    if (view === 'display') {
+                        const nextIndex = (currentVideoIndex + 1) % CONFIG.videoSources.length;
+                        changeVideo(nextIndex);
+                    }
+                }, 30000);
+                
                 return () => {
                     unsubscribeTickets();
                     unsubscribeCalls();
@@ -1880,6 +2007,7 @@
                     unsubscribeAudio();
                     clearInterval(statsInterval);
                     clearInterval(timeInterval);
+                    clearInterval(videoRotationInterval);
                     window.removeEventListener('online', handleOnline);
                     window.removeEventListener('offline', handleOffline);
                     soundManager.stop();
@@ -2178,6 +2306,74 @@
 
             // ===== مكونات العرض =====
             
+            // مكون الفيديو
+            const VideoPlayer = () => {
+                const currentVideo = CONFIG.videoSources[currentVideoIndex];
+                
+                return (
+                    <div className="video-container">
+                        {videoError ? (
+                            <div className="video-placeholder">
+                                <i className="fas fa-video-slash"></i>
+                                <h3>{t.noVideoAvailable}</h3>
+                                <p>{language === 'ar' ? 'تعذر تحميل الفيديو' : 'Failed to load video'}</p>
+                                <button 
+                                    onClick={() => changeVideo((currentVideoIndex + 1) % CONFIG.videoSources.length)}
+                                    className="video-upload-btn"
+                                >
+                                    <i className="fas fa-sync-alt mr-2"></i>
+                                    {t.changeVideo}
+                                </button>
+                            </div>
+                        ) : (
+                            <video
+                                ref={videoRef}
+                                key={currentVideo.url}
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                onError={handleVideoError}
+                                onLoadedData={handleVideoLoaded}
+                            >
+                                <source src={currentVideo.url} type={currentVideo.type} />
+                                {language === 'ar' ? 'متصفحك لا يدعم تشغيل الفيديو' : 'Your browser does not support the video tag'}
+                            </video>
+                        )}
+                        
+                        {/* عناصر تحكم الفيديو */}
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '10px',
+                            right: '10px',
+                            display: 'flex',
+                            gap: '5px',
+                            opacity: '0.7',
+                            transition: 'opacity 0.3s'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+                        onMouseLeave={e => e.currentTarget.style.opacity = '0.7'}>
+                            {CONFIG.videoSources.map((source, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => changeVideo(index)}
+                                    style={{
+                                        width: '12px',
+                                        height: '12px',
+                                        borderRadius: '50%',
+                                        background: currentVideoIndex === index ? '#3b82f6' : 'rgba(255,255,255,0.3)',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s'
+                                    }}
+                                    title={source.name}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                );
+            };
+
             // نافذة تأكيد تصفير النظام
             const renderResetConfirmation = () => (
                 showResetConfirm && (
@@ -2696,12 +2892,7 @@
                             {/* الجزء الأيسر - الفيديو والمعلومات */}
                             <div className="video-section">
                                 {/* الفيديو */}
-                                <div className="video-container">
-                                    <video autoPlay loop muted playsInline>
-                                        <source src="https://drive.google.com/uc?export=download&id=1BoxWzM6ZOUZb0dBdDY8u4wuUMSCnD0He" type="video/mp4" />
-                                        متصفحك لا يدعم تشغيل الفيديو
-                                    </video>
-                                </div>
+                                <VideoPlayer />
                                 
                                 {/* معلومات النداء الحالي */}
                                 <div className="current-call-section">
