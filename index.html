@@ -191,20 +191,53 @@
             height: 80px !important;
         }
         
-        .current-call-container {
+        /* ===== إضافة تصميم جديد للشاشة الرئيسية مع الفيديو ===== */
+        .display-main-content {
+            display: flex !important;
+            height: calc(100vh - 80px - 50px) !important;
+        }
+        
+        .video-section {
+            flex: 1 !important;
+            padding: 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            background: rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        .video-container {
+            width: 100% !important;
+            height: 60% !important;
+            border-radius: 20px !important;
+            overflow: hidden !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+            margin-bottom: 20px !important;
+            position: relative !important;
+            border: 3px solid rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        .video-container video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+        }
+        
+        .current-call-section {
             flex: 1 !important;
             display: flex !important;
             flex-direction: column !important;
             justify-content: center !important;
             align-items: center !important;
             padding: 20px !important;
-            background: rgba(0, 0, 0, 0.2) !important;
-            height: calc(100vh - 80px - 50px) !important;
+            background: rgba(0, 0, 0, 0.15) !important;
+            border-radius: 20px !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
         
         /* ===== تقليل حجم أرقام التذاكر في الشاشة ===== */
         .current-ticket-number {
-            font-size: 18vw !important;
+            font-size: 15vw !important;
             font-weight: 900 !important;
             color: white !important;
             text-shadow: 
@@ -238,21 +271,21 @@
         
         /* ===== تقليل حجم النصوص في الشاشة ===== */
         .current-office {
-            font-size: 2.5vw !important;
+            font-size: 2.2vw !important;
             color: #93c5fd !important;
             font-weight: 700 !important;
             margin-bottom: 8px !important;
         }
         
         .current-department {
-            font-size: 2vw !important;
+            font-size: 1.8vw !important;
             color: #cbd5e1 !important;
             font-weight: 600 !important;
         }
         
         /* ===== تقليل حجم الشريط الجانبي ===== */
         .tickets-sidebar {
-            width: 32% !important;
+            width: 30% !important;
             background: rgba(30, 41, 59, 0.85) !important;
             backdrop-filter: blur(12px) !important;
             border-left: 2px solid rgba(59, 130, 246, 0.4) !important;
@@ -260,12 +293,24 @@
             overflow-y: auto !important;
             display: flex !important;
             flex-direction: column !important;
-            height: calc(100vh - 80px - 50px) !important;
+            height: 100% !important;
         }
         
         @media (max-width: 1024px) {
+            .display-main-content {
+                flex-direction: column !important;
+                height: calc(100vh - 80px - 50px) !important;
+            }
+            
+            .video-section {
+                height: 40% !important;
+            }
+            
             .tickets-sidebar {
-                width: 40% !important;
+                width: 100% !important;
+                height: 60% !important;
+                border-left: none !important;
+                border-top: 2px solid rgba(59, 130, 246, 0.4) !important;
             }
             
             .current-ticket-number {
@@ -279,18 +324,32 @@
             .current-department {
                 font-size: 2.8vw !important;
             }
+            
+            .display-header {
+                padding: 12px 20px !important;
+                height: 70px !important;
+            }
+            
+            .video-container {
+                height: 70% !important;
+            }
         }
         
         @media (max-width: 768px) {
-            .display-container {
+            .display-main-content {
                 flex-direction: column !important;
+            }
+            
+            .video-section {
+                padding: 15px !important;
+                height: 35% !important;
             }
             
             .tickets-sidebar {
                 width: 100% !important;
+                height: 65% !important;
                 border-left: none !important;
                 border-top: 2px solid rgba(59, 130, 246, 0.4) !important;
-                height: 45% !important;
             }
             
             .current-ticket-number {
@@ -310,8 +369,9 @@
                 height: 70px !important;
             }
             
-            .current-call-container {
-                height: calc(100vh - 70px - 45% - 50px) !important;
+            .video-container {
+                height: 60% !important;
+                border-radius: 15px !important;
             }
         }
         
@@ -321,7 +381,7 @@
                 height: 60px !important;
             }
             
-            .current-call-container {
+            .current-call-section {
                 padding: 10px !important;
             }
             
@@ -331,6 +391,10 @@
             
             .tickets-sidebar {
                 padding: 15px !important;
+            }
+            
+            .video-container {
+                height: 50% !important;
             }
         }
         
@@ -1141,7 +1205,8 @@
                 systemReset: "تم تصفير النظام بنجاح",
                 cannotCallFuture: "لا يمكن نداء هذه التذكرة الآن",
                 futureAppointment: "موعد مستقبلي",
-                appointmentTimeNotYet: "لم يحن وقت الموعد بعد"
+                appointmentTimeNotYet: "لم يحن وقت الموعد بعد",
+                noAppointments: "لا توجد تذاكر حالياً"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Logistics Services",
@@ -1240,7 +1305,8 @@
                 systemReset: "System reset successfully",
                 cannotCallFuture: "Cannot call this ticket now",
                 futureAppointment: "Future appointment",
-                appointmentTimeNotYet: "Appointment time has not arrived yet"
+                appointmentTimeNotYet: "Appointment time has not arrived yet",
+                noAppointments: "No tickets currently"
             }
         };
 
@@ -2549,7 +2615,7 @@
                         </div>
                     </main>
 
-                    {/* الفوتر */}
+                    {/* الفوتر - تمت إزالة المعلومات حسب الطلب */}
                     <footer className="mobile-footer bg-gray-800 text-white py-6">
                         <div className="max-w-7xl mx-auto">
                             <div className="flex flex-col items-center gap-4">
@@ -2560,13 +2626,6 @@
                                     <div className="text-center">
                                         <div className="font-bold">{CONFIG.companyName[language]}</div>
                                         <div className="text-sm text-gray-400">{CONFIG.systemName[language]}</div>
-                                    </div>
-                                </div>
-                                
-                                <div className="text-center text-gray-300">
-                                    <div>© 2025 {t.allRights}</div>
-                                    <div className="text-sm mt-1">
-                                        {t.techSupport}: {CONFIG.adminCode}
                                     </div>
                                 </div>
                                 
@@ -2587,7 +2646,7 @@
                 </div>
             );
 
-            // شاشة العرض المحسنة والمصغرة
+            // شاشة العرض المحسنة مع الفيديو
             const renderProfessionalDisplay = () => {
                 const currentCall = getCurrentCallForDisplay();
                 const approvedTickets = getApprovedTickets();
@@ -2632,47 +2691,58 @@
                             </div>
                         </div>
                         
-                        {/* المحتوى الرئيسي */}
-                        <div className="flex-1 flex" style={{ height: 'calc(100vh - 80px - 50px)' }}>
-                            {/* الجزء الأيسر - النداء الحالي */}
-                            <div className="current-call-container">
-                                <div className="text-center">
-                                    <div className="text-blue-400 text-3xl font-bold mb-6">
-                                        {t.currentCall}
-                                    </div>
-                                    
-                                    {currentCall ? (
-                                        <>
-                                            <div className="current-ticket-number">
-                                                {currentCall.ticketNumber}
-                                            </div>
-                                            
-                                            <div className="current-ticket-info">
-                                                <div className="current-office arabic">
-                                                    {currentCall.roomAr || "مكتب الخدمة"}
-                                                </div>
-                                                <div className="current-office english">
-                                                    {currentCall.roomEn || "Service Office"}
-                                                </div>
-                                                <div className="current-department arabic">
-                                                    {currentCall.categoryAr || "إدارة الخدمات"}
-                                                </div>
-                                                <div className="current-department english">
-                                                    {currentCall.categoryEn || "Service Management"}
-                                                </div>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <div className="space-y-6">
-                                            <div className="text-[15vw] opacity-20 text-blue-500">
-                                                <i className="fas fa-clock"></i>
-                                            </div>
-                                            <div className="space-y-4">
-                                                <div className="text-4xl text-gray-400 arabic">{t.systemReady}</div>
-                                                <div className="text-3xl text-gray-400 english">{t.systemReady}</div>
-                                            </div>
+                        {/* المحتوى الرئيسي مع الفيديو */}
+                        <div className="display-main-content">
+                            {/* الجزء الأيسر - الفيديو والمعلومات */}
+                            <div className="video-section">
+                                {/* الفيديو */}
+                                <div className="video-container">
+                                    <video autoPlay loop muted playsInline>
+                                        <source src="https://drive.google.com/uc?export=download&id=1BoxWzM6ZOUZb0dBdDY8u4wuUMSCnD0He" type="video/mp4" />
+                                        متصفحك لا يدعم تشغيل الفيديو
+                                    </video>
+                                </div>
+                                
+                                {/* معلومات النداء الحالي */}
+                                <div className="current-call-section">
+                                    <div className="text-center">
+                                        <div className="text-blue-400 text-3xl font-bold mb-6">
+                                            {t.currentCall}
                                         </div>
-                                    )}
+                                        
+                                        {currentCall ? (
+                                            <>
+                                                <div className="current-ticket-number">
+                                                    {currentCall.ticketNumber}
+                                                </div>
+                                                
+                                                <div className="current-ticket-info">
+                                                    <div className="current-office arabic">
+                                                        {currentCall.roomAr || "مكتب الخدمة"}
+                                                    </div>
+                                                    <div className="current-office english">
+                                                        {currentCall.roomEn || "Service Office"}
+                                                    </div>
+                                                    <div className="current-department arabic">
+                                                        {currentCall.categoryAr || "إدارة الخدمات"}
+                                                    </div>
+                                                    <div className="current-department english">
+                                                        {currentCall.categoryEn || "Service Management"}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="space-y-6">
+                                                <div className="text-[10vw] opacity-20 text-blue-500">
+                                                    <i className="fas fa-clock"></i>
+                                                </div>
+                                                <div className="space-y-4">
+                                                    <div className="text-3xl text-gray-400 arabic">{t.systemReady}</div>
+                                                    <div className="text-2xl text-gray-400 english">{t.systemReady}</div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                             
@@ -2758,7 +2828,7 @@
                             </div>
                         </div>
                         
-                        {/* التايمر المتحرك */}
+                        {/* التايمر المتحرك - تمت إزالة المعلومات حسب الطلب */}
                         <div className="news-ticker">
                             <div className="ticker-content arabic">
                                 {t.welcomeMessage} • {t.systemMessage} • {t.holdTicket} • {CONFIG.workHours.messageAr} •
