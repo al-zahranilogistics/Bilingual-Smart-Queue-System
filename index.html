@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>الزهراني للخدمات اللوجستية - نظام الطابور الذكي</title>
+    <title>الزهراني للخدمات اللوجستية - نظام التذاكر الذكي</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
@@ -204,7 +204,7 @@
         
         /* ===== تقليل حجم أرقام التذاكر في الشاشة ===== */
         .current-ticket-number {
-            font-size: 18vw !important; /* تم التصغير من 35vw */
+            font-size: 18vw !important;
             font-weight: 900 !important;
             color: white !important;
             text-shadow: 
@@ -238,21 +238,21 @@
         
         /* ===== تقليل حجم النصوص في الشاشة ===== */
         .current-office {
-            font-size: 2.5vw !important; /* تم التصغير من 4vw */
+            font-size: 2.5vw !important;
             color: #93c5fd !important;
             font-weight: 700 !important;
             margin-bottom: 8px !important;
         }
         
         .current-department {
-            font-size: 2vw !important; /* تم التصغير من 3vw */
+            font-size: 2vw !important;
             color: #cbd5e1 !important;
             font-weight: 600 !important;
         }
         
         /* ===== تقليل حجم الشريط الجانبي ===== */
         .tickets-sidebar {
-            width: 32% !important; /* تم التصغير من 35% */
+            width: 32% !important;
             background: rgba(30, 41, 59, 0.85) !important;
             backdrop-filter: blur(12px) !important;
             border-left: 2px solid rgba(59, 130, 246, 0.4) !important;
@@ -343,7 +343,7 @@
         
         /* ===== تقليل حجم عناوين الأقسام ===== */
         .section-title {
-            font-size: 1.2rem !important; /* تم التصغير من 1.5rem */
+            font-size: 1.2rem !important;
             color: white !important;
             margin-bottom: 12px !important;
             padding-bottom: 8px !important;
@@ -369,7 +369,7 @@
         
         /* شريط التمرير المخصص */
         .tickets-list::-webkit-scrollbar {
-            width: 5px !important; /* تم التصغير من 6px */
+            width: 5px !important;
         }
         
         .tickets-list::-webkit-scrollbar-track {
@@ -378,26 +378,26 @@
         }
         
         .tickets-list::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.4) !important; /* تم التخفيف */
+            background: rgba(59, 130, 246, 0.4) !important;
             border-radius: 8px !important;
         }
         
         /* ===== التذكرة في شاشة العرض (مصغرة) ===== */
         .display-ticket {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05)) !important;
-            border-radius: 12px !important; /* تم التصغير من 15px */
-            padding: 12px !important; /* تم التصغير من 15px */
-            margin-bottom: 10px !important; /* تم التصغير من 12px */
+            border-radius: 12px !important;
+            padding: 12px !important;
+            margin-bottom: 10px !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            backdrop-filter: blur(8px) !important; /* تم التصغير من 10px */
+            backdrop-filter: blur(8px) !important;
             transition: all 0.3s ease !important;
             animation: fadeIn 0.5s ease-out !important;
         }
         
         .display-ticket:hover {
-            transform: translateX(-3px) !important; /* تم التصغير من 5px */
+            transform: translateX(-3px) !important;
             border-color: rgba(59, 130, 246, 0.3) !important;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2) !important; /* تم التصغير */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2) !important;
         }
         
         .display-ticket.approved {
@@ -407,12 +407,12 @@
         
         /* ===== تقليل حجم أرقام التذاكر في الشريط الجانبي ===== */
         .display-ticket-number {
-            font-size: 1.8rem !important; /* تم التصغير من 2.5rem */
+            font-size: 1.8rem !important;
             font-weight: 900 !important;
             color: white !important;
             text-align: center !important;
-            margin-bottom: 8px !important; /* تم التصغير من 10px */
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important; /* تم التصغير */
+            margin-bottom: 8px !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
         }
         
         .display-ticket-details {
@@ -421,20 +421,20 @@
         
         /* ===== تقليل حجم نصوص التذاكر ===== */
         .display-ticket-department {
-            font-size: 0.9rem !important; /* تم التصغير من 1rem */
+            font-size: 0.9rem !important;
             color: #cbd5e1 !important;
-            margin-bottom: 4px !important; /* تم التصغير من 5px */
+            margin-bottom: 4px !important;
         }
         
         .display-ticket-office {
-            font-size: 0.8rem !important; /* تم التصغير من 0.9rem */
+            font-size: 0.8rem !important;
             color: #94a3b8 !important;
         }
         
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(8px); /* تم التصغير من 10px */
+                transform: translateY(8px);
             }
             to {
                 opacity: 1;
@@ -445,7 +445,7 @@
         /* ===== التايمر المتحرك ===== */
         .news-ticker {
             background: linear-gradient(90deg, rgba(30, 58, 138, 0.9), rgba(59, 130, 246, 0.9)) !important;
-            padding: 10px 0 !important; /* تم التصغير من 15px */
+            padding: 10px 0 !important;
             overflow: hidden !important;
             position: relative !important;
             white-space: nowrap !important;
@@ -456,7 +456,7 @@
             display: inline-block !important;
             padding-left: 100% !important;
             animation: ticker 40s linear infinite !important;
-            font-size: 1rem !important; /* تم التصغير من 1.2rem */
+            font-size: 1rem !important;
             font-weight: bold !important;
             color: white !important;
         }
@@ -473,16 +473,16 @@
             right: 20px !important;
             background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue)) !important;
             color: white !important;
-            padding: 12px 20px !important; /* تم التصغير */
-            border-radius: 12px !important; /* تم التصغير */
+            padding: 12px 20px !important;
+            border-radius: 12px !important;
             display: flex !important;
             align-items: center !important;
-            gap: 10px !important; /* تم التصغير */
+            gap: 10px !important;
             z-index: 9999 !important;
             animation: slideIn 0.3s ease !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important; /* تم التصغير */
-            backdrop-filter: blur(8px) !important; /* تم التصغير */
-            border: 1px solid rgba(255, 255, 255, 0.2) !important; /* تم التصغير */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
         }
         
         .sound-pulse {
@@ -491,13 +491,13 @@
         
         @keyframes soundPulse {
             0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.15); opacity: 0.7; } /* تم التصغير من 1.2 */
+            50% { transform: scale(1.15); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
         }
         
         @keyframes slideIn {
             from {
-                transform: translateY(80px); /* تم التصغير من 100px */
+                transform: translateY(80px);
                 opacity: 0;
             }
             to {
@@ -510,29 +510,29 @@
         .btn-primary {
             background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue)) !important;
             color: white !important;
-            padding: 10px 20px !important; /* تم التصغير */
-            border-radius: 8px !important; /* تم التصغير */
+            padding: 10px 20px !important;
+            border-radius: 8px !important;
             font-weight: bold !important;
             border: none !important;
             transition: all 0.3s ease !important;
-            box-shadow: 0 3px 12px rgba(59, 130, 246, 0.3) !important; /* تم التصغير */
+            box-shadow: 0 3px 12px rgba(59, 130, 246, 0.3) !important;
             cursor: pointer !important;
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            gap: 6px !important; /* تم التصغير */
+            gap: 6px !important;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px) !important;
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4) !important; /* تم التصغير */
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4) !important;
         }
         
         .btn-success {
             background: linear-gradient(135deg, var(--success-green), #34d399) !important;
             color: white !important;
-            padding: 8px 16px !important; /* تم التصغير */
-            border-radius: 6px !important; /* تم التصغير */
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
             font-weight: bold !important;
             border: none !important;
             transition: all 0.3s ease !important;
@@ -542,8 +542,8 @@
         .btn-danger {
             background: linear-gradient(135deg, var(--danger-red), #f87171) !important;
             color: white !important;
-            padding: 8px 16px !important; /* تم التصغير */
-            border-radius: 6px !important; /* تم التصغير */
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
             font-weight: bold !important;
             border: none !important;
             transition: all 0.3s ease !important;
@@ -564,26 +564,26 @@
         /* ===== البطاقات ===== */
         .card {
             background: white !important;
-            border-radius: 12px !important; /* تم التصغير من 15px */
-            padding: 16px !important; /* تم التصغير من 20px */
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08) !important; /* تم التصغير */
+            border-radius: 12px !important;
+            padding: 16px !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08) !important;
             border: 1px solid #e5e7eb !important;
             transition: transform 0.3s ease, box-shadow 0.3s ease !important;
         }
         
         .card:hover {
-            transform: translateY(-3px) !important; /* تم التصغير من 5px */
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12) !important; /* تم التصغير */
+            transform: translateY(-3px) !important;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12) !important;
         }
         
         /* ===== الشعار ===== */
         .logo-container {
-            width: 80px !important; /* تم التصغير من 100px */
-            height: 80px !important; /* تم التصغير من 100px */
+            width: 80px !important;
+            height: 80px !important;
             border-radius: 50% !important;
             overflow: hidden !important;
-            border: 2px solid white !important; /* تم التصغير من 3px */
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5) !important; /* تم التصغير */
+            border: 2px solid white !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5) !important;
             background: white !important;
             display: flex !important;
             align-items: center !important;
@@ -591,24 +591,24 @@
         }
         
         .logo-container img {
-            width: 85% !important; /* تم التصغير من 90% */
-            height: 85% !important; /* تم التصغير من 90% */
+            width: 85% !important;
+            height: 85% !important;
             object-fit: contain !important;
         }
         
         /* ===== حالة الاتصال ===== */
         .connection-status {
             position: fixed !important;
-            top: 8px !important; /* تم التصغير من 10px */
-            right: 8px !important; /* تم التصغير من 10px */
+            top: 8px !important;
+            right: 8px !important;
             z-index: 1000 !important;
-            padding: 6px 12px !important; /* تم التصغير */
-            border-radius: 16px !important; /* تم التصغير من 20px */
-            font-size: 11px !important; /* تم التصغير من 12px */
+            padding: 6px 12px !important;
+            border-radius: 16px !important;
+            font-size: 11px !important;
             font-weight: bold !important;
             display: flex !important;
             align-items: center !important;
-            gap: 4px !important; /* تم التصغير من 6px */
+            gap: 4px !important;
             animation: slideIn 0.3s ease !important;
         }
         
@@ -626,11 +626,11 @@
         
         /* ===== شريط التحميل ===== */
         .loading-spinner {
-            border: 3px solid #f3f3f3 !important; /* تم التصغير من 4px */
-            border-top: 3px solid #3b82f6 !important; /* تم التصغير من 4px */
+            border: 3px solid #f3f3f3 !important;
+            border-top: 3px solid #3b82f6 !important;
             border-radius: 50% !important;
-            width: 32px !important; /* تم التصغير من 40px */
-            height: 32px !important; /* تم التصغير من 40px */
+            width: 32px !important;
+            height: 32px !important;
             animation: spin 1s linear infinite !important;
         }
         
@@ -643,21 +643,21 @@
         .scrollable-content {
             overflow-y: auto !important;
             scrollbar-width: thin !important;
-            scrollbar-color: rgba(59, 130, 246, 0.4) rgba(0, 0, 0, 0.1) !important; /* تم التخفيف */
+            scrollbar-color: rgba(59, 130, 246, 0.4) rgba(0, 0, 0, 0.1) !important;
         }
         
         .scrollable-content::-webkit-scrollbar {
-            width: 5px !important; /* تم التصغير من 6px */
+            width: 5px !important;
         }
         
         .scrollable-content::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.1) !important;
-            border-radius: 8px !important; /* تم التصغير من 10px */
+            border-radius: 8px !important;
         }
         
         .scrollable-content::-webkit-scrollbar-thumb {
-            background: rgba(59, 130, 246, 0.4) !important; /* تم التخفيف */
-            border-radius: 8px !important; /* تم التصغير من 10px */
+            background: rgba(59, 130, 246, 0.4) !important;
+            border-radius: 8px !important;
         }
         
         /* ===== إضافات جديدة ===== */
@@ -740,10 +740,42 @@
             animation: fadeIn 0.5s ease-out !important;
         }
         
+        .appointment-future {
+            background: linear-gradient(135deg, #fef3c7, #fde68a) !important;
+            border: 1px solid #f59e0b !important;
+            color: #92400e !important;
+            padding: 8px 12px !important;
+            border-radius: 6px !important;
+            margin-top: 6px !important;
+            font-size: 12px !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 5px !important;
+            animation: fadeIn 0.5s ease-out !important;
+        }
+        
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
             20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        /* ===== زر تصفير النظام ===== */
+        .btn-reset {
+            background: linear-gradient(135deg, #dc2626, #ef4444) !important;
+            color: white !important;
+            padding: 8px 16px !important;
+            border-radius: 6px !important;
+            font-weight: bold !important;
+            border: none !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            animation: pulse 2s infinite !important;
+        }
+        
+        .btn-reset:hover {
+            background: linear-gradient(135deg, #b91c1c, #dc2626) !important;
+            transform: translateY(-2px) !important;
         }
     </style>
 </head>
@@ -899,7 +931,7 @@
                 en: "Al-Zahrani Logistics Services"
             },
             systemName: {
-                ar: "نظام إدارة الطوابير الذكي",
+                ar: "نظام إدارة التذاكر الذكي",
                 en: "Smart Queue Management System"
             },
             adminCode: "0906212",
@@ -943,15 +975,15 @@
                 },
                 { 
                     id: 'supervisors', 
-                    nameAr: "مدير التشغيل", 
+                    nameAr: "مشرف نينجا", 
                     nameEn: "Supervisors Department",
                     prefix: "S", 
-                    roomAr: "مكتب مدير التشغيل", 
+                    roomAr: "مكتب اشراف نينجا", 
                     roomEn: "Supervisors Office", 
                     color: "#8b5cf6",
                     icon: "fa-solid fa-user-tie",
                     iconColor: "#7c3aed",
-                    categoryAr: "إدارة العمليات",
+                    categoryAr: "إدارة اشراف نينجا",
                     categoryEn: "Operations Management"
                 },
                 { 
@@ -969,15 +1001,15 @@
                 },
                 { 
                     id: 'petroleum', 
-                    nameAr: "قسم البترول", 
+                    nameAr: "مشرف كيمارت", 
                     nameEn: "Petroleum Department",
                     prefix: "P", 
-                    roomAr: "مكتب البترول", 
+                    roomAr: "مكتب مشرف كيمارت", 
                     roomEn: "Petroleum Office", 
                     color: "#06b6d4",
                     icon: "fa-solid fa-gas-pump",
                     iconColor: "#0891b2",
-                    categoryAr: "إدارة البترول",
+                    categoryAr: "إدارة تشغيل كيمارت",
                     categoryEn: "Petroleum Management"
                 },
                 // الأقسام الجديدة
@@ -1048,7 +1080,7 @@
                 returnToKiosk: "العودة للكشك",
                 openDisplay: "فتح شاشة العرض",
                 welcomeMessage: "شركة الزهراني للخدمات اللوجستية ترحب بكم .. يرجى الانتظار حتى ظهور رقم تذكرتكم",
-                systemMessage: "نظام إدارة الطابور الذكي ٢٠٢٥",
+                systemMessage: "نظام إدارة التذاكر الذكي 2026",
                 holdTicket: "يرجى الاحتفاظ برقم التذكرة والمتابعة",
                 allRights: "جميع الحقوق محفوظة",
                 techSupport: "رقم الدعم الفني",
@@ -1100,9 +1132,16 @@
                 appointmentNumber: "رقم الموعد",
                 appointmentDetails: "تفاصيل الموعد",
                 appointmentNote: "يرجى الحضور قبل الموعد بـ 10 دقائق",
-                // إضافة جديدة
                 appointmentNotice: "حجز مسبق: يوم {date} الساعة {time}",
-                hasAppointment: "حجز مسبق"
+                hasAppointment: "حجز مسبق",
+                backToDepartments: "الرجوع إلى الأقسام",
+                resetSystem: "تصفير النظام",
+                resetConfirm: "هل أنت متأكد من تصفير النظام؟",
+                resetWarning: "سيتم حذف جميع التذاكر وإعادة العدادات إلى الصفر",
+                systemReset: "تم تصفير النظام بنجاح",
+                cannotCallFuture: "لا يمكن نداء هذه التذكرة الآن",
+                futureAppointment: "موعد مستقبلي",
+                appointmentTimeNotYet: "لم يحن وقت الموعد بعد"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Logistics Services",
@@ -1192,9 +1231,16 @@
                 appointmentNumber: "Appointment Number",
                 appointmentDetails: "Appointment Details",
                 appointmentNote: "Please arrive 10 minutes before your appointment",
-                // إضافة جديدة
                 appointmentNotice: "Pre-booked: {date} at {time}",
-                hasAppointment: "Pre-booked"
+                hasAppointment: "Pre-booked",
+                backToDepartments: "Back to Departments",
+                resetSystem: "Reset System",
+                resetConfirm: "Are you sure you want to reset the system?",
+                resetWarning: "All tickets will be deleted and counters reset to zero",
+                systemReset: "System reset successfully",
+                cannotCallFuture: "Cannot call this ticket now",
+                futureAppointment: "Future appointment",
+                appointmentTimeNotYet: "Appointment time has not arrived yet"
             }
         };
 
@@ -1251,6 +1297,20 @@
                 }
             }
 
+            static async resetDepartmentCounter(deptId) {
+                try {
+                    const counterRef = db.collection('counters').doc(deptId);
+                    await counterRef.set({
+                        lastNumber: 0,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    return true;
+                } catch (error) {
+                    console.error('❌ Error resetting counter:', error);
+                    throw error;
+                }
+            }
+
             static async addTicket(ticketData) {
                 try {
                     const dept = CONFIG.departments.find(d => d.id === ticketData.deptId);
@@ -1277,12 +1337,6 @@
                     };
                     
                     await db.collection('tickets').doc(ticket.id).set(ticket);
-                    
-                    await realtimeDB.ref(`currentCalls/${dept.id}`).set({
-                        ticketId: ticket.id,
-                        ticketNumber: ticket.number,
-                        calledAt: Date.now()
-                    });
                     
                     return ticket;
                 } catch (error) {
@@ -1398,7 +1452,6 @@
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     
-                    // إرسال إشعار إلى Real-time Database للتحديث الفوري
                     await realtimeDB.ref(`ticketUpdates/${ticketId}`).set({
                         action: 'approved',
                         timestamp: Date.now()
@@ -1413,11 +1466,8 @@
 
             static async finishTicket(ticketId) {
                 try {
-                    await db.collection('tickets').doc(ticketId).update({
-                        status: 'finished',
-                        finishedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    // حذف التذكرة بعد إنهائها مباشرة
+                    await db.collection('tickets').doc(ticketId).delete();
                     
                     await realtimeDB.ref(`ticketUpdates/${ticketId}`).set({
                         action: 'finished',
@@ -1431,10 +1481,38 @@
                 }
             }
 
+            static async resetSystem() {
+                try {
+                    // حذف جميع التذاكر
+                    const ticketsSnapshot = await db.collection('tickets').get();
+                    const deletePromises = [];
+                    ticketsSnapshot.forEach(doc => {
+                        deletePromises.push(doc.ref.delete());
+                    });
+                    
+                    // إعادة تعيين جميع العدادات
+                    const resetPromises = CONFIG.departments.map(dept =>
+                        this.resetDepartmentCounter(dept.id)
+                    );
+                    
+                    await Promise.all([...deletePromises, ...resetPromises]);
+                    
+                    // مسح قاعدة البيانات الوقت الحقيقي
+                    await realtimeDB.ref('currentCalls').remove();
+                    await realtimeDB.ref('ticketUpdates').remove();
+                    await realtimeDB.ref('audioAnnouncements').remove();
+                    
+                    return true;
+                } catch (error) {
+                    console.error('❌ Error resetting system:', error);
+                    throw error;
+                }
+            }
+
             static subscribeToTickets(callback) {
                 return db.collection('tickets')
                     .orderBy('createdAt', 'desc')
-                    .limit(50)
+                    .limit(100)
                     .onSnapshot(snapshot => {
                         const tickets = [];
                         snapshot.forEach(doc => {
@@ -1543,6 +1621,8 @@
             const [appointmentSuccess, setAppointmentSuccess] = useState(null);
             const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
             const [isBookingAppointment, setIsBookingAppointment] = useState(false);
+            const [showResetConfirm, setShowResetConfirm] = useState(false);
+            const [isResetting, setIsResetting] = useState(false);
 
             const t = LANGUAGES[language];
             const isRTL = language === 'ar';
@@ -1588,7 +1668,7 @@
                 return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
                     weekday: 'long',
                     year: 'numeric',
-            month: 'long',
+                    month: 'long',
                     day: 'numeric'
                 });
             };
@@ -1610,6 +1690,21 @@
                         : `Pre-booked: ${formattedDate} at ${formattedTime}`;
                 }
                 return '';
+            };
+
+            // التحقق من إمكانية نداء التذكرة المحجوزة
+            const canCallAppointment = (ticket) => {
+                if (ticket.type !== 'appointment') return true;
+                
+                if (!ticket.appointmentDate || !ticket.appointmentTime) return true;
+                
+                const now = new Date();
+                const appointmentDateTime = new Date(`${ticket.appointmentDate}T${ticket.appointmentTime}`);
+                
+                // السماح بالنداء قبل الموعد بـ 30 دقيقة
+                const thirtyMinutesBefore = new Date(appointmentDateTime.getTime() - 30 * 60000);
+                
+                return now >= thirtyMinutesBefore;
             };
 
             // تهيئة النظام
@@ -1728,6 +1823,12 @@
             // التعامل مع نداء التذكرة بالصوت
             const handleCallTicketWithSound = async (ticket) => {
                 try {
+                    // التحقق من إمكانية نداء التذكرة المحجوزة
+                    if (!canCallAppointment(ticket)) {
+                        alert(t.cannotCallFuture);
+                        return;
+                    }
+                    
                     const updatedTicket = await FirebaseQueueManager.callTicket(ticket.id);
                     const dept = CONFIG.departments.find(d => d.id === ticket.deptId);
                     
@@ -1805,7 +1906,6 @@
                     await FirebaseQueueManager.deleteTicket(ticketId);
                     setTicketToDelete(null);
                     
-                    // إشعار النجاح
                     setTimeout(() => {
                         alert(t.ticketDeleted);
                     }, 300);
@@ -1816,12 +1916,35 @@
                 }
             };
 
+            // تصفير النظام
+            const handleResetSystem = async () => {
+                setIsResetting(true);
+                try {
+                    await FirebaseQueueManager.resetSystem();
+                    setShowResetConfirm(false);
+                    
+                    // تحديث البيانات
+                    setTickets([]);
+                    setCurrentCalls({});
+                    
+                    setTimeout(() => {
+                        alert(t.systemReset);
+                    }, 300);
+                    
+                } catch (error) {
+                    console.error('❌ Error resetting system:', error);
+                    alert(language === 'ar' ? 'حدث خطأ في تصفير النظام' : 'Error resetting system');
+                } finally {
+                    setIsResetting(false);
+                }
+            };
+
             // فتح نافذة حذف التذكرة
             const openDeleteConfirmation = (ticket) => {
                 setTicketToDelete(ticket);
             };
 
-            // الموافقة على تذكرة (تتحرك للأعلى في القائمة)
+            // الموافقة على تذكرة
             const handleApproveTicket = async (ticketId) => {
                 try {
                     await FirebaseQueueManager.approveTicket(ticketId);
@@ -1963,12 +2086,11 @@
                 return mostRecent;
             };
 
-            // الحصول على التذاكر المعتمدة (ترتيب تصاعدي - الأحدث أولاً)
+            // الحصول على التذاكر المعتمدة
             const getApprovedTickets = () => {
                 return tickets
                     .filter(t => t.status === 'waiting' && t.approved === true)
                     .sort((a, b) => {
-                        // الأحدث أولاً (أعلى قائمة)
                         const timeA = a.approvedAt?.toDate?.() || new Date(a.approvedAt || 0);
                         const timeB = b.approvedAt?.toDate?.() || new Date(b.approvedAt || 0);
                         return timeB - timeA;
@@ -1981,7 +2103,6 @@
                 return tickets
                     .filter(t => t.status === 'waiting' && t.approved !== true)
                     .sort((a, b) => {
-                        // الأقدم أولاً
                         const timeA = a.createdAt?.toDate?.() || new Date(a.createdAt || 0);
                         const timeB = b.createdAt?.toDate?.() || new Date(b.createdAt || 0);
                         return timeA - timeB;
@@ -1991,6 +2112,51 @@
 
             // ===== مكونات العرض =====
             
+            // نافذة تأكيد تصفير النظام
+            const renderResetConfirmation = () => (
+                showResetConfirm && (
+                    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+                        <div className="card max-w-md w-full delete-confirmation">
+                            <div className="text-center space-y-6">
+                                <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto">
+                                    <i className="fas fa-exclamation-triangle text-2xl text-red-500"></i>
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-gray-800">{t.resetSystem}</h3>
+                                    <p className="text-red-600 font-medium mt-2">{t.resetWarning}</p>
+                                    <p className="text-gray-600 mt-2">{t.resetConfirm}</p>
+                                </div>
+                                <div className="flex gap-3">
+                                    <button
+                                        onClick={() => setShowResetConfirm(false)}
+                                        className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition"
+                                    >
+                                        {t.cancel}
+                                    </button>
+                                    <button
+                                        onClick={handleResetSystem}
+                                        disabled={isResetting}
+                                        className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition disabled:opacity-50"
+                                    >
+                                        {isResetting ? (
+                                            <>
+                                                <i className="fas fa-spinner fa-spin mr-2"></i>
+                                                {t.processing}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <i className="fas fa-trash mr-2"></i>
+                                                {t.resetSystem}
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            );
+
             // نافذة تأكيد حذف التذكرة
             const renderDeleteConfirmation = () => (
                 ticketToDelete && (
@@ -2250,7 +2416,6 @@
                                 </div>
                                 <button
                                     onClick={() => {
-                                        // عرض خيار حجز الموعد
                                         alert(language === 'ar' ? 
                                             'لحجز موعد أونلاين، اختر القسم ثم اختر "حجز موعد"' : 
                                             'To book online appointment, select department then choose "Book Appointment"');
@@ -2702,19 +2867,44 @@
                                     >
                                         {t.openDisplay}
                                     </a>
+                                    <button
+                                        onClick={() => setShowResetConfirm(true)}
+                                        className="btn-reset px-6 py-3"
+                                    >
+                                        <i className="fas fa-trash-alt mr-2"></i>
+                                        {t.resetSystem}
+                                    </button>
                                 </div>
                             </div>
                         ) : (
                             <div className="space-y-6">
+                                {/* زر الرجوع المضافة */}
+                                <div className="flex justify-between items-center mb-4">
+                                    <button
+                                        onClick={() => setActiveDept(null)}
+                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                                    >
+                                        <i className="fas fa-arrow-left"></i>
+                                        <span>{t.backToDepartments}</span>
+                                    </button>
+                                    
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold">
+                                            {(departmentStats[activeDept]?.lastNumber || 0)}
+                                        </div>
+                                        <div className="text-sm text-gray-600">{t.lastNumber}</div>
+                                    </div>
+                                </div>
+                                
                                 <div className="card bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center gap-4">
-                                            <button
-                                                onClick={() => setActiveDept(null)}
-                                                className="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition"
+                                            <div 
+                                                className="w-16 h-16 rounded-xl flex items-center justify-center"
+                                                style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
                                             >
-                                                <i className="fas fa-arrow-left text-xl"></i>
-                                            </button>
+                                                <i className={`${CONFIG.departments.find(d => d.id === activeDept)?.icon} text-2xl text-white`}></i>
+                                            </div>
                                             <div>
                                                 <h2 className="text-2xl font-bold">
                                                     {language === 'ar' ? 
@@ -2727,12 +2917,6 @@
                                                         CONFIG.departments.find(d => d.id === activeDept)?.roomEn}
                                                 </p>
                                             </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-3xl font-bold">
-                                                {(departmentStats[activeDept]?.lastNumber || 0)}
-                                            </div>
-                                            <div className="text-sm opacity-80">{t.lastNumber}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -2749,6 +2933,7 @@
                                                 .sort((a, b) => a.createdAt - b.createdAt)
                                                 .map(ticket => {
                                                     const appointmentNotice = getAppointmentNoticeText(ticket);
+                                                    const canCall = canCallAppointment(ticket);
                                                     
                                                     return (
                                                         <div key={ticket.id} className="compact-ticket">
@@ -2777,9 +2962,10 @@
                                                                     </div>
                                                                     {/* إضافة إشعار الحجز المسبق */}
                                                                     {appointmentNotice && (
-                                                                        <div className="appointment-notice">
+                                                                        <div className={`${canCall ? 'appointment-notice' : 'appointment-future'}`}>
                                                                             <i className="fas fa-calendar-check text-xs"></i>
                                                                             <span>{appointmentNotice}</span>
+                                                                            {!canCall && <span className="mr-2">• {t.appointmentTimeNotYet}</span>}
                                                                         </div>
                                                                     )}
                                                                 </div>
@@ -2795,7 +2981,8 @@
                                                                     )}
                                                                     <button
                                                                         onClick={() => handleCallTicketWithSound(ticket)}
-                                                                        className="btn-primary"
+                                                                        disabled={!canCall}
+                                                                        className={`btn-primary ${!canCall ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                                     >
                                                                         <i className="fas fa-bullhorn mr-2"></i>
                                                                         {t.call}
@@ -2979,6 +3166,9 @@
                         </div>
                     )}
 
+                    {/* نافذة تأكيد تصفير النظام */}
+                    {renderResetConfirmation()}
+                    
                     {/* نافذة تأكيد حذف التذكرة */}
                     {renderDeleteConfirmation()}
                     
