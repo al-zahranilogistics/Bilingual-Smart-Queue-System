@@ -191,103 +191,20 @@
             height: 80px !important;
         }
         
-        /* ===== إضافة تصميم جديد للشاشة الرئيسية مع الفيديو ===== */
-        .display-main-content {
-            display: flex !important;
-            height: calc(100vh - 80px - 50px) !important;
-        }
-        
-        .video-section {
+        .current-call-container {
             flex: 1 !important;
-            padding: 20px !important;
             display: flex !important;
             flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding: 20px !important;
             background: rgba(0, 0, 0, 0.2) !important;
-        }
-        
-        .video-container {
-            width: 100% !important;
-            height: 60% !important;
-            border-radius: 20px !important;
-            overflow: hidden !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
-            margin-bottom: 20px !important;
-            position: relative !important;
-            border: 3px solid rgba(59, 130, 246, 0.3) !important;
-            background: #000 !important;
-        }
-        
-        .video-container video {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-        }
-        
-        .video-placeholder {
-            width: 100% !important;
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background: linear-gradient(135deg, #1e293b, #0f172a) !important;
-            color: white !important;
-            text-align: center !important;
-            padding: 20px !important;
-        }
-        
-        .video-placeholder i {
-            font-size: 4rem !important;
-            margin-bottom: 20px !important;
-            color: #3b82f6 !important;
-            opacity: 0.7 !important;
-        }
-        
-        .video-placeholder h3 {
-            font-size: 1.5rem !important;
-            margin-bottom: 10px !important;
-            font-weight: bold !important;
-        }
-        
-        .video-placeholder p {
-            font-size: 1rem !important;
-            opacity: 0.8 !important;
-            margin-bottom: 15px !important;
-        }
-        
-        .video-upload-btn {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
-            color: white !important;
-            border: none !important;
-            padding: 10px 20px !important;
-            border-radius: 8px !important;
-            font-weight: bold !important;
-            cursor: pointer !important;
-            margin-top: 10px !important;
-            transition: all 0.3s ease !important;
-        }
-        
-        .video-upload-btn:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4) !important;
-        }
-        
-        .current-call-section {
-            flex: 1 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: center !important;
-            padding: 20px !important;
-            background: rgba(0, 0, 0, 0.15) !important;
-            border-radius: 20px !important;
-            backdrop-filter: blur(10px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            height: calc(100vh - 80px - 50px) !important;
         }
         
         /* ===== تقليل حجم أرقام التذاكر في الشاشة ===== */
         .current-ticket-number {
-            font-size: 15vw !important;
+            font-size: 18vw !important;
             font-weight: 900 !important;
             color: white !important;
             text-shadow: 
@@ -321,21 +238,21 @@
         
         /* ===== تقليل حجم النصوص في الشاشة ===== */
         .current-office {
-            font-size: 2.2vw !important;
+            font-size: 2.5vw !important;
             color: #93c5fd !important;
             font-weight: 700 !important;
             margin-bottom: 8px !important;
         }
         
         .current-department {
-            font-size: 1.8vw !important;
+            font-size: 2vw !important;
             color: #cbd5e1 !important;
             font-weight: 600 !important;
         }
         
         /* ===== تقليل حجم الشريط الجانبي ===== */
         .tickets-sidebar {
-            width: 30% !important;
+            width: 32% !important;
             background: rgba(30, 41, 59, 0.85) !important;
             backdrop-filter: blur(12px) !important;
             border-left: 2px solid rgba(59, 130, 246, 0.4) !important;
@@ -343,24 +260,12 @@
             overflow-y: auto !important;
             display: flex !important;
             flex-direction: column !important;
-            height: 100% !important;
+            height: calc(100vh - 80px - 50px) !important;
         }
         
         @media (max-width: 1024px) {
-            .display-main-content {
-                flex-direction: column !important;
-                height: calc(100vh - 80px - 50px) !important;
-            }
-            
-            .video-section {
-                height: 40% !important;
-            }
-            
             .tickets-sidebar {
-                width: 100% !important;
-                height: 60% !important;
-                border-left: none !important;
-                border-top: 2px solid rgba(59, 130, 246, 0.4) !important;
+                width: 40% !important;
             }
             
             .current-ticket-number {
@@ -374,32 +279,18 @@
             .current-department {
                 font-size: 2.8vw !important;
             }
-            
-            .display-header {
-                padding: 12px 20px !important;
-                height: 70px !important;
-            }
-            
-            .video-container {
-                height: 70% !important;
-            }
         }
         
         @media (max-width: 768px) {
-            .display-main-content {
+            .display-container {
                 flex-direction: column !important;
-            }
-            
-            .video-section {
-                padding: 15px !important;
-                height: 35% !important;
             }
             
             .tickets-sidebar {
                 width: 100% !important;
-                height: 65% !important;
                 border-left: none !important;
                 border-top: 2px solid rgba(59, 130, 246, 0.4) !important;
+                height: 45% !important;
             }
             
             .current-ticket-number {
@@ -419,9 +310,8 @@
                 height: 70px !important;
             }
             
-            .video-container {
-                height: 60% !important;
-                border-radius: 15px !important;
+            .current-call-container {
+                height: calc(100vh - 70px - 45% - 50px) !important;
             }
         }
         
@@ -431,7 +321,7 @@
                 height: 60px !important;
             }
             
-            .current-call-section {
+            .current-call-container {
                 padding: 10px !important;
             }
             
@@ -441,10 +331,6 @@
             
             .tickets-sidebar {
                 padding: 15px !important;
-            }
-            
-            .video-container {
-                height: 50% !important;
             }
         }
         
@@ -1060,25 +946,6 @@
                 messageEn: "Working hours: 10 AM to 6 PM | Working days: Saturday to Thursday"
             },
             
-            // روابط الفيديو البديلة
-            videoSources: [
-                {
-                    name: "فيديو 1 - عرض مؤسسي",
-                    url: "https://drive.google.com/uc?export=download&id=1BoxWzM6ZOUZb0dBdDY8u4wuUMSCnD0He",
-                    type: "video/mp4"
-                },
-                {
-                    name: "فيديو 2 - إعلان الشركة",
-                    url: "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-luxury-resort-swimming-pool-2671-large.mp4",
-                    type: "video/mp4"
-                },
-                {
-                    name: "فيديو 3 - الخدمات اللوجستية",
-                    url: "https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-trucks-driving-on-a-highway-2670-large.mp4",
-                    type: "video/mp4"
-                }
-            ],
-            
             departments: [
                 { 
                     id: 'vehicles', 
@@ -1274,14 +1141,7 @@
                 systemReset: "تم تصفير النظام بنجاح",
                 cannotCallFuture: "لا يمكن نداء هذه التذكرة الآن",
                 futureAppointment: "موعد مستقبلي",
-                appointmentTimeNotYet: "لم يحن وقت الموعد بعد",
-                noAppointments: "لا توجد تذاكر حالياً",
-                videoPlaceholderTitle: "فيديو الشركة",
-                videoPlaceholderText: "ستظهر هنا فيديو تعريفي للشركة",
-                uploadVideo: "رفع فيديو",
-                changeVideo: "تغيير الفيديو",
-                noVideoAvailable: "لا يوجد فيديو متاح",
-                selectVideoSource: "اختر مصدر الفيديو"
+                appointmentTimeNotYet: "لم يحن وقت الموعد بعد"
             },
             en: {
                 welcome: "Welcome to Al-Zahrani Logistics Services",
@@ -1380,14 +1240,7 @@
                 systemReset: "System reset successfully",
                 cannotCallFuture: "Cannot call this ticket now",
                 futureAppointment: "Future appointment",
-                appointmentTimeNotYet: "Appointment time has not arrived yet",
-                noAppointments: "No tickets currently",
-                videoPlaceholderTitle: "Company Video",
-                videoPlaceholderText: "Company promotional video will appear here",
-                uploadVideo: "Upload Video",
-                changeVideo: "Change Video",
-                noVideoAvailable: "No video available",
-                selectVideoSource: "Select Video Source"
+                appointmentTimeNotYet: "Appointment time has not arrived yet"
             }
         };
 
@@ -1770,11 +1623,6 @@
             const [isBookingAppointment, setIsBookingAppointment] = useState(false);
             const [showResetConfirm, setShowResetConfirm] = useState(false);
             const [isResetting, setIsResetting] = useState(false);
-            
-            // حالة الفيديو
-            const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-            const [videoError, setVideoError] = useState(false);
-            const videoRef = useRef(null);
 
             const t = LANGUAGES[language];
             const isRTL = language === 'ar';
@@ -1857,39 +1705,6 @@
                 const thirtyMinutesBefore = new Date(appointmentDateTime.getTime() - 30 * 60000);
                 
                 return now >= thirtyMinutesBefore;
-            };
-
-            // تغيير الفيديو
-            const changeVideo = (index) => {
-                setCurrentVideoIndex(index);
-                setVideoError(false);
-                
-                if (videoRef.current) {
-                    videoRef.current.load();
-                    videoRef.current.play().catch(e => {
-                        console.log('⚠️ Video autoplay prevented:', e);
-                    });
-                }
-            };
-
-            // التعامل مع خطأ الفيديو
-            const handleVideoError = () => {
-                console.error('❌ Video failed to load');
-                setVideoError(true);
-                
-                // المحاولة التلقائية للفيديو التالي
-                const nextIndex = (currentVideoIndex + 1) % CONFIG.videoSources.length;
-                if (nextIndex !== currentVideoIndex) {
-                    setTimeout(() => {
-                        changeVideo(nextIndex);
-                    }, 2000);
-                }
-            };
-
-            // تحميل الفيديو بنجاح
-            const handleVideoLoaded = () => {
-                console.log('✅ Video loaded successfully');
-                setVideoError(false);
             };
 
             // تهيئة النظام
@@ -1992,14 +1807,6 @@
                     setShowAdminLogin(true);
                 }
                 
-                // تبديل الفيديو تلقائياً كل 30 ثانية
-                const videoRotationInterval = setInterval(() => {
-                    if (view === 'display') {
-                        const nextIndex = (currentVideoIndex + 1) % CONFIG.videoSources.length;
-                        changeVideo(nextIndex);
-                    }
-                }, 30000);
-                
                 return () => {
                     unsubscribeTickets();
                     unsubscribeCalls();
@@ -2007,7 +1814,6 @@
                     unsubscribeAudio();
                     clearInterval(statsInterval);
                     clearInterval(timeInterval);
-                    clearInterval(videoRotationInterval);
                     window.removeEventListener('online', handleOnline);
                     window.removeEventListener('offline', handleOffline);
                     soundManager.stop();
@@ -2306,74 +2112,6 @@
 
             // ===== مكونات العرض =====
             
-            // مكون الفيديو
-            const VideoPlayer = () => {
-                const currentVideo = CONFIG.videoSources[currentVideoIndex];
-                
-                return (
-                    <div className="video-container">
-                        {videoError ? (
-                            <div className="video-placeholder">
-                                <i className="fas fa-video-slash"></i>
-                                <h3>{t.noVideoAvailable}</h3>
-                                <p>{language === 'ar' ? 'تعذر تحميل الفيديو' : 'Failed to load video'}</p>
-                                <button 
-                                    onClick={() => changeVideo((currentVideoIndex + 1) % CONFIG.videoSources.length)}
-                                    className="video-upload-btn"
-                                >
-                                    <i className="fas fa-sync-alt mr-2"></i>
-                                    {t.changeVideo}
-                                </button>
-                            </div>
-                        ) : (
-                            <video
-                                ref={videoRef}
-                                key={currentVideo.url}
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                onError={handleVideoError}
-                                onLoadedData={handleVideoLoaded}
-                            >
-                                <source src={currentVideo.url} type={currentVideo.type} />
-                                {language === 'ar' ? 'متصفحك لا يدعم تشغيل الفيديو' : 'Your browser does not support the video tag'}
-                            </video>
-                        )}
-                        
-                        {/* عناصر تحكم الفيديو */}
-                        <div style={{
-                            position: 'absolute',
-                            bottom: '10px',
-                            right: '10px',
-                            display: 'flex',
-                            gap: '5px',
-                            opacity: '0.7',
-                            transition: 'opacity 0.3s'
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.opacity = '1'}
-                        onMouseLeave={e => e.currentTarget.style.opacity = '0.7'}>
-                            {CONFIG.videoSources.map((source, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => changeVideo(index)}
-                                    style={{
-                                        width: '12px',
-                                        height: '12px',
-                                        borderRadius: '50%',
-                                        background: currentVideoIndex === index ? '#3b82f6' : 'rgba(255,255,255,0.3)',
-                                        border: 'none',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.3s'
-                                    }}
-                                    title={source.name}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                );
-            };
-
             // نافذة تأكيد تصفير النظام
             const renderResetConfirmation = () => (
                 showResetConfirm && (
@@ -2811,7 +2549,7 @@
                         </div>
                     </main>
 
-                    {/* الفوتر - تمت إزالة المعلومات حسب الطلب */}
+                    {/* الفوتر */}
                     <footer className="mobile-footer bg-gray-800 text-white py-6">
                         <div className="max-w-7xl mx-auto">
                             <div className="flex flex-col items-center gap-4">
@@ -2822,6 +2560,13 @@
                                     <div className="text-center">
                                         <div className="font-bold">{CONFIG.companyName[language]}</div>
                                         <div className="text-sm text-gray-400">{CONFIG.systemName[language]}</div>
+                                    </div>
+                                </div>
+                                
+                                <div className="text-center text-gray-300">
+                                    <div>© 2025 {t.allRights}</div>
+                                    <div className="text-sm mt-1">
+                                        {t.techSupport}: {CONFIG.adminCode}
                                     </div>
                                 </div>
                                 
@@ -2842,7 +2587,7 @@
                 </div>
             );
 
-            // شاشة العرض المحسنة مع الفيديو
+            // شاشة العرض المحسنة والمصغرة
             const renderProfessionalDisplay = () => {
                 const currentCall = getCurrentCallForDisplay();
                 const approvedTickets = getApprovedTickets();
@@ -2887,53 +2632,47 @@
                             </div>
                         </div>
                         
-                        {/* المحتوى الرئيسي مع الفيديو */}
-                        <div className="display-main-content">
-                            {/* الجزء الأيسر - الفيديو والمعلومات */}
-                            <div className="video-section">
-                                {/* الفيديو */}
-                                <VideoPlayer />
-                                
-                                {/* معلومات النداء الحالي */}
-                                <div className="current-call-section">
-                                    <div className="text-center">
-                                        <div className="text-blue-400 text-3xl font-bold mb-6">
-                                            {t.currentCall}
-                                        </div>
-                                        
-                                        {currentCall ? (
-                                            <>
-                                                <div className="current-ticket-number">
-                                                    {currentCall.ticketNumber}
+                        {/* المحتوى الرئيسي */}
+                        <div className="flex-1 flex" style={{ height: 'calc(100vh - 80px - 50px)' }}>
+                            {/* الجزء الأيسر - النداء الحالي */}
+                            <div className="current-call-container">
+                                <div className="text-center">
+                                    <div className="text-blue-400 text-3xl font-bold mb-6">
+                                        {t.currentCall}
+                                    </div>
+                                    
+                                    {currentCall ? (
+                                        <>
+                                            <div className="current-ticket-number">
+                                                {currentCall.ticketNumber}
+                                            </div>
+                                            
+                                            <div className="current-ticket-info">
+                                                <div className="current-office arabic">
+                                                    {currentCall.roomAr || "مكتب الخدمة"}
                                                 </div>
-                                                
-                                                <div className="current-ticket-info">
-                                                    <div className="current-office arabic">
-                                                        {currentCall.roomAr || "مكتب الخدمة"}
-                                                    </div>
-                                                    <div className="current-office english">
-                                                        {currentCall.roomEn || "Service Office"}
-                                                    </div>
-                                                    <div className="current-department arabic">
-                                                        {currentCall.categoryAr || "إدارة الخدمات"}
-                                                    </div>
-                                                    <div className="current-department english">
-                                                        {currentCall.categoryEn || "Service Management"}
-                                                    </div>
+                                                <div className="current-office english">
+                                                    {currentCall.roomEn || "Service Office"}
                                                 </div>
-                                            </>
-                                        ) : (
-                                            <div className="space-y-6">
-                                                <div className="text-[10vw] opacity-20 text-blue-500">
-                                                    <i className="fas fa-clock"></i>
+                                                <div className="current-department arabic">
+                                                    {currentCall.categoryAr || "إدارة الخدمات"}
                                                 </div>
-                                                <div className="space-y-4">
-                                                    <div className="text-3xl text-gray-400 arabic">{t.systemReady}</div>
-                                                    <div className="text-2xl text-gray-400 english">{t.systemReady}</div>
+                                                <div className="current-department english">
+                                                    {currentCall.categoryEn || "Service Management"}
                                                 </div>
                                             </div>
-                                        )}
-                                    </div>
+                                        </>
+                                    ) : (
+                                        <div className="space-y-6">
+                                            <div className="text-[15vw] opacity-20 text-blue-500">
+                                                <i className="fas fa-clock"></i>
+                                            </div>
+                                            <div className="space-y-4">
+                                                <div className="text-4xl text-gray-400 arabic">{t.systemReady}</div>
+                                                <div className="text-3xl text-gray-400 english">{t.systemReady}</div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             
@@ -3019,7 +2758,7 @@
                             </div>
                         </div>
                         
-                        {/* التايمر المتحرك - تمت إزالة المعلومات حسب الطلب */}
+                        {/* التايمر المتحرك */}
                         <div className="news-ticker">
                             <div className="ticker-content arabic">
                                 {t.welcomeMessage} • {t.systemMessage} • {t.holdTicket} • {CONFIG.workHours.messageAr} •
